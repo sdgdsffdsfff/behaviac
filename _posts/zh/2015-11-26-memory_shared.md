@@ -14,3 +14,10 @@ lang: zh
 
 
 ![memory_shared]({{ site.baseurl }}/img/faq/memory_shared.png)
+
+-------------------------------
+
+ - 加载行为树请使用`Workspace::Load`或`Agent::btload`
+ - 卸载行为树请使用`Workspace::UnLoad`或`Agent::btunload`
+ - `Workspace::CreateBehaviorTreeTask`用来根据加载的行为树资源创建实例数据，而它配套的是`Workspace::DestroyBehaviorTreeTask`
+ - C#代码是同名类型里的同名函数，如`Workspace.Load`和`Agent.btload`
