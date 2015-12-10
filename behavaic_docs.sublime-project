@@ -1,0 +1,11 @@
+{
+	"folders":
+	[
+		{
+			"path": "${project_path:${folder}}", 
+			//"path": "/E/WWWW/behaviac_github_docs/behaviac", 
+			"path": ".",
+			"folder_exclude_patterns":["_site"],
+		}
+	]
+}
