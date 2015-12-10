@@ -68,4 +68,4 @@ behaviac::TypeRegister::UnRegister< TNS::EnumTest >(" TNS::EnumTest ");
 
 ```
 
-更多细节可以参考behaviac组件C++源码库中btunittest工程的test/btunittest/Agent/UnitTestTypes.h文件中eColor结构体相关的代码。
+更多细节可以参考behaviac组件C++源码库中btunittest工程的[UnitTestTypes.h]({{site.repository}}/blob/master/test/btunittest/Agent/UnitTestTypes.h)文件中eColor结构体相关的代码。

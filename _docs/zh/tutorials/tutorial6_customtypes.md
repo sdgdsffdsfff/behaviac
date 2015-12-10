@@ -51,4 +51,4 @@ behaviac::TypeRegister::UnRegister< TypeTest2_t >(" TypeTest2_t ");
 
 ```
 
-更多细节可以参考behaviac组件C++源码库中btunittest工程的test/btunittest/Others/reflectionunittest.cpp文件中TypeTest2_t结构体相关的代码。
+更多细节可以参考behaviac组件C++源码库中btunittest工程的[reflectionunittest.cpp]({{site.repository}}/blob/master/test/btunittest/Others/reflectionunittest.cpp)文件中TypeTest2_t结构体相关的代码。
