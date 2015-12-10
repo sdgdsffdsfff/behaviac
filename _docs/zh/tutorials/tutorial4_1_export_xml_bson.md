@@ -24,7 +24,7 @@ lang: zh
 	- 通过调用Agent的接口btload(…)加载所需的行为树文件。
 	- 通过调用Agent的接口btsetcurrent(…)设置当前准备执行的行为树文件。
 	- 行为树的更新执行流程请参考[更新流程]({{ site.baseurl }}/docs/zh/tutorials/tutorial13_updateloop/)。
-	- 在游戏的释放函数里面，添加Agent::Unregister< AgentNodeTest >()用于释放类型的注册信息。
+	- 在游戏的释放函数里面，添加Agent::Unregister<***>()用于释放类型的注册信息。
 
 如下代码样例所示：
 
