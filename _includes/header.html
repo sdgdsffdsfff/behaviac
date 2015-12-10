@@ -54,13 +54,21 @@ function search() {
       $("#query_result").html("");
       return ;
     }
-  
+    /*****
+    * if user use multiple keys to search, then at first we should show the article relative all keys in front of results.
+    * modify: Quinn Pan<pjkui@qq.com>
+    * time: 2015-12-10 15:50:35
+    */
     var query_str = $("#query_input").val();//get the query string
-    var re = new RegExp(query_str,"i"); //construct regular expression
+    var query_str_and  =  query_str.split(/\s+/g).join('.*');
+    var query_str_or   =  query_str.split(/\s+/g).join('|');
+    var re_and  = new RegExp(query_str_and ,"i"); //construct regular expression, and logical query
+    var re_or   = new RegExp(query_str_or ,"i");//or logical  query 
     var result_str="";//save the search result
+    var record_ids=[];
     for(var doc in docs)
     {
-      if(docs[doc].title.search(re)!=-1 || docs[doc].id.search(re)!= -1 || docs[doc].content.search(re)!= -1)
+      if(docs[doc].title.search(re_and)!=-1 || docs[doc].id.search(re_and)!= -1 || docs[doc].content.search(re_and)!= -1)
       {
       id=docs[doc].id;
       title=docs[doc].title.substr(0,40);
@@ -72,8 +80,26 @@ function search() {
           "<span class=\"command\">"+content+"</span>"+
       "</p>";
       }
+      record_ids.push(doc);//add record in record_ids
     }
-     $("#query_result").html(result_str);
+    for(var doc in docs)
+    {
+      //if the doc is doesn't record the add it 
+      if(record_ids.indexOf(doc)==-1 &&(docs[doc].title.search(re_or)!=-1 || docs[re_or].id.search(re_or)!= -1 || docs[doc].content.search(re_or)!= -1))
+      {
+      id=docs[doc].id;
+      title=docs[doc].title.substr(0,40);
+      content=docs[doc].content.substr(0,40);
+      result_str+=
+      "<p class=\"line\">"+
+          "<span class=\"path\"><a href=\""+id+"\" target=\"_blank\">"+title+"</a></span>"+
+          "<span class=\"prompt\">:</span>"+
+          "<span class=\"command\">"+content+"</span>"+
+      "</p>";
+      }
+      record_ids.push(doc);//add record in record_ids
+    }
+  $("#query_result").html(result_str);
   if(result_str.length <= 0) {
     result_str = 
       "<p class=\"line\">"+
