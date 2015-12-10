@@ -77,7 +77,7 @@ void CleanupBehaviac()
 
 总之，一棵行为树的加载到执行，关键的就是前面提及的三个接口：btload()、btsetcurrent()和btexec()。
 
-更多细节可以参考behaviac组件C++源码中附带的test/demo_running工程的demo_running.cpp文件。
+更多细节可以参考behaviac组件C++源码中附带的test/demo_running工程的[demo_running.cpp]({{site.repository}}/blob/master/test/demo_running/demo_running.cpp)文件。
 
 类似的，对于C#版的运行时端，采用如下代码样例加载使用刚才导出的行为树：
 
@@ -124,4 +124,4 @@ if(behaviorTree.Length > 0)
 	
 ```
  
-更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的BehaviacSystem.cs文件。
+更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的[BehaviacSystem.cs]({{site.repository}}/blob/master/integration/BattleCityDemo/Assets/Scripts/BehaviacSystem.cs)文件。

@@ -120,4 +120,4 @@ void CleanupBehaviac()
 
 ```
 
-更多细节可以参考behaviac组件C++源码中附带的test/demo_running工程的demo_running.cpp文件。
+更多细节可以参考behaviac组件C++源码中附带的test/demo_running工程的[demo_running.cpp]({{site.repository}}/blob/master/test/demo_running/demo_running.cpp)文件。

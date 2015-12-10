@@ -106,4 +106,4 @@ public void Uninit()
 	
 ```
 
-更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的BehaviacSystem.cs文件。
+更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的[BehaviacSystem.cs]({{site.repository}}/blob/master/integration/BattleCityDemo/Assets/Scripts/BehaviacSystem.cs)文件。
