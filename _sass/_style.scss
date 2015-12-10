@@ -1155,3 +1155,52 @@ code.output {
   height: 4.5em;
   line-height: 1.5em;
 }
+
+
+.user-show{
+  overflow: hidden;
+  width: 100%;
+  img{
+    width: 140px;
+    height:140px;
+  }
+  a{
+    color: #FFF;
+  }
+  a:hover{
+    color: #FC0;
+  }
+  h5{
+    margin: 0;
+    padding: 0;
+    margin-top:10px;
+    font-style: normal;
+  }
+}
+.bx_wrap {
+  padding: 0;
+  margin: 0;
+  margin-left: 10px; 
+  margin-top:10px;
+}
+.bx_container{
+  padding: 0px;
+  margin: 0px;
+  margin-left: -30px;
+}
+.bx_warp ul{
+  margin: 0;
+  padding: 0;
+} 
+.bx_wrap ul img { 
+  border: 0; 
+  margin: 0;
+  padding: 0;
+} 
+.bx_wrap ul li{text-align:center} 
+.bx_wrap ul li a:hover{text-decoration:none; color:#f30} 
+.bx_wrap a.prev {width:20px;height:24px;line-height:24px;outline-style:none;outline-width: 0; 
+position:absolute; top:10px; left:-2px; text-indent:-999em; background: url(img/arr_left.gif)  
+no-repeat;} 
+.bx_wrap a.next {width:20px;height:24px;line-height:24px; left:626px;position: absolute; 
+top:10px; text-indent:-999em; background:url(img/arr_right.gif) no-repeat;} 
