@@ -8,19 +8,49 @@ categories: [tutorial]
 lang: zh
 ---
 
-## 热加载
+## 更新流程
 
-behaviac组件中的编辑器和运行时库都支持热加载，但是只针对XML/BSON格式的行为树文件。
+在运行时端（下面以C++版来加以说明，C#版基本类似），整个工作区的更新可以通过Workspace::Update()函数来执行，该函数主要包括两大功能：
 
-在编辑器中，只要当前打开的行为树文件在编辑器外由于某种原因得到修改（例如通过项目中的文件版本管理系统强制同步行为树文件，或者通过文本编辑器强制修改行为树XML文件等），那么都可以自动的在编辑器中得到刷新。
+- 调用DebugUpdate()函数来更新一些连调和热加载相关的功能。
+- 根据m_bExecAgents来判断是否需要执行所有Agent实例的btexec()函数。
 
-对于运行时端（或游戏端），只要在编辑器中修改了行为树文件并重新导出，那么在游戏运行过程中不用退出游戏，最新导出的行为树可以自动进行加载，这样就可以及时查看行为树最新的效果。
+如下样例代码所示： 
 
-行为树的执行可以调用behaviac::Workspace::GetInstance()->Update()，也可以直接调用Agent的接口btexec()。Workspace的Update()会遍历所有的Agent实例并依次执行btexec()，但在游戏项目中，可能在一帧中需要对某些Agent多次调用btexec()，而另一些Agent只需调用一次，这时候就需要自己调用该Agent的btexec()，而不是调用Workspace的Update()。此外，如果是连调，还需要调用behaviac::Workspace::GetInstance()->DebugUpdate()，但如果已经调用了behaviac::Workspace::GetInstance()->Update()，那么就不需要再调用DebugUpdate。
+``` c++
 
-注意：对于C#版，behaviac.Workspace.IsExecAgents默认设为false。如果将behaviac.Workspace.IsExecAgents设为true，使用behaviac.Workspace.Instance.Update()集中进行更新，Agent自己的Update就不需要调用btexec了。如果将behaviac.Workspace.IsExecAgents设为false，则不使用behaviac.Workspace.Instance.Update()集中进行更新，Agent自己的Update就需要调用btexec了。
+void Workspace::DebugUpdate()
+{
+	this->LogFrames();
+	this->HandleRequests();
 
-为了启动热加载功能，需要确保在运行时端调用Workspace::DebugUpdate()函数，有两种方式：
+	if (this->GetAutoHotReload())
+	{
+		this->HotReload();
+	}
+}
 
-- 如果Agent的行为树是通过调用Workspace::Update()来集中执行的，则无需额外调用Workspace::DebugUpdate()函数
-- 如果Agent的行为树是通过调用Agent::btexec()来执行的，则需要游戏每次更新时调用Workspace::DebugUpdate()函数
+void Workspace::Update()
+{
+	this->DebugUpdate();
+
+    if (this->m_bExecAgents)
+    {
+        int contextId = -1;
+
+        Context::execAgents(contextId);
+    }
+}
+	
+```
+
+对于C++版，行为树的执行可以调用behaviac::Workspace::GetInstance()->Update()，也可以直接调用Agent的接口btexec()。
+
+Workspace的Update()会遍历所有的Agent实例并依次执行btexec()，但在自己的游戏项目中，可能在一帧中需要对某些Agent多次调用btexec()，而另一些Agent只需调用一次，这时候就需要自己调用该Agent的btexec()，而不是调用Workspace的Update()。
+
+此外，为了支持连调和热加载，请务必保证在自己游戏的更新函数中调用了DebugUpdate()函数，但如果已经调用了behaviac::Workspace::GetInstance()->Update()，那么就不需要再单独调用DebugUpdate()。
+
+特别注意：对于C#版，behaviac.Workspace.IsExecAgents默认设为false。
+
+- 如果将behaviac.Workspace.IsExecAgents设为true，使用behaviac.Workspace.Instance.Update()集中进行更新，Agent自己的更新就不需要调用btexec()了。
+- 如果将behaviac.Workspace.IsExecAgents设为false，则不使用behaviac.Workspace.Instance.Update()集中进行更新，Agent自己的更新就需要调用btexec()了。
