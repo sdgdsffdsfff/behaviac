@@ -1,6 +1,6 @@
 ---
 layout: docs_relatives
-title: 行为树的更新流程
+title: 运行时端的更新流程
 date: 2015-12-10 10:40:26 +0800
 author: cainhuang
 permalink: /docs/zh/tutorials/tutorial13_updateloop/
@@ -8,7 +8,7 @@ categories: [tutorial]
 lang: zh
 ---
 
-## 行为树的更新流程
+## 运行时端的更新流程
 
 在运行时端（下面以C++版来加以说明，C#版基本类似），整个工作区的更新可以通过Workspace::Update()函数来执行，该函数主要包括两大功能：
 
