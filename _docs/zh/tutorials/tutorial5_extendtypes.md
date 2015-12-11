@@ -127,6 +127,6 @@ behaviac::TypeRegister::UnRegister<TestNS::Float2>("TestNS::Float2");
 
 ```
 
-详细代码可以参考behaviac组件C++源码库中btunittest工程的test/btunittest/ext/extendstruct.h文件。
+详细代码可以参考behaviac组件C++源码库中btunittest工程的test/btunittest/ext/extendstruct.h[extendstruct.h]({{site.repository}}/blob/master/test/btunittest/ext/extendstruct.h)文件。
 
 还可以参考下面的自定义类或结构体来定义一个结构体来包装和转换那个已存在的类型。例如，如果用到了类型D3DVector，除了用上面介绍的几个步骤来通知behaviac使用外，也可以通过下面的方式定义myD3DVector来包装和转换D3DVector，所有behaviac相关代码只需使用myD3DVector。

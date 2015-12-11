@@ -34,10 +34,12 @@ behaviac::TypeRegister::UnRegister<TNS::ST::PER::WRK::kEmployee>(" TNS::ST::PER:
 
 ```
 
+更多细节可以参考behaviac组件C++源码中附带的[UnitTestTypes.h]({{site.repository}}/blob/master/test/btunittest/Agent/UnitTestTypes.h)文件中的结构体kEmployee。
+
 - Agent及其子类的数组
-当涉及behaviac::Agent或是其子类的时候，仅支持其指针类型即behaviac::Agent*或SubclassAgent*（SubclassAgent是behaviac::Agent的一个子类）。
-behaviac::Agent*或vector<behaviac::Agent*>类型直接被支持，不需要做什么额外的工作，其任何子类SubclassAgent*也直接被支持。
-但是需要支持vector<SubclassAgent*>的时候，则需要在.h文件里添加如下所示的宏，，但需放在任意namespace之外：
+当涉及`behaviac::Agent`或是其子类的时候，仅支持其指针类型即`behaviac::Agent*`或`SubclassAgent*`（`SubclassAgent`是`behaviac::Agent`的一个子类）。
+`behaviac::Agent*`或`vector<behaviac::Agent*>`类型直接被支持，不需要做什么额外的工作，其任何子类`SubclassAgent*`也直接被支持。
+但是需要支持`vector<SubclassAgent*>`的时候，则需要在.h文件里添加如下所示的宏，但需放在任意namespace之外：
 
 ``` c++
 
@@ -54,3 +56,5 @@ behaviac::Agent::Register<SubclassAgent>();
 behaviac::Agent::UnRegister<SubclassAgent>();
 
 ```
+
+更多细节可以参考behaviac组件C++源码中附带的[EmployeeParTestAgent.h]({{site.repository}}/blob/master/test/btunittest/Agent/EmployeeParTestAgent.h)文件中的类EmployeeParTestAgent。

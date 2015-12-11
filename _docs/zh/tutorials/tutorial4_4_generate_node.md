@@ -19,3 +19,5 @@ Plugin.Exporters.Add(new ExporterInfo(typeof(PluginBehaviac.Exporters.ExporterCp
 - 从基类NodeExporter派生出子类NodeCppExporter，该子类定义了GenerateClass()、GenerateInstance()、GetGeneratedClassName()、ShouldGenerateClass()、GenerateConstructor()、GenerateMember()、GenerateMethod()等虚函数，用于生成某个具体的节点类。
 
 - 在NodeExporters/Cpp文件夹中，维护了各种节点类的辅助导出类，例如类Action对应的类ActionCppExporter等等，这些类分别实现了上面的虚函数，用于导出特定节点类的类型、属性和方法等信息。
+
+更多细节可以参考behaviac组件编辑器源码中附带的[NodeExporters]({{site.repository}}/blob/master/tools/designer/Plugins/PluginBehaviac/NodeExporters/Cpp)文件夹。
