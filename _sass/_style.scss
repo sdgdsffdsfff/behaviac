@@ -1185,7 +1185,18 @@ code.output {
   margin-top: 10px;
   font-style: normal;
 }
+.user-show-ul1{
+  display:inline;
+  white-space: nowrap;
+}
+ .user-show-ul1 li{
 
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    white-space: normal;
+    padding-left: 10px;
+  }
 .user-show-ul{
   display:inline;
   white-space: nowrap;
@@ -1201,12 +1212,13 @@ code.output {
     /*background:pink;*/
     white-space: normal;
     padding-left: 10px;
+    width: 120px;
   }
 .user-show-ul li a{
     margin: 0px;
     margin: 0px;
-    height: 180px;
-    width: 140px;
+    height: 120px;
+    width: 120px;
 }
 .user-show-ul li a:hover{
   text-decoration:none; 
