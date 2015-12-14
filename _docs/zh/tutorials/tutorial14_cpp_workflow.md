@@ -77,6 +77,7 @@ bool InitPlayer(const char* pszTreeName)
     “D:/Test/behaviac/workspace/exported/node_test/selector_loop_ut_7.bson.bytes”。
     - 具体是xml或bson则由Workspace::SetFileFormat确定。
     - 当指定格式是cpp或c#的时候，导出的行为树是cpp或c#源码，已经编译构建进可执行程序，Agent::btload指定的只是用来标识该行为树的，从而代码可以据此创建相应的行为树，不像xml或bson格式的时候不需要加载数据文件。
+ - 如果Agent::btload加载失败，请注意检查当前路径，Workspace::SetFilePath设定的导出路径，以及Agent::btload指定的文件标识。还可以在当前路径里检查log文件`_behaviac_$_$_.log`
 
 ### 2 循环更新
 
