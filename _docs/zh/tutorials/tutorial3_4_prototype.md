@@ -124,25 +124,30 @@ lang: zh
 
 这样，我们就编辑完了第一棵行为树。
 
-### 5 导出行为树
+### 5 生成C++源码文件
 
-开始导出我们的行为树，点击工具栏中的“导出行为树”按钮，如下图所示：
+为了方便讨论，下面只介绍生成C++源码文件，生成C#源码文件的流程基本类似，也可以分别参考下面两篇文档：
+
+- [导出和使用C++行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_2_export_cpp/)
+- [导出和使用C#行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_3_export_cs/)
+
+开始导出C++源码文件，点击工具栏中的“导出行为树”按钮，如下图所示：
 
 ![]({{site.baseurl}}/img/tutorials/tutorial3/startExportingBehaviors.png)
 
-图5.1 开始导出行为树
+图5.1 开始导出C++源码文件
 
 弹出导出行为树设置窗口，我们看到“first_behavior”是一棵“有错误的行为树”，暂时忽略这个错误，直接选择下面的“导出设置”，只选择“C++ Behavior Export”，如下图所示：
 
 ![]({{site.baseurl}}/img/tutorials/tutorial3/exportBehaviors.png)
 
-图5.2 导出行为树
+图5.2 导出C++源码文件
 
 点击“C++ Behavior Export”最右侧的“...”按钮，弹出如下图所示的配置窗口：
 
 ![]({{site.baseurl}}/img/tutorials/tutorial3/exportCppSettings.png)
 
-图5.3 导出行为树设置
+图5.3 导出C++源码文件设置
 
 在上图中，暂时不用修改任何设置，只需使用默认值，直接点击“确认”按钮，回到图5.2中的导出行为树窗口，点击“导出”按钮。
 
