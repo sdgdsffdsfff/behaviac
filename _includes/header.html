@@ -141,6 +141,36 @@ function gotoTop(min_height){
 $(document).ready(function(){
 gotoTop();
 });
+
+//add keyboard listener
+ document.onkeyup=function(event){
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if(e && e.keyCode==27){ // 按 Esc 
+                //要做的事情
+                $("#query_result").html("");
+                $("#query_input").val("");
+              }
+            if(e && e.keyCode==191){ // forward slash
+                 //要做的事情
+                if(event.shiftKey ==1)
+                {
+                  alert("帮助：\n 输入 / ：快速定位查找搜索框\n 输入Esc ：清空搜索框信息");
+                  return;
+                }
+
+                 if(document.activeElement.id != "query_input")
+                 {
+                  $("#query_input").val("");
+                  $("#query_input").focus();
+                  $("#query_result").html("");
+                }
+
+               }            
+            if(e && e.keyCode==13){ // enter 键
+                 //要做的事情
+            }
+
+        }; 
 </script>
 <section class="quickstart hide-on-mobiles">
   <div class="grid">
