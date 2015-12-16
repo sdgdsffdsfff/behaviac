@@ -23,11 +23,9 @@
 <script src="{{site.baseurl}}/js/lunr.zh.min.js"></script>
 <script src="{{site.baseurl}}/search.js"></script>
 <script>
+var search_url="";
 $(function() {
-  $("#query_btn1").click(function()
-  {
-   
-  });
+
   $("#query_btn").click(function()
   {
     search();
@@ -48,7 +46,30 @@ $(function() {
       return ;
     }
   });
-  
+  //seector click
+  $('#search_engine').change(function() {
+      var val = $("#search_engine option:selected").val();
+      // alert(val);
+      switch(val){
+        case 'google':
+          search_url="https://www.google.com.hk/search?oq=site%3Atencentopen.github.io+%E8%A1%8C%E4%B8%BA%E6%A0%91&aqs=chrome..69i57j69i58j69i60l3.1759j0j9&sourceid=chrome&es_sm=122&ie=UTF-8&q=site%3Atencentopen.github.io+";
+          break;
+          case 'baidu':
+           search_url="https://www.baidu.com/s?rsv_spt=1&rsv_iqid=0xba9f3ad7000132b3&issp=1&f=8&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_n=2&rsv_sug3=1&wd=site%3Atencentopen.github.io%20";
+           break;
+           case 'sogou':
+           search_url="https://www.sogou.com/web?_asf=www.sogou.com&_ast=&w=01019900&p=40040100&ie=utf8&sut=753&sst0=1450258450607&lkt=0%2C0%2C0&query=site%3Atencentopen.github.io+";
+           break;
+           case 'bing':
+           search_url="http://cn.bing.com/search?go=%E6%8F%90%E4%BA%A4&qs=n&form=QBLH&pq=site%3Atencentopen.github.io+%E8%A1%8C%E4%B8%BA%E6%A0%91&sc=0-0&sp=-1&sk=&cvid=E1AA7A8EEE60498B900ED46B0C16E98B&q=site%3Atencentopen.github.io+";
+           break;
+           default:
+           search_url="";
+           break;
+
+      }
+  });
+
 })
 function search() {
   if($("#query_input").val()=="")
@@ -62,6 +83,12 @@ function search() {
     * time: 2015-12-10 15:50:35
     */
     var query_str = $("#query_input").val();//get the query string
+    if(search_url != "")
+    {
+       // window.location.href=search_url+encodeURI(query_str);
+       window.open(search_url+encodeURI(query_str));
+       return ;
+    }
     var query_str_and  =  query_str.split(/\s+/g).join('.*');
     var query_str_or   =  query_str.split(/\s+/g).join('|');
     var re_and  = new RegExp(query_str_and ,"i"); //construct regular expression, and logical query
@@ -112,6 +139,7 @@ function search() {
     $("#query_result").html(result_str);
   }
 }
+
 
 function gotoTop(min_height){
     //预定义返回顶部的html代码，它的css样式默认为不显示
@@ -171,6 +199,7 @@ gotoTop();
             }
 
         }; 
+
 </script>
 <section class="quickstart hide-on-mobiles">
   <div class="grid">
@@ -179,7 +208,15 @@ gotoTop();
       <div class="shell">
         <form class="line">
           <div class="input-append">
-            <input class="query_input four-fifths" type="search" name="q" id="query_input" placeholder="Enter keywords..."/>
+          <select class="search_engine " id="search_engine">
+            <option value="mySite">本站</option>
+            <option value="google">Google</option>
+            <option value="baidu">百度</option>
+            <option value="bing">Bing</option>
+            <option value="sogou">搜狗</option>
+
+          </select>
+            <input class="query_input three-fifths" type="search" name="q" id="query_input" placeholder="Enter keywords..."/>
             <button class="query_btn one-fifths" type="button" id="query_btn">Go!</button>
           </div>
         </form>
