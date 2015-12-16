@@ -1,0 +1,47 @@
+---
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    {% for post in site.posts %}
+    <url>
+        <loc>{{site.url}}{{site.baseurl}}{{post.url }}</loc>
+        <lastmod>{{post.date | date_to_xmlschema}}</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.8</priority>
+        <data>
+            <display>
+                <title><![CDATA[{{post.title}}]]></title>
+                <content><![CDATA[{{post.content}}]]></content>
+                <tag>{{post.lang}}</tag>
+                <tag>{{post.categories |  | array_to_sentence_string }}</tag>
+                <pubTime>{{post.date | date_to_xmlschema }}</pubTime>
+                <author nickname="{{post.author}}" url="https://github.com/{{post.author}}" thumbnail="https://github.com/{{post.author}}.png">{{post.author}}</author>
+            </display>
+        </data>     
+    </url>
+    {% endfor %}
+
+    {% for post in site.docs %}
+    <url>
+        <loc>{{site.url}}{{site.baseurl}}{{post.url }}</loc>
+        <lastmod>{{post.date | date_to_xmlschema}}</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1.0</priority>
+        <data>
+            <display>
+                <title><![CDATA[{{post.title}}]]></title>
+                <content><![CDATA[{{post.content}}]]></content>
+                <tag>{{post.lang}}</tag>
+                <tag>{{post.categories |  | array_to_sentence_string }}</tag>
+                <pubTime>{{post.date | date_to_xmlschema }}</pubTime>
+                <author nickname="{{post.author}}" url="https://github.com/{{post.author}}" thumbnail="https://github.com/{{post.author}}.png">{{post.author}}</author>
+            </display>
+        </data>     
+    </url>
+    {% endfor %}
+</urlset>

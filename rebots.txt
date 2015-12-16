@@ -1,0 +1,6 @@
+---
+---
+User-agent: *
+Disallow:
+
+SITEMAP: http://tencentopen.github.io/behaviac/sitemap.xml
