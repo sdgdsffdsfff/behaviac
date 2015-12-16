@@ -1,130 +1,93 @@
 /*
- * jQuery Table of Content Generator for Markdown v1.0
+ * Table of Contents jQuery Plugin - jquery.toc
  *
- * https://github.com/dafi/tocmd-generator
- * Examples and documentation at: https://github.com/dafi/tocmd-generator
+ * Copyright 2013 Nikhil Dabas
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.  You may obtain a copy of the License at
  *
- * Requires: jQuery v1.7+
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Copyright (c) 2013 Davide Ficano
- *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied.  See the License for the specific language governing permissions and limitations
+ * under the License.
  */
-(function($) {
-    var toggleHTML = '<div id="toctitle"><h2>Contents</h2> <span class="toctoggle">[<a id="toctogglelink" class="internal" href="#">hide</a>]</span></div>';
-    var tocContainerHTML = '<div id="toc-container"><table class="toc" id="toc"><tbody><tr><td>%1<ul>%2</ul></td></tr></tbody></table></div>';
 
-    function createLevelHTML(anchorId, tocLevel, tocSection, tocNumber, tocText, tocInner) {
-        var link = '<a href="#%1"><span class="tocnumber">%2</span> <span class="toctext">%3</span></a>%4'
-            .replace('%1', anchorId)
-            .replace('%2', tocNumber)
-            .replace('%3', tocText)
-            .replace('%4', tocInner ? tocInner : '');
-        return '<li class="toclevel-%1 tocsection-%2">%3</li>\n'
-            .replace('%1', tocLevel)
-            .replace('%2', tocSection)
-            .replace('%3', link);
-    }
+(function ($) {
+    "use strict";
 
-    $.fn.toc = function(settings) {
-        var config = {
-            anchorPrefix: 'tocAnchor-',
-            showAlways: false,
-            saveShowStatus: true,
-            contentsText: 'Contents',
-            hideText: 'hide',
-            showText: 'show'};
+    // Builds a list with the table of contents in the current selector.
+    // options:
+    //   content: where to look for headings
+    //   headings: string with a comma-separated list of selectors to be used as headings, ordered
+    //   by their relative hierarchy level
+    var toc = function (options) {
+        return this.each(function () {
+            var root = $(this),
+                data = root.data(),
+                thisOptions,
+                stack = [root], // The upside-down stack keeps track of list elements
+                listTag = this.tagName,
+                currentLevel = 0,
+                headingSelectors;
 
-        if (settings) {
-            $.extend(config, settings);
-        }
+            // Defaults: plugin parameters override data attributes, which override our defaults
+            thisOptions = $.extend(
+                {content: "body", headings: "h1,h2,h3"},
+                {content: data.toc || undefined, headings: data.tocHeadings || undefined},
+                options
+            );
+            headingSelectors = thisOptions.headings.split(",");
 
-        var tocHTML = '';
-        var tocLevel = 1;
-        var tocSection = 1;
-        var itemNumber = 1;
+            // Set up some automatic IDs if we do not already have them
+            $(thisOptions.content).find(thisOptions.headings).attr("id", function (index, attr) {
+                // Generate a valid ID: must start with a letter, and contain only letters and
+                // numbers. All other characters are replaced with underscores.
+                return attr ||
+                    $(this).text().replace(/^[^A-Za-z]*/, "").replace(/[^A-Za-z0-9]+/g, "_");
+            }).each(function () {
+                // What level is the current heading?
+                var elem = $(this), level = $.map(headingSelectors, function (selector, index) {
+                    return elem.is(selector) ? index : undefined;
+                })[0];
 
-        var tocContainer = $(this);
-
-        tocContainer.find('h1').each(function() {
-            var levelHTML = '';
-            var innerSection = 0;
-            var h1 = $(this);
-
-            h1.nextUntil('h1').filter('h2').each(function() {
-                ++innerSection;
-                var anchorId = config.anchorPrefix + tocLevel + '-' + tocSection + '-' +  + innerSection;
-                $(this).attr('id', anchorId);
-                levelHTML += createLevelHTML(anchorId,
-                    tocLevel + 1,
-                    tocSection + innerSection,
-                    itemNumber + '.' + innerSection,
-                    $(this).text());
-            });
-            if (levelHTML) {
-                levelHTML = '<ul>' + levelHTML + '</ul>\n';
-            }
-            var anchorId = config.anchorPrefix + tocLevel + '-' + tocSection;
-            h1.attr('id', anchorId);
-            tocHTML += createLevelHTML(anchorId,
-                tocLevel,
-                tocSection,
-                itemNumber,
-                h1.text(),
-                levelHTML);
-
-            tocSection += 1 + innerSection;
-            ++itemNumber;
-        });
-
-        var hasOnlyOneTocItem = tocLevel == 1 && tocSection <= 2;
-        var show = config.showAlways ? true : !hasOnlyOneTocItem;
-
-        // check if cookie plugin is present otherwise doesn't try to save
-        if (config.saveShowStatus && typeof($.cookie) == "undefined") {
-            config.saveShowStatus = false;
-        }
-
-        if (show && tocHTML) {
-            var replacedToggleHTML = toggleHTML
-                .replace('%1', config.contentsText)
-                .replace('%2', config.hideText);
-            var replacedTocContainer = tocContainerHTML
-                .replace('%1', replacedToggleHTML)
-                .replace('%2', tocHTML);
-            tocContainer.prepend(replacedTocContainer);
-
-            $('#toctogglelink').click(function() {
-                var ul = $($('#toc ul')[0]);
-                
-                if (ul.is(':visible')) {
-                    ul.hide();
-                    $(this).text(config.showText);
-                    if (config.saveShowStatus) {
-                        $.cookie('toc-hide', '1', { expires: 365, path: '/' });
+                if (level > currentLevel) {
+                    // If the heading is at a deeper level than where we are, start a new nested
+                    // list, but only if we already have some list items in the parent. If we do
+                    // not, that means that we're skipping levels, so we can just add new list items
+                    // at the current level.
+                    // In the upside-down stack, unshift = push, and stack[0] = the top.
+                    var parentItem = stack[0].children("li:last")[0];
+                    if (parentItem) {
+                        stack.unshift($("<" + listTag + "/>").appendTo(parentItem));
                     }
-                    $('#toc').addClass('tochidden');
                 } else {
-                    ul.show();
-                    $(this).text(config.hideText);
-                    if (config.saveShowStatus) {
-                        $.removeCookie('toc-hide', { path: '/' });
-                    }
-                    $('#toc').removeClass('tochidden');
+                    // Truncate the stack to the current level by chopping off the 'top' of the
+                    // stack. We also need to preserve at least one element in the stack - that is
+                    // the containing element.
+                    stack.splice(0, Math.min(currentLevel - level, Math.max(stack.length - 1, 0)));
                 }
-                return false;
-            });
 
-            if (config.saveShowStatus && $.cookie('toc-hide')) {
-                var ul = $($('#toc ul')[0]);
-                
-                ul.hide();
-                $('#toctogglelink').text(config.showText);
-                $('#toc').addClass('tochidden');
-            }
-        }
+                // Add the list item
+                $("<li/>").appendTo(stack[0]).append(
+                    $("<a/>").text(elem.text()).attr("href", "#" + elem.attr("id"))
+                );
+
+                currentLevel = level;
+            });
+        });
+    }, old = $.fn.toc;
+
+    $.fn.toc = toc;
+
+    $.fn.toc.noConflict = function () {
+        $.fn.toc = old;
         return this;
-    }
-})(jQuery);
+    };
+
+    // Data API
+    $(function () {
+        toc.call($("[data-toc]"));
+    });
+}(window.jQuery));

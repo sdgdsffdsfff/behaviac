@@ -9,5 +9,32 @@
         {% endif %}
     {% endfor %}
     </ul>
+    <div class="toc hide-on-mobiles" id="toc_div">
+        <h5>本文目录</h5>
+        <ol id="toc" data-toc="div.container" data-toc-headings="h2,h3,h4"></ol>
+    </div>
+    <script type="text/javascript" src="{{site.baseurl}}/js/jquery.toc.js"></script>
+    <script type="text/javascript">
+    $("#toc").toc({content: "article", headings: "h2,h3,h4"});
+
+    //get the TOC div 
+    var toc_div = document.getElementById("toc_div");;
+
+    //获取页面的最小高度，无传入值则默认为600像素
+    min_height =toc_div.offsetTop;
+    //为窗口的scroll事件绑定处理函数
+    window.onscroll=function(){
+        //控制浮动
+        var s=document.body.scrollTop;
+        if( s > min_height){
+            toc_div.style.position="fixed";
+            toc_div.style.top="10px";
+        }else{
+            toc_div.style.position="relative";
+        };
+    };
+
+
+    </script>
   </aside>
 </div>

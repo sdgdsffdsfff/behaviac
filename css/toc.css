@@ -1,53 +1,15 @@
-/*
- * jQuery Table of Content Generator for Markdown v1.0
- *
- * https://github.com/dafi/tocmd-generator
- * Examples and documentation at: https://github.com/dafi/tocmd-generator
- *
- * Requires: jQuery v1.7+
- *
- * Copyright (c) 2013 Davide Ficano
- *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
- */
+---
+---
 
-#toc, .toc, .mw-warning {
-    background-color: #F9F9F9;
-    border: 1px solid #AAAAAA;
-    font-size: 95%;
-    padding: 5px;
-}
-#toc h2, .toc h2 {
-    border: medium none;
-    display: inline;
-    font-size: 100%;
-    font-weight: bold;
+.toc{
+    margin: 0;
     padding: 0;
-}
-#toc #toctitle, .toc #toctitle, #toc .toctitle, .toc .toctitle {
-    text-align: center;
-}
-#toc ul, .toc ul {
-    list-style-image: none;
-    list-style-type: none;
-    margin-left: 0;
-    padding-left: 0;
-    text-align: left;
-}
-#toc ul ul, .toc ul ul {
-    margin: 0 0 0 2em;
-}
-#toc .toctoggle, .toc .toctoggle {
-    font-size: 94%;
+    font-size: 10px;
+    border-top: 1px #000 solid;
 }
 
-#toc ul li {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-#toc-container {
-	margin-bottom: 10px;
+.toc ol{
+    margin: 0px;
+    padding: 0;
+    font-size: 10;
 }
