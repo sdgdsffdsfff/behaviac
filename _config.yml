@@ -4,7 +4,7 @@ redcarpet:
 
 highlighter: pygments
 
-baseurl: http://tencentopen.github.io/behaviac/behaviac
+baseurl: /behaviac
 permalink: /:title/
 excerpt_separator: ""
 

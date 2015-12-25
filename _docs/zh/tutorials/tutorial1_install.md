@@ -43,13 +43,13 @@ CPU：Intel I5 2.93G或更高配置
 
 运行BehaviacSetup_***.exe安装包文件，选择安装路径（推荐直接使用默认路径），安装behaviac相关套件。安装完成后，会在桌面生成编辑器的快捷方式，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial1/designerIcon.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial1/designerIcon.png)
 
 图1 安装后桌面的编辑器图标
 
 另外，在系统的“开始”菜单中生成了一些游戏demo和文档的菜单项。其中，BattleCityDemo是采用Unity引擎实现的小游戏（C#版），LaunchCocosGame是采用Cocos引擎实现的小游戏（C++版），LaunchSDLDemo是采用SDL库实现的小游戏（C++版），如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial1/startmenu.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial1/startmenu.png)
 
 图2 开始菜单中demo和文档菜单项
 

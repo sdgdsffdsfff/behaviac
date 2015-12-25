@@ -14,7 +14,7 @@ lang: zh
 ### 1 新建工作区
 打开编辑器，点击菜单项“文件”->“新建工作区”新建一个自己的工作区，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/newWorkspace.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/newWorkspace.png)
 
 图1.1 新建工作区
 
@@ -22,7 +22,7 @@ lang: zh
 
 点击确认，创建完之后，整个编辑器几乎是空的，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/emptyEditor.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/emptyEditor.png)
 
 图1.2 初始的编辑器
 
@@ -30,19 +30,19 @@ lang: zh
 
 从工具栏中点击“新建行为树”按钮，开始创建我们的第一棵行为树，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/newBehavior.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/newBehavior.png)
 
 图2.1 新建行为树
 
 创建后，将这棵行为树命名为“first_behavior”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/firstBehavior.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/firstBehavior.png)
 
 图2.2 第一棵行为树
 
 从图2.2中可以看出这棵行为树只有一个根节点，鼠标点击该根节点后，可以看到它的Agent类型只有一个`behaviac::Agent`可以选择，但是不要选它，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/rootAgentType.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/rootAgentType.png)
 
 图2.3 根节点的Agent类型
 
@@ -50,13 +50,13 @@ lang: zh
 
 为了让行为树可以描述一个Agent类型，首先需要创建一个我们的Agent子类，通过菜单项“视图”->“元信息浏览”（或通过快捷键Ctrl+M）打开元信息浏览器，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/metaBrowser.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/metaBrowser.png)
 
 图3.1 元信息浏览器
 
 点击元信息浏览器右上角的“新建”按钮，开始创建我们的第一个Agent子类，命名为`FirstAgent`，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/newAgent.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/newAgent.png)
 
 图3.2 新建Agent子类
 
@@ -64,31 +64,31 @@ lang: zh
 
 点击元信息浏览器中间靠右的“新建”按钮，为`FirstAgent`类添加第一个成员属性，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/createProperty.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/createProperty.png)
 
 图3.3 开始添加成员属性
 
 为这个属性命名为`FirstProperty`，并设置为int类型，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/createFirstProperty.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/createFirstProperty.png)
 
 图3.4 新建成员属性
 
 创建完之后，我们可以看到，`FirstAgent`类已经有了第一个成员属性`FirstProperty`，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/firstProperty.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/firstProperty.png)
 
 图3.5 第一个成员属性
 
 类似的，在元信息浏览器中，选择“成员类型”为“Method”，为`FirstAgent`类添加第一个成员方法，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/createMethod.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/createMethod.png)
 
 图3.6 新建成员方法
 
 创建完之后，我们可以看到，`FirstAgent`类已经有了第一个成员方法`FirstMethod`，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/firstMethod.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/firstMethod.png)
 
 图3.7 第一个成员方法
 
@@ -100,25 +100,25 @@ lang: zh
 
 鼠标选中根节点，为其设置Agent类型，这时，我们可以看到有了`FirstProperty`可供选择，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/selectAgentType.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/selectAgentType.png)
 
 图4.1 设置Agent类型
 
 编辑该行为树，通过鼠标将左边的节点列表中的节点拖拽到主视口中，为该行为树添加一个序列节点、一个条件节点和一个动作节点，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/editBehavior.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/editBehavior.png)
 
 图4.2 为行为树添加节点
 
 为条件节点选择刚才创建的属性`FirstProperty`，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/editCondition.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/editCondition.png)
 
 图4.3 设置条件节点
 
 为动作节点选择刚才创建的方法`FirstMethod`，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/editAction.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/editAction.png)
 
 图4.4 设置动作节点
 
@@ -133,19 +133,19 @@ lang: zh
 
 开始导出C++源码文件，点击工具栏中的“导出行为树”按钮，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/startExportingBehaviors.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/startExportingBehaviors.png)
 
 图5.1 开始导出C++源码文件
 
 弹出导出行为树设置窗口，我们看到“first_behavior”是一棵“有错误的行为树”，暂时忽略这个错误，直接选择下面的“导出设置”，只选择“C++ Behavior Export”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/exportBehaviors.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/exportBehaviors.png)
 
 图5.2 导出C++源码文件
 
 点击“C++ Behavior Export”最右侧的“...”按钮，弹出如下图所示的配置窗口：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/exportCppSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/exportCppSettings.png)
 
 图5.3 导出C++源码文件设置
 
@@ -237,37 +237,37 @@ int FirstAgent::FirstMethod()
 
 这里我们假设生成的元信息文件名为“firstagent.xml”，并放在meta文件夹中，meta文件夹放在这个工作区的路径中，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/metaPath.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/metaPath.png)
 
 图6.1 元信息文件
 
 回到编辑器中，点击菜单项“文件”->“编辑工作区”，为当前的工作区设置“元信息位置”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/editWorkspaceMeta.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/editWorkspaceMeta.png)
 
 图6.2 设置元信息位置
 
 点击工具栏中的“重新加载”按钮，重新加载整个工作区，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/refreshWorkspace.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/refreshWorkspace.png)
 
 图6.3 重新加载工作区
 
 重新加载整个工作区之后，再次打开我们的第一棵行为树“first_behavior”，然后点击主视口中右上角的“检查错误”按钮，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/startCheckingErrors.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/startCheckingErrors.png)
 
 图6.4 检查错误
 
 这个时候，我们发现该行为树已经没有任何错误，可以导出了，这里我们只导出XML行为树，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/exportXMLBehaviors.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/exportXMLBehaviors.png)
 
 图6.5 开始导出XML行为树
 
 导出结束后，在工作区的导出路径下，导出了我们的第一棵行为树，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial3/xmlBehavior.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial3/xmlBehavior.png)
 
 图6.6 第一棵导出的XML行为树
 

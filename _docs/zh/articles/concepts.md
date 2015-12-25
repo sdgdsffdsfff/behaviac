@@ -9,17 +9,17 @@ lang: zh
 ---
 
 开发游戏AI的目标之一就是要找到一个简单，可扩展的编辑逻辑的方案，从而加速游戏开发的迭代速度。在“行为系统图”中，行为系统（Behavior System）响应游戏中的各种信息，进行决策以挑选接下来将要执行的行动并且监控该行动的执行。
-![行为系统图]({{site.baseurl}}/img/concepts/architecture.png)
+![行为系统图]({{site.url}}{{site.baseurl}}/img/concepts/architecture.png)
 
 知识模型（Knowledge Model）是对游戏世界中各种信息的抽象。
 
 在行为系统中，有限状态机（FSM，Finite State Machine）最为经典，FSM模型的优势之一是简单。但是FSMs需要用转换（Transition）连接状态（State），因此，状态（State）失去了模块性（Modularity）。
 
-![FSM]({{site.baseurl}}/img/concepts/fsm.png)
+![FSM]({{site.url}}{{site.baseurl}}/img/concepts/fsm.png)
 
 ## 什么是行为树 ##
 行为树，英文是Behavior Tree，简称BT，是由行为节点组成的树状结构：
-![什么是行为树]({{site.baseurl}}/img/concepts/whatisbt.png)
+![什么是行为树]({{site.url}}{{site.baseurl}}/img/concepts/whatisbt.png)
 
 对于FSM，每个节点表示一个状态，而对于BT，每个节点表示一个行为。同样是由节点连接而成，BT有什么优势呢？
 
@@ -27,7 +27,7 @@ lang: zh
 
 由此可见，BT的主要优势之一就是其更好的封装性和模块性，让游戏逻辑更直观，开发者不会被那些复杂的连线绕晕。
 ## 一个例子 ##
-![例子1]({{site.baseurl}}/img/concepts/example1.png)
+![例子1]({{site.url}}{{site.baseurl}}/img/concepts/example1.png)
 上图中，3号Sequence节点有3个子节点，分别是：
  - 4号Condition节点 
  - 5号Action节点 
@@ -54,7 +54,7 @@ lang: zh
 
 当节点持续返回“运行”的时候，BT树的内部“知道”该节点是在持续“运行”的，从而在后续的执行过程中“直接”继续执行该节点，而不需要从头开始执行，直到该运行状态的节点返回“成功”或“失败”，从而继续后续的节点。
 ## 另一个例子 ##
-![例子2]({{site.baseurl}}/img/concepts/example2.png)
+![例子2]({{site.url}}{{site.baseurl}}/img/concepts/example2.png)
 如上图，为了清晰说明运行状态，来看另一个例子。在这个例子中，Condition，Action1，Action3是3个函数。
 
  - 0号节点是个Loop节点，循环3次。
@@ -104,22 +104,22 @@ behaviac::EBTStatus CBTPlayer::Action3()
 
 执行结果会是个什么样的输出呢？
 
-![结果]({{site.baseurl}}/img/concepts/result.png)
+![结果]({{site.url}}{{site.baseurl}}/img/concepts/result.png)
 
 第1帧：
 2号节点Condition返回“成功”，继续执行3号Action1节点，同样返回“成功”，接续执行4号Action3，返回“运行”。
 
-![frame1]({{site.baseurl}}/img/concepts/frame1.png)
+![frame1]({{site.url}}{{site.baseurl}}/img/concepts/frame1.png)
 
 第2帧：
 由于上一帧4号Action3返回“运行”，直接继续执行4号Action3节点。
 
-![frame2]({{site.baseurl}}/img/concepts/frame2.png)
+![frame2]({{site.url}}{{site.baseurl}}/img/concepts/frame2.png)
 
 第3帧：
 由于上一帧4号Action3返回“运行”，直接继续执行4号Action3节点。
 
-![frame3]({{site.baseurl}}/img/concepts/frame3.png)
+![frame3]({{site.url}}{{site.baseurl}}/img/concepts/frame3.png)
 
 同样需要注意的是，2号Condition节点不再被执行。
 
@@ -127,7 +127,7 @@ behaviac::EBTStatus CBTPlayer::Action3()
 第4帧：
 Loop的第2次迭代开始，就像第1帧的执行。
 
-![frame4]({{site.baseurl}}/img/concepts/frame4.png)
+![frame4]({{site.url}}{{site.baseurl}}/img/concepts/frame4.png)
 
 ## 再进阶 ##
 又有聪明的读者要问了，持续返回“运行”状态的节点固然优化了执行，但其结果就像“阻塞”了BT的执行一样，如果发生了其他“重要”的事情需要处理怎么办？
@@ -135,12 +135,12 @@ Loop的第2次迭代开始，就像第1帧的执行。
 在behaviac里至少有3种办法。
 ### 使用Parallel节点 ###
 
-![parallel]({{site.baseurl}}/img/concepts/parallel.png)
+![parallel]({{site.url}}{{site.baseurl}}/img/concepts/parallel.png)
 
 如上图，可以使用Parallel节点来“一边检查条件，一边执行动作”，该条件作为该动作的“Guard”条件。当该条件失败的时候来结束该处于持续运行状态的动作节点。
 ### 使用SelectorMonitor和WithPrecondition节点 ###
 
-![selectormonitor]({{site.baseurl}}/img/concepts/selectormonitor.png)
+![selectormonitor]({{site.url}}{{site.baseurl}}/img/concepts/selectormonitor.png)
 
  - SelectorMonitor是一个动态的选择节点，和Selector相同的是，它选择第一个success的节点，但不同的是，它不是只选择一次，而是每次执行的时候都对其子节点进行选择。如上图所示，假若它选择了下面有True条件的那个节点（节点7）并且下面的1号Sequence节点在运行状态，下一次它执行的时候，它依然会去检查上面的那个8号条件的子树，如果该条件为真，则终止下面的运行节点而执行9号节点。
  - WithPrecondition有precondition子树和action子树。只有precondition子树返回success的时候，action子树才能够被执行。
@@ -162,10 +162,10 @@ Loop的第2次迭代开始，就像第1帧的执行。
 
 上文**另一个例子**中“demo_running”的例子在安装包里也有提供，安装后在安装目录里可以用vs2013打开“.\ build\vs2013\behaviac.sln”（vs2008，vs2010，gmake，linux等分别对应不同的平台或编译器）查看源码，编译运行，自行尝试体会。
 
-![demo_running_project]({{site.baseurl}}/img/concepts/demo_running_project.png)
+![demo_running_project]({{site.url}}{{site.baseurl}}/img/concepts/demo_running_project.png)
 
 请指定demo_running作为参数或不指定任何参数运行demo_running：
 
-![demo_running_exec]({{site.baseurl}}/img/concepts/demo_running_exec.jpg)
+![demo_running_exec]({{site.url}}{{site.baseurl}}/img/concepts/demo_running_exec.jpg)
 
 [源码及示例下载地址](https://github.com/TencentOpen/behaviac)

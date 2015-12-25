@@ -11,13 +11,13 @@ lang: zh
 ## 导出和使用C#行为树
 - 在“导出行为树”对话框中，选择“C# Behavior Exporter”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/exportCs.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/exportCs.png)
 
 图1 导出C#行为树
 
 - 点击上图中右侧的“…”设置按钮，在弹出的“C#导出设置”对话框中设置导出文件所在的位置，如图2所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/csExportSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/csExportSettings.png)
 
 图2 导出C#的设置
 
@@ -26,7 +26,7 @@ lang: zh
  - `behaviors`文件夹含有`generated_behaviors.cs`及其他单个的行为树`.cs`文件（如果没有勾选“导出统一文件？”，则对每一棵行为树都会生成独立的`.cs`文件）。
  - `types`文件夹中含有`agentproperties.cs`（为`Agent`类定制的属性和方法，会扩展在该文件中）、`customizedtypes.cs`（自定义的枚举和结构体类型，会生成在这个文件中）以及其他的`Agent`子类的文件（这些文件是为添加的`Agent`子类自动生成的`.cs`文件，需要程序员补充代码进一步实现这些`Agent`子类的逻辑），这些自动生成的文件都需要包含到自己的游戏项目中。
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/exportedCsFiles.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/exportedCsFiles.png)
 
 图3 导出的C#文件
 

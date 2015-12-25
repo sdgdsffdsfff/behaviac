@@ -11,7 +11,7 @@ lang: zh
 ## C++元信息的注册和导出
 behaviac组件的基本运作机制就是在运行时端（C++）和编辑器通过元信息进行交互，如图1所示。其中，元信息里面包含了类自身的描述、属性、方法及类的实例等。
 
-![]({{site.baseurl}}/img/overview/meta.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/meta.png)
 
 图1 基于元信息的编辑器和运行时端的交互
 

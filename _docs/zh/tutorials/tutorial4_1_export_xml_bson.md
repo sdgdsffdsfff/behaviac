@@ -13,7 +13,7 @@ lang: zh
 ### 导出和使用XML/BSON行为树
 - 在编辑器中导出整个工作区文件，在“导出行为树”对话框中，勾选“Xml Behavior Exporter”或“Bson Behavior Exporter”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/exportXMLBson.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/exportXMLBson.png)
 
 图1 导出XML/BSON行为树
 

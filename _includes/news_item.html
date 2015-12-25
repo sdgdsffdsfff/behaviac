@@ -1,6 +1,6 @@
 <article>
   <h2>
-    <a href="{{site.baseurl}}{{ post.url }}">
+    <a href="{{site.url}}{{site.baseurl}}{{ post.url }}">
       {{ post.title }}
     </a>
   </h2>
@@ -22,7 +22,7 @@
     {{ post.content  | strip_html }} 
     <br/>
   </div>
-  <a href="{{site.baseurl}}{{post.url}}">更多>></a>
+  <a href="{{site.url}}{{site.baseurl}}{{post.url}}">更多>></a>
 
 
 

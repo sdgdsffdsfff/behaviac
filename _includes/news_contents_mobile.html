@@ -11,7 +11,7 @@
     {% assign posts = site.categories.faq | where:"lang", page.lang %}
       {% for post in posts %}
           <li class="{% if page.title == post.title %}current{% endif %}">
-            <option value="{{site.baseurl}}{{ post.url }}"> {{ post.title }}</option>
+            <option value="{{site.url}}{{site.baseurl}}{{ post.url }}"> {{ post.title }}</option>
           </li>
       {% endfor %}
   </select>

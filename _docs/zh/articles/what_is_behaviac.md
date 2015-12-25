@@ -110,6 +110,6 @@ behaviac作为游戏AI的开发框架组件，有编辑器和运行时两个部�
  - 支持扩展节点类型
 
 ----------------------------
-<a href="{{site.baseurl}}/docs/zh/articles/overview/">可以继续阅读behaviac概述 &rarr;</a>
+<a href="{{site.url}}{{site.baseurl}}/docs/zh/articles/overview/">可以继续阅读behaviac概述 &rarr;</a>
 
 

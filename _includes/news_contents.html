@@ -2,7 +2,7 @@
   <aside>
     <ul>
       <li class="{% if page.title == 'FAQ' %}current{% endif %}">
-        <a href="{{site.baseurl}}{{site.t[page.lang].faq.url}}">{{site.t[page.lang].allIssues}}</a>
+        <a href="{{site.url}}{{site.baseurl}}{{site.t[page.lang].faq.url}}">{{site.t[page.lang].allIssues}}</a>
       </li>
     </ul>
     <h4>{{site.t[page.lang].lastIssues}}</h4>
@@ -10,7 +10,7 @@
       {% assign posts = site.categories.faq | limit:10 | where:"lang", page.lang %}
       {% for post in posts %}
           <li class="{% if page.title == post.title %}current{% endif %}">
-            <a href="{{site.baseurl}}{{ post.url }}"> {{ post.title }}</a>
+            <a href="{{site.url}}{{site.baseurl}}{{ post.url }}"> {{ post.title }}</a>
           </li>
       {% endfor %}
       

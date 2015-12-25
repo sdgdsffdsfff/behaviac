@@ -18,7 +18,7 @@ lang: zh
 ### 2 项目设置
 - 该项目依赖如下DLL，如下所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial9/referencedDlls.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial9/referencedDlls.png)
 
 图2.1 引用的Dll
 
@@ -26,7 +26,7 @@ lang: zh
 - 如果自己的插件只是对ExamplePlugin修改了相应的名字，并且该插件项目和ExamplePlugin的所在位置一样，即位于tools/Designer/Plugins中，那么对BehaviacDesignerBase.dll的引用以及产生DLL的输出路径不需要改动即可。否则，如果有编译错误或者运行时不能看到添加的节点，请确保上面步骤1和2的设置都是正确的。
 - 打开编辑器后，正常情况下新加的节点ExampleNode将出现在动作组下，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial9/actionFolder.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial9/actionFolder.png)
 
 图2.2 动作分组中的节点
 

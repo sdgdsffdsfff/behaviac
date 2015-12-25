@@ -12,7 +12,7 @@ lang: zh
 
 下载完behaviac组件的全部源码后，整个组件的目录结构如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial16/sourceFolder.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial16/sourceFolder.png)
 
 图1 behaviac组件的目录结构
 
@@ -25,19 +25,19 @@ lang: zh
 
 在Windows平台，如果是使用VS来管理项目的，需要在VS的项目“Property Pages”->“Configuration Properties”->“C/C++”->“General”中的“Additional Include Directories”项中添加behaviac组件头文件（即图1中的inc文件夹）所在的路径，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial16/includeHeaderSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial16/includeHeaderSettings.png)
 
 图2 头文件的路径设置
 
 再在VS的项目“Property Pages”->“Configuration Properties”->“Linker”->“General”中的“Additional Library Directories”项中添加自己编译出的behaviac lib文件（即图1中的lib文件夹）所在的路径，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial16/includeLibSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial16/includeLibSettings.png)
 
 图3 lib文件的路径设置
 
 最后在VS的项目“Property Pages”->“Configuration Properties”->“Linker”->“Input”中的“Additional Dependencies”项中添加自己编译出的behaviac lib文件，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial16/addLibSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial16/addLibSettings.png)
 
 图4 lib文件的添加设置
 

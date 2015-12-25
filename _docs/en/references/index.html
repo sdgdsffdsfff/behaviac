@@ -13,7 +13,7 @@ isIndex: true
 {% for post in posts %}
 {% if post.isIndex ==  null and post.categories == page.categories %}
 <div class="uint docs_list">
-    <a href="{{site.baseurl}}{{ post.url }}" class="four-fifths center-on-mobiles">
+    <a href="{{site.url}}{{site.baseurl}}{{ post.url }}" class="four-fifths center-on-mobiles">
       {{ post.title }}
     </a>
     <span class="docs_list_author hide-on-mobiles">

@@ -13,7 +13,7 @@ behaviac中间件是我们对行为树、有限状态机等AI范式的一种整�
 
 编辑器和运行时之间通过元信息（Meta）进行交互，注意元信息流动的双向箭头，表示编辑器和运行时库双方都可以导出元信息，如下图所示：
 
-![]({{site.baseurl}}/img/overview/meta.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/meta.png)
 
 图1 基于元信息的编辑器和运行时端的交互
 
@@ -26,7 +26,7 @@ behaviac中间件是我们对行为树、有限状态机等AI范式的一种整�
 编辑器首次打开后为会根据操作系统的语言环境配置自动设置为中文版或英文版的界面，若需更改语言显示，可以依次选择菜单项“文件（File）”->“设置（Settings）”，在弹出的设置对话框中，选择需要的“语言（Language）”并点击“确认（OK）”后，退出并重新打开编辑器，则转为需要语言的界面。
 编辑器主要分为几个部分：菜单和工具栏、行为树文件区、节点区、主视口和属性表等，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/designerMainWindow.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/designerMainWindow.png)
 
 图2.1 编辑器主界面
 
@@ -49,7 +49,7 @@ behaviac中间件是我们对行为树、有限状态机等AI范式的一种整�
 
 - 点击菜单“文件”->“新建工作区”，弹出新建工作区对话框，如下图所示。
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/newWorkspace.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/newWorkspace.png)
 
 图2.2.1 新建工作区
 
@@ -62,14 +62,14 @@ behaviac中间件是我们对行为树、有限状态机等AI范式的一种整�
 在安装路径下有提供的例子供参考，例如默认安装路径下的“C:\Program Files (x86)\behaviac\integration\BattleCityDemo\Assets\BTWorkspace\BattleCity.workspace.xml”，或者从菜单中的“文件”->“最近打开的工作区”列表中选择最近打开过的工作区。
 behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo，可以通过编辑器中的菜单项“帮助”->“控制说明” 进入，然后点击快速打开所需的单元测试或游戏Demo所用到的工作区，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/demoUnittest.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/demoUnittest.png)
 
 图2.2.2 快速打开单元测试和游戏Demo的工作区
 
 #### 2.2.3 编辑工作区
 点击菜单“文件”->“编辑工作区”，可以修改该工作区的设置（名字、元数据位置、源位置、导出位置等），如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/editWorkspace.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/editWorkspace.png)
 
 图2.2.3 编辑工作区
 
@@ -87,7 +87,7 @@ behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo
 - 通过菜单项“文件”->“导出全部”项（或者快捷键Ctrl+Shift+T）导出工作区中的所有行为树文件。
 - 目前支持4种文件格式的导出，即XML、BSON、C++和C#，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/exportBehaviors.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/exportBehaviors.png)
 
 图2.2.6.1 导出行为树
 
@@ -95,7 +95,7 @@ behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo
 导出后，将在指定的导出路径下生成behaviac_generated目录，里面又包含了behaviors和types两个子目录，需要将这两个子目录里面的所有文件全部包含到自己的项目中去。
 注意：对于导出C++文件，如果不添加Agent子类的.h头文件，那么需要注意将behaviors和types两个子目录中生成的头文件放在项目代码include “yourAgent.h”之后，以确保Agent子类先被包含进来，否则会有编译错误。
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/exportSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/exportSettings.png)
 
 图2.2.6.2 C++/C#的导出设置
 
@@ -105,13 +105,13 @@ behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo
 #### 2.2.7 连接游戏
 - 从开始菜单中，启动小游戏BattleCityDemo，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/battleCityDemo.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/battleCityDemo.png)
 
 图2.2.7.1 Battle City Demo
 
 - 点击游戏主界面右上角的“Show Levels”按钮，可以切换不同的关卡，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/selectGameLevel.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/selectGameLevel.png)
 
 图2.2.7.2 选择关卡
 
@@ -119,20 +119,20 @@ behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo
 - 点击编辑器工具栏中的“连接游戏”按钮或通过菜单项“文件”->“连接游戏”（或通过快捷键Ctrl+L），开始连接游戏。默认的，一般无需更改服务器IP和端口号，如图2.2.7.3所示。
 注意：有时候可能会发现连不上游戏，很可能是原来的端口号已被占用，可以尝试在运行时端的端口号60636改为其他值，然后相应的修改图2.2.7.3中的端口号，尝试重新连接游戏。
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/connectGame.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/connectGame.png)
 
 图2.2.7.3 连接游戏
 
 - 连接成功后，编辑器从编辑模式切换到连接模式，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/connectMode.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/connectMode.png)
 
 图2.2.7.4 连接模式
 
 - 时间轴（Timeline）：默认位于编辑器最上方，用于表示当前帧相关的信息。
 - 实例列表：列出了游戏中所有的对象实例，双击实例节点后可以开始跟踪调试选中的实例，右键单击实例节点弹出如下菜单，如图2.2.7.5所示。其中“调试”跟双击节点的作用一致，开始跟踪选中的实例，主视口会高亮显示行为树的执行路径；“查看属性”用于跟踪当前选中实例的所有属性的变化，编辑器会弹出实例的属性列表。
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/debugInstance.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/debugInstance.png)
 
 图2.2.7.5 实例右键菜单
 
@@ -145,14 +145,14 @@ behaviac组件提供了C++和C#两种编程语言的单元测试以及游戏Demo
 - 点击菜单或工具栏中的“断开游戏”按键，断开与游戏端的连接，回到编辑模式。
 - 默认弹出如下对话框，保存之前连接模式下调试的相关数据。
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/saveDump.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/saveDump.png)
 
 图2.2.8.1 保存dump数据
 
 - 点击菜单或工具栏中的“分析导出文件”按键，选择打开上一步导出的数据文件，编辑器进入到分析模式。
 - 分析模式的界面布局跟连接模式类似，但是可以通过时间轴里面的播放按钮开始重现连接过程中的情况，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial2/analyzeDump.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial2/analyzeDump.png)
 
 图2.2.8.2 分析dump数据
 

@@ -11,13 +11,13 @@ lang: zh
 ## 导出和使用C++行为树
 - 在“导出行为树”对话框中，选择“C++ Behavior Exporter”，如下图所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/exportCpp.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/exportCpp.png)
 
 图1 导出C++行为树
 
 - 点击上图中右侧的“…”设置按钮，在弹出的“C++导出设置”对话框中设置生成文件所在的位置，并可以添加项目中游戏类（从Agent类派生而来）所在的.h头文件，添加的头文件将会被包含在生成的.cpp文件中，如图2所示：
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/cppExportSettings.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/cppExportSettings.png)
 
 图2 导出C++的设置
 
@@ -26,7 +26,7 @@ lang: zh
  - `behaviors`文件夹中含有`generated_behaviors.h`及其他单个的行为树`.h`文件（如果没有勾选“导出统一文件？”，则对每一棵行为树都会生成独立的.h文件）。
  - `types`文件夹中含有`agentproperties.h`（为Agent类定制的属性和方法，会扩展在该文件中）、`customizedtypes.h/customizedtypes.cpp`（自定义的枚举和结构体类型，会生成在这两个文件中）以及其他自定义`Agent`子类的文件（这些文件是为添加的`Agent`子类自动生成的`.h/.cpp`文件，需要程序员补充代码进一步实现这些`Agent`子类的逻辑）。
 
-![]({{site.baseurl}}/img/tutorials/tutorial4/exportedCppFiles.png)
+![]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial4/exportedCppFiles.png)
 
 图3 导出的C++文件
 

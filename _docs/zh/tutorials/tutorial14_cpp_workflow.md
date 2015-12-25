@@ -66,7 +66,7 @@ bool InitPlayer(const char* pszTreeName)
  - Workspace::SetFilePath指定的是Workspace的导出路径，可以是绝对路径。当指定的是相对路径的时候，相对的是当前**工作路径**（一般都是运行程序所在目录）。
  - Agent::btload指定的是相对于Workspace::SetFilePath指定的路径的，没有扩展名的，可以有目录结构的层次化文件名，如“node_test/selector_loop_ut_7”，可以再编辑器里打开该行为树后，右键文件页选取“复制文件名”获取
 
-![copy_filepath]({{site.baseurl}}/img/tutorials/tutorial14/copy_filepath.png)
+![copy_filepath]({{site.url}}{{site.baseurl}}/img/tutorials/tutorial14/copy_filepath.png)
 
  - 例如：
     - 如果运行程序所在目录（或者VS里指定的工作路径$(TargetDir)）是"D:\Test\bin"

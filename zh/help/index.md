@@ -8,7 +8,7 @@ title: 帮助
 ###No.1 [QQ 群]
 如果你想通过QQ群获得即时的帮助或者信息反馈，你可以加入我们的QQ群<a href="http://jq.qq.com/?_wv=1027&k=bahF0B">433547396</a>。
 
-<img src="{{site.baseurl}}/img/join_qq_group_qr_code.png"/>
+<img src="{{site.url}}{{site.baseurl}}/img/join_qq_group_qr_code.png"/>
 <a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=d02dc4e77cb5e5eb98b9e4ac1d74c3dcbbe3b8091d41a51dec2c3e2aea0d8b0e"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="behaviac" title="behaviac"></a>
 
 ###No.2 [behaviac on GitHub](https://github.com/TencentOpen/behaviac)

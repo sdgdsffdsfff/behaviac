@@ -18,7 +18,7 @@ lang: zh
 
 依靠并行（Parallel）节点处理事件，需要把事件用条件的形式表达并且需要监控该条件，当该条件不满足的时候就退出。这种方式在概念上不太清晰，使用起来也比较繁琐。
 
-![]({{site.baseurl}}/img/overview/parallel.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/parallel.png)
 
 图1 并行节点
 
@@ -29,7 +29,7 @@ lang: zh
 - 选择监测节点是一个动态的选择节点，和选择（Selector）节点相同的是，它选择第一个返回成功的子节点，但不同的是，它不是只选择一次，而是每次执行时都对其子节点重新进行选择。
 - 监测分支节点有条件分支子树和动作分支子树。只有条件分支子树返回成功的时候，动作分支子树才能够被执行。
 
-![]({{site.baseurl}}/img/overview/selectormonitor.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/selectormonitor.png)
 
 图2 选择监测节点
 
@@ -41,25 +41,25 @@ lang: zh
 
 - 首先，在编辑器中为AgentNodeTest类添加了event_test_int_bool(int val_int, bool val_bool)这个任务（Task）或者更形象的称之为“接口”（Interface），如图3.1所示。
 
-![]({{site.baseurl}}/img/overview/task.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/task.png)
 
 图3.1 为Agent类创建一个任务
 
 - 其次，为行为树event_subtree_2添加一个任务节点，并作为根节点的第一个子节点，为该任务节点选择一个任务，这里我们直接选择event_test_int_bool，如图3.2所示。类似于编程语言中的函数参数为函数体的代码提供了局部变量，任务节点中的接口参数为当前的行为树提供了局部变量，这些局部变量可以根据需要用于该行为树所有子节点。
 
-![]({{site.baseurl}}/img/overview/settask.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/settask.png)
  
 图3.2 为行为树指定任务
 
 - 再次，将上面的行为树event_subtree_2通过鼠标拖拽到行为树event_ut_1中的第一个序列节点上，这样该序列节点就有了一个事件的附件，如图3.3所示。
 
-![]({{site.baseurl}}/img/overview/addevent.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/addevent.png)
  
 图3.3 为行为树添加事件
 
 - 然后，为该事件设置参数，如下图所示：
 
-	![]({{site.baseurl}}/img/overview/eventparam.png)
+	![]({{site.url}}{{site.baseurl}}/img/overview/eventparam.png)
 	
 	图3.4 为事件设置参数
 	
@@ -75,7 +75,7 @@ lang: zh
 
 另外需要补充说明的是，行为树event_subtree_2带有任务节点，我们也可以直接将该行为树拖拽到行为树event_ut_1中，如图3.5所示。
 
-![]({{site.baseurl}}/img/overview/eventsubtree.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/eventsubtree.png)
 
 图3.5 任务直接作为子树
 
@@ -83,6 +83,6 @@ lang: zh
 
 行为树的任务及其参数可以类比编程语言中的函数及其参数，因此event_test_int_bool这个“函数”有两个“形式参数”val_int和val_bool，而图3.6中所选择的5和true值就是event_test_int_bool函数执行时所用到的“实际参数”。
 
-![]({{site.baseurl}}/img/overview/subtreeparam.png)
+![]({{site.url}}{{site.baseurl}}/img/overview/subtreeparam.png)
 
 图3.6 为子树设置任务参数
