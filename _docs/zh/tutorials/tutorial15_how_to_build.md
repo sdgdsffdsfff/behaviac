@@ -41,3 +41,6 @@ lang: zh
 
  - `/integration/unity`是单元测试
  - `/integration/BattleCityDemo`是unity下的tank demo
+ 
+ 自己的项目需要将目录`/integration/unity/Assets/Scripts/behaviac/runtime`下的所有源码直接复制过去，或者在Unity编辑器中导入`/integration/behaviac.unitypackage`包（安装完发布的BehaviacSetup_***.exe后，会在安装目录下的/integration文件夹中找到behaviac.unitypackage包）。
+ 
