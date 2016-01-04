@@ -86,3 +86,6 @@ lang: zh
 ![]({{site.url}}{{site.baseurl}}/img/overview/subtreeparam.png)
 
 图3.6 为子树设置任务参数
+
+
+可以查看 [test/btunittest/NodeTest/EventUnitTest.cpp]({{site.repository}}/blob/master/test/btunittest/NodeTest/EventUnitTest.cpp)
