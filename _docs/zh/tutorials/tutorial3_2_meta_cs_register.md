@@ -32,6 +32,7 @@ C#中编写的游戏类从behaviac.Agent派生，并通过相关的Attribute来�
 
 ``` c#
 
+[behaviac.TypeMetaInfo()]
 public class AgentNodeTest : behaviac.Agent
 {
     [behaviac.MemberMetaInfo()]
