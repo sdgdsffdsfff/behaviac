@@ -14,7 +14,7 @@ lang: zh
 
 图1 等待节点
 
-需要配置“持续时间”，可以是常数、属性或方法的返回值，如下图所示：
+需要配置“持续时间”，可以是常数、属性或方法的返回值（必须是float类型），如下图所示：
 
 ![wait]({{ site.baseurl }}/img/references/wait_prop.png)
 
