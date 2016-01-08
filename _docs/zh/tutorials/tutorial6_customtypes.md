@@ -24,6 +24,16 @@ struct TypeTest_t
 
 ```
 
+上面的用法定义出来的TypeTest_t在导出的元信息中为值类型（也即在导出的元信息中其值IsRefType为false），值类型可以在编辑器中设置其成员属性。与值类型对应的是引用类型，引用类型不会导出其成员属性，在编辑器中也不用配置其成员属性。
+
+另外，宏DECLARE_BEHAVIAC_STRUCT也可以带2个参数，第一个参数为类型，第二个参数为true表示该类型用作为引用类型（也即导出元信息后其值IsRefType为true），否则不用第二个参数表示为值类型，如下代码所示：
+
+``` c++
+
+DECLARE_BEHAVIAC_STRUCT(TypeTest2_t, true);
+
+```
+
 - 在.cpp文件中，通过一系列宏注册该类或结构体自身的描述及其属性：
 
 ``` c++
