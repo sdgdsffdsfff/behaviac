@@ -12,11 +12,13 @@ lang: zh
 宏BEHAVIAC_RELEASE定义的时候是最终版，BEHAVIAC_RELEASE没有定义的时候是为开发版。开发版下诸如logging，socketing，热加载等开发功能是有效的。
 
 无论是Cpp还是C#版本，`BEHAVIAC_RELEASE`缺省下都是没有定义的。诸如logging，socketing，热加载等开发功能是有效的。
+可以通过behaviac::Config::IsLogging和behaviac::Config::IsSocketing来控制是否要Log到文件或是否与编辑器的连接。
 
 <div class="note info">
   <h5>BEHAVIAC_RELEASE缺省下都是没有定义的</h5>
 </div>
 特别需要指出的是在Cpp的Debug和Release下`BEHAVIAC_RELEASE`缺省下都是没有定义的。
+
 	- 3.2.18版本之前，Release下`BEHAVIAC_RELEASE`缺省的被定义了
 	- 3.2.18版本之后，`BEHAVIAC_RELEASE`缺省的都不被定义，Release下也不被定义。
 
