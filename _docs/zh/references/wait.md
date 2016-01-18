@@ -29,10 +29,10 @@ if (Workspace::GetInstance()->GetTimeSinceStartup() * 1000.0f - this->m_start >=
 }
 ```
 
-所以，只有保证Workspace::GetInstance()->GetTimeSinceStartup()正确的返回从游戏启动到现在的总时间，等待节点才能正确工作！
+因此，只有保证Workspace::GetInstance()->GetTimeSinceStartup()正确的返回从游戏启动到现在的总时间，等待节点才能正确工作。
 
 该总时间需要通过Workspace::GetInstance()->SetTimeSinceStartup()设置，可以在自己的游戏更新函数中调用该函数。
 
-注意：在C#代码中相应的接口需改为Workspace.Instance.TimeSinceStartup，默认实现方式是返回Unity的系统时间Time.realtimeSinceStartup，一般情况无需自己重新实现，直接使用即可，不用类似C++的接口每帧更新时设置Workspace.Instance.TimeSinceStartup。
+注意：在C#代码中相应的接口需改为Workspace.Instance.TimeSinceStartup，默认实现方式是返回Unity的系统时间Time.realtimeSinceStartup，一般情况无需自己重新实现，直接使用即可，不用类似C++的接口每帧更新时调用Workspace.Instance.TimeSinceStartup为其赋值。
 
 具体的执行逻辑可以查看[behaviortree/nodes/actions/wait.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/actions/wait.cpp)
