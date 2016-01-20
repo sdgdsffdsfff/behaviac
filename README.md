@@ -1,1 +1,1 @@
-[Website](http://tencentopen.github.io/behaviac/)
+[Website](http://www.behaviac.com/)
