@@ -28,6 +28,7 @@ lang: zh
  * 无论windows平台还是其他平台，项目文件都生成到目录cmake_binary
  * 项目文件生成到目录cmake_binary，根据选用的build tool chain（vs2013，make，etc.）打开相应目录的项目文件或运行make等进行构建
  * .a,.lib,.dll,.exe等被生成到根目录的lib目录和bin目录
+ * 运行build目录下的cmake_generate_projects.bat/cmake_generate_projects.sh生成的项目配置(mvsc和linxu)包含了Debug和Release，请根据需要构建Debug或Release版本
 
 
 ## Unity
