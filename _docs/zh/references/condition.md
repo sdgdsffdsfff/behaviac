@@ -26,6 +26,6 @@ lang: zh
 
 图2 条件节点的属性
 
-条件节点没有提供取反的属性。如果需要取反，请用《[非（Not）节点]({{ site.baseurl }}/docs/zh/references/not/)》来装饰。
+条件节点没有提供取反的属性。如果需要取反，请用《[非（Not）节点]({{ site.baseurl }}/docs/zh/references/decorator/)》来装饰。
 
 具体的执行逻辑可以查看[behaviortree/nodes/conditions/condition.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/conditions/condition.cpp)
