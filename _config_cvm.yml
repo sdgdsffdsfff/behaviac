@@ -5,15 +5,15 @@ redcarpet:
 highlighter: pygments
 
 # baseurl: /behaviac
-baseurl: "/behaviac" 
+baseurl: "" 
 permalink: /:title/
 excerpt_separator: ""
 
 
 google_analytics_id: UA-11132649-2
 
-# url: //www.behaviac.com
-url: http://tencentopen.github.io
+# url: http://tencentopen.github.io
+url: //www.behaviac.com
 
 repository: https://github.com/TencentOpen/behaviac
 help_url: https://github.com/TencentOpen/behaviac

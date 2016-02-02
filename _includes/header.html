@@ -20,7 +20,6 @@
 </header>
 
 <script src="{{site.url}}{{site.baseurl}}/js/jquery.js"></script>
-<script src="{{site.url}}{{site.baseurl}}/js/lunr.zh.min.js"></script>
 <script src="{{site.url}}{{site.baseurl}}/search.js"></script>
 <script>
 var search_url="";
@@ -52,16 +51,16 @@ $(function() {
       // alert(val);
       switch(val){
         case 'google':
-          search_url="https://www.google.com.hk/search?oq=site%3Atencentopen.github.io+%E8%A1%8C%E4%B8%BA%E6%A0%91&aqs=chrome..69i57j69i58j69i60l3.1759j0j9&sourceid=chrome&es_sm=122&ie=UTF-8&q=site%3Atencentopen.github.io+";
+          search_url="https://www.google.com.hk/search?oq=site%3Abehaviac.com+%E8%A1%8C%E4%B8%BA%E6%A0%91&aqs=chrome..69i57j69i58j69i60l3.1759j0j9&sourceid=chrome&es_sm=122&ie=UTF-8&q=site%3Abehaviac.com+";
           break;
           case 'baidu':
-           search_url="https://www.baidu.com/s?rsv_spt=1&rsv_iqid=0xba9f3ad7000132b3&issp=1&f=8&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_n=2&rsv_sug3=1&wd=site%3Atencentopen.github.io%20";
+           search_url="https://www.baidu.com/s?rsv_spt=1&rsv_iqid=0xba9f3ad7000132b3&issp=1&f=8&rsv_bp=0&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_n=2&rsv_sug3=1&wd=site%3Abehaviac.com%20";
            break;
            case 'sogou':
-           search_url="https://www.sogou.com/web?_asf=www.sogou.com&_ast=&w=01019900&p=40040100&ie=utf8&sut=753&sst0=1450258450607&lkt=0%2C0%2C0&query=site%3Atencentopen.github.io+";
+           search_url="https://www.sogou.com/web?_asf=www.sogou.com&_ast=&w=01019900&p=40040100&ie=utf8&sut=753&sst0=1450258450607&lkt=0%2C0%2C0&query=site%3Abehaviac.com+";
            break;
            case 'bing':
-           search_url="http://cn.bing.com/search?go=%E6%8F%90%E4%BA%A4&qs=n&form=QBLH&pq=site%3Atencentopen.github.io+%E8%A1%8C%E4%B8%BA%E6%A0%91&sc=0-0&sp=-1&sk=&cvid=E1AA7A8EEE60498B900ED46B0C16E98B&q=site%3Atencentopen.github.io+";
+           search_url="http://cn.bing.com/search?go=%E6%8F%90%E4%BA%A4&qs=n&form=QBLH&pq=site%3Abehaviac.com+%E8%A1%8C%E4%B8%BA%E6%A0%91&sc=0-0&sp=-1&sk=&cvid=E1AA7A8EEE60498B900ED46B0C16E98B&q=site%3Abehaviac.com+";
            break;
            default:
            search_url="";
@@ -211,9 +210,9 @@ gotoTop();
           <select class="search_engine " id="search_engine">
             <option value="mySite">本站</option>
             <option value="google">Google</option>
-            <option value="baidu">百度</option>
-            <option value="bing">Bing</option>
             <option value="sogou">搜狗</option>
+            <option value="bing">Bing</option>
+            <option value="baidu">百度</option>
 
           </select>
             <input class="query_input three-fifths" type="search" name="q" id="query_input" placeholder="Enter keywords..."/>

@@ -11,7 +11,7 @@
 	
 	<updated>{{site.time | date_to_xmlschema}}</updated>
 
-	<link href="http://tencentopen.github.io/behaviac/" rel="alternate" type="text/html" />
+	<link href="http://www.behavaic.com/" rel="alternate" type="text/html" />
 	<id>{{site.url}}{{site.baseurl}}/</id>
 	<link rel="self" type="application/atom+xml" href="{{site.url}}{{site.baseurl}}/rss.xml" />
 

@@ -3,4 +3,4 @@
 User-agent: *
 Disallow:
 
-SITEMAP: http://tencentopen.github.io/behaviac/sitemap.xml
+SITEMAP: http://www.behaviac.com/sitemap.xml
