@@ -11,7 +11,7 @@ kramdown:
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   input: GFM
 
-highlighter: pygments
+highlighter: rouge
 
 baseurl: ""
 # baseurl: "/behaviac" 

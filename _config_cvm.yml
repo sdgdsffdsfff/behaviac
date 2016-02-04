@@ -12,7 +12,7 @@ kramdown:
   input: GFM
 
 
-highlighter: pygments
+highlighter: rouge
 
 # baseurl: /behaviac
 baseurl: "" 
