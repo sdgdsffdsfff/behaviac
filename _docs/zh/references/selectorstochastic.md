@@ -1,7 +1,7 @@
 ---
 layout: docs_relatives
 title: 随机选择节点
-date: 2016-02-16 10:40:15 +0800
+date: 2016-02-16 11:25:15 +0800
 author: cainhuang
 permalink: /docs/zh/references/selectorstochastic/
 categories: [reference]
@@ -16,7 +16,7 @@ lang: zh
 
 例如，选择节点和随机选择节点都有A、B、C、D这四个子节点。对于选择节点，每次都是顺序的按A、B、C、D的顺序选择；而对于随机选择节点，有时按A、B、C、D的顺序选择，有时按B、A、D、C的顺序选择，又有时按A、C、D、B的顺序选择，等等。
 
-随机选择节点有随机数生成器可以配置，该随机数生成器是一个返回值为‘int’类型的函数，如下图所示：
+随机选择节点有随机数生成器可以配置，该随机数生成器是一个返回值为0.0到1.0之间的float类型的函数，如下图所示：
 
 ![selectorstochastic]({{ site.baseurl }}/img/references/selectorstochastic_prop.png)
 
