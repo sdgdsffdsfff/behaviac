@@ -84,19 +84,45 @@ lang: zh
 
 具体的执行逻辑可以查看[behaviortree/nodes/decorators/decoratorloopuntil.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorloopuntil.cpp)
 
+## 重复（Repeat）节点
+
+重复节点根据指定的次数，在一次更新过程中重复执行子节点然后返回，如下图所示：
+
+![repeat]({{ site.baseurl }}/img/references/repeat.png)
+
+图7 重复节点
+
+重复节点根据子节点的返回值相应的返回：
+
+- 如果子节点失败了，则返回失败。
+
+- 如果子节点一直运行，则本节点一直阻塞。但如果“子节点结束时作用”不为真，则不会阻塞。
+
+- 其他情况，则返回成功。
+
+- 本节点只能成功或失败，不会返回运行。
+
+重复节点可以配置重复执行的“次数”和“子节点结束时作用”，如下图所示：
+
+![repeat_prop]({{ site.baseurl }}/img/references/repeat_prop.png)
+
+图8 重复节点的属性
+
+具体的执行逻辑可以查看[behaviortree/nodes/decorators/decoratorrepeat.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorrepeat.cpp)
+
 ## 时间（Time）节点
 
 时间节点用于在指定的时间内，持续调用其子节点，如下图所示：
 
 ![time]({{ site.baseurl }}/img/references/time.png)
 
-图7 时间节点
+图9 时间节点
 
 时间节点可以配置其属性“时间”，该属性是float或double类型，可以配置一个常量、成员属性或方法的返回值，如下图所示：
 
 ![time]({{ site.baseurl }}/img/references/time_prop.png)
 
-图8 时间节点的属性
+图10 时间节点的属性
 
 具体的执行逻辑可以查看[behaviortree/nodes/decorators/decoratortime.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratortime.cpp)
 
@@ -106,13 +132,13 @@ lang: zh
 
 ![frames]({{ site.baseurl }}/img/references/frames.png)
 
-图9 帧数节点
+图11 帧数节点
 
 帧数节点可以配置其属性“帧数”，该属性是int类型，可以配置一个常量、成员属性或方法的返回值，如下图所示：
 
 ![frames]({{ site.baseurl }}/img/references/frames_prop.png)
 
-图10 帧数节点的属性
+图12 帧数节点的属性
 
 具体的执行逻辑可以查看[behaviortree/nodes/decorators/decoratorframes.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorframes.cpp)
 
@@ -122,7 +148,7 @@ lang: zh
 
 ![countlimit]({{ site.baseurl }}/img/references/countlimit.png)
 
-图11 计数限制节点
+图13 计数限制节点
 
 计数限制节点在指定的循环次数到达后不再执行。如果指定的循环次数小于0，则表示无限循环，等同于什么操作都没有，只是执行子节点并且返回子节点的返回值。
 
@@ -130,7 +156,7 @@ lang: zh
 
 ![countlimit]({{ site.baseurl }}/img/references/countlimit_interupt.png)
 
-图12 带中断条件的计数限制节点
+图14 带中断条件的计数限制节点
 
 具体的执行逻辑可以查看[behaviortree/nodes/decorators/decoratorcountlimit.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorcountlimit.cpp)
 
@@ -140,12 +166,12 @@ lang: zh
 
 ![successuntil]({{ site.baseurl }}/img/references/successuntil.png)
 
-图13 返回成功直到节点
+图15 返回成功直到节点
 
 返回失败直到节点在指定的次数到达前返回失败，指定的次数到达后返回成功。如果指定的次数小于0，则总是返回失败。如下图所示：
 
 ![failureuntil]({{ site.baseurl }}/img/references/failureuntil.png)
 
-图14 返回失败直到节点
+图16 返回失败直到节点
 
 具体的执行逻辑可以分别查看[behaviortree/nodes/decorators/decoratorsuccessuntil.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorsuccessuntil.cpp)和[behaviortree/nodes/decorators/decoratorfailureuntil.cpp]({{site.repository}}/blob/master/src/behaviortree/nodes/decorators/decoratorfailureuntil.cpp)
