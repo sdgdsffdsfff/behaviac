@@ -3,3 +3,5 @@ Prop3=19,2
 [InternetShortcut]
 URL=http://localhost:63444/behaviac/
 IDList=
+IconFile=http://localhost:63444/behaviac/favicon.ico
+IconIndex=1

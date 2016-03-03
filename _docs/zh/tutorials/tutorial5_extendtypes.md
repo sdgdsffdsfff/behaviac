@@ -65,28 +65,38 @@ struct myFloat2
 
 ``` c++
 
-namespace StringUtils
+namespace behaviac
 {
-	namespace Private
-	{
-		template<> inline behaviac::string_t ToString(const TestNS:: Float2& val)
-		{
-			myFloat2 temp(val);
-			return temp.ToString();
-		}
-		
-		template<> inline bool FromString(const char* str, TestNS::Float2& val)
-		{
-			myFloat2 temp;
-			if (temp.FromString(str))
-			{
-				val.x = temp.x;
-				val.y = temp.y;
-				return  true;
-			}
-           	return  false;
-		}
-	}
+    // ValueToString & ValueFromString
+    namespace StringUtils
+    {
+        namespace Private
+        {
+            template<>
+            inline behaviac::string ToString(const TestNS::Float2& val)
+            {
+                //myFloat2::ToString is defined by DECLARE_BEHAVIAC_STRUCT(myFloat2)
+                myFloat2 temp(val);
+                return temp.ToString();
+            }
+
+            template<>
+            inline bool FromString(const char* str, TestNS::Float2& val)
+            {
+                myFloat2 temp;
+
+                //myFloat2::FromString is defined by DECLARE_BEHAVIAC_STRUCT(myFloat2)
+                if (temp.FromString(str))
+                {
+                    val.x = temp.x;
+                    val.y = temp.y;
+                    return true;
+                }
+
+                return false;
+            }
+        }
+    }
 }
 
 ```
