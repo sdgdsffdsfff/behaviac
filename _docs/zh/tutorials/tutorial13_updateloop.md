@@ -15,9 +15,10 @@ lang: zh
 - 调用DebugUpdate()函数来更新一些连调和热加载相关的功能。
 - 根据m_bExecAgents来判断是否需要执行所有Agent实例的btexec()函数。
 
-如下样例代码所示： 
+如下样例代码所示：
 
-``` c++
+
+```cpp
 
 void Workspace::DebugUpdate()
 {
@@ -41,7 +42,7 @@ void Workspace::Update()
         Context::execAgents(contextId);
     }
 }
-	
+
 ```
 
 对于C++版，行为树的执行可以调用behaviac::Workspace::GetInstance()->Update()，也可以直接调用Agent的接口btexec()。

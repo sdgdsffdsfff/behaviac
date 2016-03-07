@@ -32,7 +32,8 @@ lang: zh
 
 Agent::RegisterInstanceName可以注册一个名字，该名字表示游戏中某个Agent类的实例，如下代码所示：
 
-``` c++
+
+```cpp
 
 behaviac::Agent::RegisterInstanceName<AgentNodeTest>();
 behaviac::Agent::RegisterInstanceName<behaviac::Agent>("Name_Agent_0");
@@ -43,7 +44,8 @@ behaviac::Agent::RegisterInstanceName<behaviac::Agent>("Name_Agent_0");
 
 当调用Agent::RegisterInstanceName和Agent::Create而没有指定名字的时候，该Agent类型的名字将作为实例的名字被注册和绑定，如下代码所示：
 
-``` c++
+
+```cpp
 
 behaviac::Agent* testAgentA = behaviac::Agent::Create<behaviac::Agent>("Name_Agent_0");
 AgentNodeTest* testAgentB = behaviac::Agent::Create<AgentNodeTest>(NULL);

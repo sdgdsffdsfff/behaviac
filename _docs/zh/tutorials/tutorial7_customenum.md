@@ -12,7 +12,8 @@ lang: zh
 - 类似上面的自定义类，在.h文件中，任意编写一个自定义枚举类型，然后通过宏DECLARE_BEHAVIAC_ENUM声明该枚举类型。需要注意的是，宏DECLARE_BEHAVIAC_ENUM必须定义在全局的namespace里，即放在任何命名空间之外。
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 namespace TNS
 {
@@ -42,7 +43,8 @@ DECLARE_BEHAVIAC_ENUM(TNS::NE::NAT::eColor, eColor);
 	- 宏DEFINE_ENUM_VALUE用于注册枚举的值，可以通过.DISPLAYNAME的追加方式为值添加显示名，通过.DESC的追加方式为值添加描述。
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 BEGIN_ENUM_DESCRIPTION(TNS::NE::NAT::eColor, eColor)
 {
@@ -60,7 +62,8 @@ END_ENUM_DESCRIPTION()
 
 - 在初始化注册（Register）的部分需要加上如下的代码，反注册（UnRegister）的部分添加相应UnRegister的代码。注意这部分Register/UnRegister的代码不是必须的，如果该类型没有用作par或者没有用作条件比较，就可以不需要。
 
-``` c++
+
+```cpp
 
 behaviac::TypeRegister::Register< TNS::EnumTest >(" TNS::EnumTest ");
 

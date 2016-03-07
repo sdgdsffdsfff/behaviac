@@ -34,7 +34,8 @@ lang: zh
 
 - 在项目中包含了这些自动生成的代码文件后，就可以与前面提及的[导出和使用XML/BSON行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_1_export_xml_bson/)一样的接口和方式加载使用这些C++文件，只是需要将文件格式改为`EFF_cpp`：
 
-``` c++
+
+```cpp
 
 behaviac::Workspace::GetInstance()->SetFileFormat(behaviac::Workspace::EFF_cpp);
 

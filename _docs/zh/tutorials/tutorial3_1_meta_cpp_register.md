@@ -30,7 +30,8 @@ behaviac组件的基本运作机制就是在运行时端（C++）和编辑器通
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 #include "behaviac/behaviac.h"
 
@@ -66,7 +67,8 @@ private:
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 BEGIN_PROPERTIES_DESCRIPTION(CBTPlayer)
 {
@@ -91,7 +93,8 @@ END_PROPERTIES_DESCRIPTION()
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 bool InitBehavic(behaviac::Workspace::EFileFormat ff)
 {

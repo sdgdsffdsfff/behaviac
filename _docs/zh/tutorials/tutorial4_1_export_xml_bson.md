@@ -28,7 +28,8 @@ lang: zh
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 bool InitBehavic(behaviac::Workspace::EFileFormat ff)
 {
@@ -121,7 +122,7 @@ if(behaviorTree.Length > 0)
 	else
 		Debug.LogError("Behavior tree data load failed! " + behaviorTree);
 }
-	
+
 ```
- 
+
 更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的[BehaviacSystem.cs]({{site.repository}}/blob/master/integration/BattleCityDemo/Assets/Scripts/BehaviacSystem.cs)文件。

@@ -26,7 +26,8 @@ lang: zh
 
 如下代码所示：
 
-``` c++
+
+```cpp
 bool InitBehavic(behaviac::Workspace::EFileFormat ff)
 {
     behaviac::Config::SetSocketBlocking(false);
@@ -87,7 +88,8 @@ bool InitPlayer(const char* pszTreeName)
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 void UpdateLoop()
 {
@@ -110,7 +112,8 @@ void UpdateLoop()
 
 如下代码样例所示：
 
-``` c++
+
+```cpp
 
 void CleanupPlayer()
 {

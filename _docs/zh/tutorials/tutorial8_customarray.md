@@ -18,7 +18,8 @@ lang: zh
 
 - 在.h的头文件里添加如下所示的宏，但需放在任意namespace之外：
 
-``` c++
+
+```cpp
 
 BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(TNS::ST::PER::WRK::kEmployee);
 
@@ -26,7 +27,8 @@ BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(TNS::ST::PER::WRK::kEmployee);
 
 - 在初始化的代码里添加如下所示的注册代码：
 
-``` c++
+
+```cpp
 
 behaviac::TypeRegister::Register<TNS::ST::PER::WRK::kEmployee>(" TNS::ST::PER::WRK::kEmployee");
 
@@ -34,7 +36,8 @@ behaviac::TypeRegister::Register<TNS::ST::PER::WRK::kEmployee>(" TNS::ST::PER::W
 
 - 在结束代码里添加如下所示的反注册代码：
 
-``` c++
+
+```cpp
 
 behaviac::TypeRegister::UnRegister<TNS::ST::PER::WRK::kEmployee>(" TNS::ST::PER::WRK::kEmployee");
 
@@ -47,7 +50,8 @@ behaviac::TypeRegister::UnRegister<TNS::ST::PER::WRK::kEmployee>(" TNS::ST::PER:
 `behaviac::Agent*`或`vector<behaviac::Agent*>`类型直接被支持，不需要做什么额外的工作，其任何子类`SubclassAgent*`也直接被支持。
 但是需要支持`vector<SubclassAgent*>`的时候，则需要在.h文件里添加如下所示的宏，但需放在任意namespace之外：
 
-``` c++
+
+```cpp
 
 BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(SubclassAgent*);
 
@@ -55,7 +59,8 @@ BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(SubclassAgent*);
 
 在初始化和结束的时候分别注册和反注册：
 
-``` c++
+
+```cpp
 
 behaviac::Agent::Register<SubclassAgent>();
 
