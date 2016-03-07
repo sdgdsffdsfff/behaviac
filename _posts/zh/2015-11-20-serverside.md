@@ -3,7 +3,7 @@ layout: news_item
 title: behaviac可以用在服务器端吗？
 author: jonygli
 date: 2015-11-25 19:48:00 +0800
-categories: [FAQ]
+categories: [faq]
 lang: zh
 permalink: /zh/faq/serverside
 ---

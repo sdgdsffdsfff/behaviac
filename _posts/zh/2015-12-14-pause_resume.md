@@ -3,7 +3,7 @@ layout: news_item
 title: 行为树的执行支持暂停和继续机制吗？
 author: cainhuang
 date: 2015-12-14 14:55:00 +0800
-categories: [FAQ]
+categories: [faq]
 permalink: /zh/faq/pause_resume
 lang: zh
 ---

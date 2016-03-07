@@ -3,7 +3,7 @@ layout: news_item
 title: HotReload默认支持吗？需要什么设置？
 author: jonygli
 date: 2015-12-10 19:48:00 +0800
-categories: [FAQ]
+categories: [faq]
 permalink: /zh/faq/hotreload
 lang: zh
 ---

@@ -3,7 +3,7 @@ layout: news_item
 title: 游戏和编辑器不能建立连接？
 author: jonygli
 date: 2016-01-07 20:25:00 +0800
-categories: [FAQ]
+categories: [faq]
 permalink: /zh/faq/connect_failed
 lang: zh
 ---

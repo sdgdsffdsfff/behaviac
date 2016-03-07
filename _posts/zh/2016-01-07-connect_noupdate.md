@@ -3,7 +3,7 @@ layout: news_item
 title: 双击后没有BT树的更新显示？
 author: jonygli
 date: 2016-01-07 11:35:00 +0800
-categories: [FAQ]
+categories: [faq]
 permalink: /zh/faq/connect_noupdate
 lang: zh
 ---

@@ -134,14 +134,14 @@ BEGIN_PROPERTIES_DESCRIPTION(AgentNodeTest)
     REGISTER_METHOD(exit_action_2);
     REGISTER_METHOD(createGameObject);
     REGISTER_METHOD(testGameObject);
-	REGISTER_METHOD(createExtendedNode);
-	REGISTER_METHOD(testExtendedRefType);
-	REGISTER_METHOD(testExtendedStruct);
+    REGISTER_METHOD(createExtendedNode);
+    REGISTER_METHOD(testExtendedRefType);
+    REGISTER_METHOD(testExtendedStruct);
     REGISTER_METHOD(switchRef);
 
-	REGISTER_METHOD(CanSeeEnemy);
-	REGISTER_METHOD(Move);
-	REGISTER_METHOD(MoveToTarget);
+    REGISTER_METHOD(CanSeeEnemy);
+    REGISTER_METHOD(Move);
+    REGISTER_METHOD(MoveToTarget);
 }
 END_PROPERTIES_DESCRIPTION()
 
@@ -149,8 +149,11 @@ END_PROPERTIES_DESCRIPTION()
 
 代码3.1.1 在C++中通过宏注册元信息
 
-```c#
+<!-- {% highlight cs %}
+{% endhighlight %}
+ -->
 
+```cs
 [behaviac.TypeMetaInfo()]
 public class AgentNodeTest : behaviac.Agent
 {
@@ -182,7 +185,6 @@ public class AgentNodeTest : behaviac.Agent
     public float event_test_var_float = -1.0f;
     public AgentNodeTest event_test_var_agent = null;
 }
-
 ```
 
 代码3.1.2 在C#中通过Attribute标记元信息
@@ -263,7 +265,7 @@ behaviac组件支持变量的只读（Readonly）特性，这样在编辑器中�
 图3.2.2 编辑工作区
 
 行为树源文件和导出文件的区别在于，行为树源文件是在编辑器中供策划编辑使用的初始源文件（XML格式），包含了很多冗余的信息，比如UI显示所需的属性等。而导出文件是一种精简版的行为树文件，只是给运行时端使用的一种高效的执行文件。
- 
+
 源文件就像那些Raw Data，必须导出后才能在运行时中使用，而导出文件就像那些处理过并在游戏中直接使用的Game Data。工作区文件、源文件、元信息文件等在游戏中都不再需要，游戏中只需要导出的文件。
 
 目前支持XML、BSON、C++和C#四种导出格式。其中，XML/BSON主要用于开发阶段，C++/C#主要用于最后的发布。C++/C#的内存和性能明显要优于XML/BSON的格式，所以我们建议在最后的发布过程，使用C++/C#的行为树导出文件。
@@ -303,7 +305,7 @@ behaviac组件还支持扩展新的节点类型，具体用法可以详见使用
 #### 3.3.2 预制
 
 为了方便或加速行为树的编辑，behaviac编辑器提供了预制（Prefab）的功能，以便利于复用已经编辑好的行为树。
-	
+
 behaviac组件的预制跟Unity引擎中的预制工作机制类似，如果在用到预制的地方改变了预制中某个节点的属性，那么就会在所在的行为树中创建一份该预制的实例（Instance）。如果没有改变预制中任何节点的属性，则直接跟预制母体的属性保持一致，也即修改了预制中任何节点的属性，用到该预制的其他行为树也跟着同步改变。
 
 在编辑器中，可以将已经编辑好的行为树另存为预制，这些预制会组织在Prefabs目录下，以便区分于项目所需的行为树（归类在Behaviors目录下），如图3.3.2.1所示。

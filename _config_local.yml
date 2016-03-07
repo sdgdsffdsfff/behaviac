@@ -1,20 +1,20 @@
-markdown: redcarpet
-redcarpet:
-  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data", "strikethrough"]
+# markdown: redcarpet
+# redcarpet:
+#   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data", "strikethrough"]
 
-highlighter: pygments
+# highlighter: pygments
 
-# markdown: kramdown
+markdown: kramdown
 
-# kramdown:
-#   auto_ids: true
-#   footnote_nr: 1
-#   entity_output: as_char
-#   toc_levels: 1..6
-#   smart_quotes: lsquo,rsquo,ldquo,rdquo
-#   input: GFM
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+  input: GFM
 
-# highlighter: rouge
+highlighter: rouge
 
 baseurl: /behaviac
 permalink: /:title/
@@ -24,7 +24,7 @@ excerpt_separator: ""
 google_analytics_id: UA-11132649-2
 
 
-url: "" 
+url: ""
 repository: https://github.com/TencentOpen/behaviac
 help_url: https://github.com/TencentOpen/behaviac
 
