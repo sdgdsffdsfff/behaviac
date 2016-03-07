@@ -21,26 +21,17 @@ lang: zh
 
 ### 构建C++运行时
 
-1. 在源码目录结构中的build目录运行`premake.bat`产生各平台的项目文件，例如在`build/vs2013`中产生的是vs2013的项目文件，`build/linux`中产生的是linux平台下的项目文件，
-![build_premake.png]({{ site.baseurl }}/img/faq/build_premake.png)
-1. 分别打开相应目录下的项目文件使用相应toolchain构建，例如使用vs2013打开`build/vs2013`下的behaviac.sln构建windows平台下的运行时库以及测试demo。
-1. `/example`下是两个C++的demo
-![examples.png]({{ site.baseurl }}/img/faq/examples.png)
+ 1. 请参考[构建](http://www.behaviac.com/docs/zh/articles/build/)
+ 1. `/example`下是两个C++的demo**
+     运行的时候可能需要参考对应example里的readme文件进行相应设置
 
-分别打开对应的sln文件构建即可。
-
-	- airebattledemo是cocos集成behaviac的demo
-	- spaceship是SDL集成behaviac的demo
-
-**运行的时候可能需要参考对应example里的readme文件进行相应设置**
-
-### Unity下构建C# 
+### Unity下构建C#
 
 ![cs.png]({{ site.baseurl }}/img/faq/cs.png)
 `/integration`目录下是C#的两个项目：
 
  - `/integration/unity`是单元测试
  - `/integration/BattleCityDemo`是unity下的tank demo
- 
+
  自己的项目需要将目录`/integration/unity/Assets/Scripts/behaviac/runtime`下的所有源码直接复制过去，或者在Unity编辑器中导入`/integration/behaviac.unitypackage`包（安装完发布的BehaviacSetup_***.exe后，会在安装目录下的/integration文件夹中找到behaviac.unitypackage包）。
- 
+
