@@ -149,11 +149,8 @@ END_PROPERTIES_DESCRIPTION()
 
 代码3.1.1 在C++中通过宏注册元信息
 
-<!-- {% highlight cs %}
-{% endhighlight %}
- -->
+{% highlight cs %}
 
-```cs
 [behaviac.TypeMetaInfo()]
 public class AgentNodeTest : behaviac.Agent
 {
@@ -185,7 +182,7 @@ public class AgentNodeTest : behaviac.Agent
     public float event_test_var_float = -1.0f;
     public AgentNodeTest event_test_var_agent = null;
 }
-```
+{% endhighlight %}
 
 代码3.1.2 在C#中通过Attribute标记元信息
 
