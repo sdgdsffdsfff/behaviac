@@ -5,7 +5,7 @@ author: jonygli
 date: 2015-11-25 19:48:00 +0800
 categories: [faq]
 lang: zh
-permalink: /zh/faq/serverside
+permalink: /zh/faq/serverside/
 ---
 
 behaviac完全可以用在服务器端，目前已经有包括“炫斗之王”在内的很多游戏成功的用在了服务器端了。

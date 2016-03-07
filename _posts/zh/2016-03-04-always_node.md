@@ -5,7 +5,7 @@ author: jonygli
 date: 2016-03-07 14:56:00 +0800
 categories: [faq]
 lang: zh
-permalink: /zh/faq/always_node
+permalink: /zh/faq/always_node/
 ---
 
 `总是成功`是什么节点？没有找到说明。

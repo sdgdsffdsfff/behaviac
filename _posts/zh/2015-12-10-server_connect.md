@@ -4,7 +4,7 @@ title: 服务器端也可以连调吗？
 author: jonygli
 date: 2015-12-10 21:48:00 +0800
 categories: [faq]
-permalink: /zh/faq/server_connect
+permalink: /zh/faq/server_connect/
 lang: zh
 ---
 

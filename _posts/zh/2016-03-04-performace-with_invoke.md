@@ -5,7 +5,7 @@ author: jonygli
 date: 2016-03-07 14:48:00 +0800
 categories: [faq]
 lang: zh
-permalink: /zh/faq/performance_with_invoke
+permalink: /zh/faq/performance_with_invoke/
 ---
 
 

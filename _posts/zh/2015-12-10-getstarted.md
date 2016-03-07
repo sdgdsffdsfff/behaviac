@@ -4,7 +4,7 @@ title: C++下怎么上手？
 author: jonygli
 date: 2015-12-10 22:55:00 +0800
 categories: [faq]
-permalink: /zh/faq/cppgetstarted
+permalink: /zh/faq/cppgetstarted/
 lang: zh
 ---
 

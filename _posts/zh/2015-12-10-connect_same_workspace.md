@@ -4,7 +4,7 @@ title: 连调的时候总是打开同一个workspace，什么鬼？
 author: jonygli
 date: 2015-12-10 20:48:00 +0800
 categories: [faq]
-permalink: /zh/faq/connect_same_workspace
+permalink: /zh/faq/connect_same_workspace/
 lang: zh
 ---
 

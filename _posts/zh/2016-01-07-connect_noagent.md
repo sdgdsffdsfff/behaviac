@@ -4,7 +4,7 @@ title: 连接后，没有 Agent 的实例？
 author: jonygli
 date: 2016-01-07 20:34:00 +0800
 categories: [faq]
-permalink: /zh/faq/connect_agent
+permalink: /zh/faq/connect_agent/
 lang: zh
 ---
 
