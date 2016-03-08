@@ -22,34 +22,34 @@ namespace behaviac
     class BEHAVIAC_API Config
     {
     public:
-        static bool IsProfiling();
-        static void SetProfiling(bool bEnabled);
+    static bool IsProfiling();
+    static void SetProfiling(bool bEnabled);
 
-		//logging是否打开
-        static bool IsLogging();
-        static void SetLogging(bool bLogging);
+    //logging是否打开
+    static bool IsLogging();
+    static void SetLogging(bool bLogging);
 
-		//logging打开的情况下，是否每次logging的时候都Flush
-        static bool IsLoggingFlush();
-        static void SetLoggingFlush(bool bFlush);
+    //logging打开的情况下，是否每次logging的时候都Flush
+    static bool IsLoggingFlush();
+    static void SetLoggingFlush(bool bFlush);
 
-		//socket连接是否打开，只有打开socket连接，连调功能才会支持
-        static bool IsSocketing();
-        static void SetSocketing(bool bSocketing);
+    //socket连接是否打开，只有打开socket连接，连调功能才会支持
+    static bool IsSocketing();
+    static void SetSocketing(bool bSocketing);
 
-		//是否是阻塞模式，当时阻塞模式的时候，游戏会阻塞，等待编辑器的连接，
-		//只有成功建立连接后，游戏才继续运行
-        static bool IsSocketBlocking();		
-        static void SetSocketBlocking(bool bBlocking);
+    //是否是阻塞模式，当时阻塞模式的时候，游戏会阻塞，等待编辑器的连接，
+    //只有成功建立连接后，游戏才继续运行
+    static bool IsSocketBlocking();
+    static void SetSocketBlocking(bool bBlocking);
 
-		//游戏和编辑器建立连接的时候使用的端口
-        static void SetSocketPort(unsigned short port);
-        static unsigned short GetSocketPort();
+    //游戏和编辑器建立连接的时候使用的端口
+    static void SetSocketPort(unsigned short port);
+    static unsigned short GetSocketPort();
 
-		//热加载是否打开
-		static bool IsHotReload();
-		static void SetHotReload(bool bHotReload);
-    };
+    //热加载是否打开
+    static bool IsHotReload();
+    static void SetHotReload(bool bHotReload);
+};
 ```
 
 
