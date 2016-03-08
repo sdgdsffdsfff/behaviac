@@ -18,6 +18,8 @@ lang: zh
  	* 需要安装vs2015
  	* 下载并安装[cmake android](https://github.com/Microsoft/CMake/tree/feature/VCMDDAndroid), 直接覆盖
  	* 运行build目录下的cmake_generate_projects_android.bat生成项目文件
+    * 或者使用android_vs2015子目录下的项目文件
+    * 如果想使用mk，可以修改生成的linux下的make文件
 
 ### 其他平台
  * 相应安装最新版的[cmake](https://cmake.org/files/v3.4/cmake-3.4.3-win32-x86.exe)
