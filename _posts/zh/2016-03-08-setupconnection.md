@@ -12,4 +12,8 @@ permalink: /zh/faq/setupconnection/
 
 只要你创建了Agent或者加载了BT，SetupConnection就会被自动调用。但是如果没有创建过Agent，也没有加载过BT，SetupConnection没被调用的话，实现连调的功能将没有被初始化。
 
+总结：
+ - 创建过Agent
+ - 或者加载过BT
+
 
