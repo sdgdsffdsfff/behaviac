@@ -14,7 +14,7 @@ behaviac的运行时提供有核心的更新行为树的功能，在其之上，
 
 具体可以参考[优化及性能]({{ site.baseurl }}/docs/zh/tutorials/tutorial10_performence/)
 
-##Cpp##
+## Cpp ##
 
 ```cpp
 namespace behaviac
@@ -55,7 +55,7 @@ namespace behaviac
 
 具体的代码可以查看[behaviac/base/workspace.h]({{site.repository}}/blob/master/inc/behaviac/base/workspace.h)
 
-##Unity##
+## Unity ##
 C#下同名函数的意义和Cpp一样，此外，`IsSuppressingNonPublicWarning`是个用来控制是否输出非public成员的警告。
 
 当`IsSuppressingNonPublicWarning`为true的时候，Agent的成员（field，method，property）如果不是public的，则输出警告信息，从而可以修改其为public，这样的话，当使用导出格式为c#时其效率就是最高的，而且没有GC Alloc。
