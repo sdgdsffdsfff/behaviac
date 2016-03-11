@@ -15,9 +15,10 @@ lang: zh
  * 首先下载并安装[cmake](https://cmake.org/download/),请最好使用3.3以上版本。
  * 运行build目录下的cmake_generate_projects.bat生成项目文件
  * 如果需要build android版本
- 	* 需要安装vs2015
-    * 使用android_vs2015子目录下的项目文件
-    * 或者使用cmake生成项目文件
+
+    - 需要安装vs2015
+    - 使用android_vs2015子目录下的项目文件
+    - 或者使用cmake生成项目文件
  	      1. 下载并安装[cmake android](https://github.com/Microsoft/CMake/releases), 直接覆盖上面步骤安装的cmake就好。
  	      2. 运行build目录下的cmake_generate_projects_android.bat生成项目文件
           3. 如果想使用mk，可以修改生成的linux下的make文件
@@ -25,9 +26,10 @@ lang: zh
 ### 其他平台
  * 相应安装最新版的[cmake](https://cmake.org)
  * 运行build目录下的cmake_generate_projects.sh生成项目文件
- 	* mac上，运行build目录下的cmake_generate_projects_mac.sh生成项目文件
 
-###请注意
+    - mac上，运行build目录下的cmake_generate_projects_mac.sh生成项目文件
+
+### 请注意
 cmake_generate*.bat里使用的是vs2013和vs2015，用户可以根据自己的需要选择相应的编译器，比如vs2008，vs2010等。
 
 ### 构建
