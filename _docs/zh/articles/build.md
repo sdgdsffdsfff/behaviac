@@ -30,7 +30,16 @@ lang: zh
     - mac上，运行build目录下的cmake_generate_projects_mac.sh生成项目文件
 
 ### 请注意
-cmake_generate*.bat里使用的是vs2013和vs2015，用户可以根据自己的需要选择相应的编译器，比如vs2008，vs2010等。
+ 1. cmake_generate*.bat里使用的是vs2013和vs2015，用户可以根据自己的需要选择相应的编译器，比如vs2008，vs2010等。或者通过cmakegui进行选择。
+ 1. CMakeLists.txt里提供的是缺省设置，可以根据自己的需要直接修改或通过cmakegui来选择配置。特别的CMakeLists.txt里有两个选项可以配置。
+ ![cmake_config]({{site.url}}{{site.baseurl}}/img/concepts/cmake_config.png)
+
+    - BEHAVIAC_VERSION_MODE用来控制BEHAVIAC_RELEASE是否定义。请参考[优化及性能]({{site.url}}{{site.baseurl}}/docs/zh/articles/tutorial10_performence)。
+        1. Default，缺省模式是Debug下BEHAVIAC_RELEASE没有定义，而Release下BEHAVIAC_RELEASE有定义
+        1. ForceUseDev，强制不定义BEHAVIAC_RELEASE
+        1. ForceUseRelease，强制定义BEHAVIAC_RELEASE
+    - BUILD_SHARED_LIBS用来控制libbehaviac是stati lib/a还是dynamid dll/so
+
 
 ### 构建
  * 无论Windows平台还是其他平台，项目文件都生成到目录cmake_binary
