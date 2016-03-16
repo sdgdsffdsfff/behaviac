@@ -8,8 +8,20 @@ categories: [doc]
 lang: zh
 ---
 
+首先从[github](https://github.com/TencentOpen/behaviac)下载或克隆源码。
+
 ## Cpp
-我们使用cmake来生成对应平台的项目文件。
+缺省的，我们使用[cmake](https://cmake.org/download/)来生成对应平台的项目文件（sln，或make文件等）。请注意，
+ - cmake不是必须的，你可以选择自己喜欢的其他类似工具，比如premake等来生成项目文件。
+ - 或者，你可以手工创建项目文件。
+ - 又或者，可以直接把src和inc加到你已有的项目文件。
+ - 当你自行修改或创建项目文件的时候，可能需要参考CMakeLists.txt查看需要的设置：
+    - include_directories 包含目录
+    - add_definitions 编译宏
+    - add_target_definitions 编译宏
+    - CMAKE_CXX_FLAGS 编译开关
+    - BUILD_SHARED_LIBS 是否动态库还是静态库
+
 
 ### Windows平台
  * 首先下载并安装[cmake](https://cmake.org/download/),请最好使用3.3以上版本。
