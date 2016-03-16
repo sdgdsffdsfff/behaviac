@@ -11,16 +11,7 @@ lang: zh
 首先从[github](https://github.com/TencentOpen/behaviac)下载或克隆源码。
 
 ## Cpp
-缺省的，我们使用[cmake](https://cmake.org/download/)来生成对应平台的项目文件（sln，或make文件等）。请注意，
- - cmake不是必须的，你可以选择自己喜欢的其他类似工具，比如premake等来生成项目文件。
- - 或者，你可以手工创建项目文件。
- - 又或者，可以直接把src和inc加到你已有的项目文件。
- - 当你自行修改或创建项目文件的时候，可能需要参考CMakeLists.txt查看需要的设置：
-    - include_directories 包含目录
-    - add_definitions 编译宏
-    - add_target_definitions 编译宏
-    - CMAKE_CXX_FLAGS 编译开关
-    - BUILD_SHARED_LIBS 是否动态库还是静态库
+缺省的，我们使用[cmake](https://cmake.org/download/)来生成对应平台的项目文件（sln，或make文件等）。
 
 
 ### Windows平台
@@ -51,6 +42,17 @@ lang: zh
         1. ForceUseDev，强制不定义BEHAVIAC_RELEASE
         1. ForceUseRelease，强制定义BEHAVIAC_RELEASE
     - BUILD_SHARED_LIBS用来控制libbehaviac是stati lib/a还是dynamid dll/so
+ 1. cmake不是必须的
+     - 你可以选择自己喜欢的其他类似工具，比如premake等来生成项目文件。
+     - 或者，你可以手工创建项目文件。
+     - 又或者，可以直接把src和inc加到你已有的项目文件。
+     - 当你自行修改或创建项目文件的时候，可能需要参考CMakeLists.txt查看需要的设置：
+        - include_directories 包含目录，你需要设置正确的包含目录
+        - add_definitions 编译宏，比如 `_DEBUG`
+        - add_target_definitions 编译宏，比如`BEHAVIACDLL_EXPORTS`，`BEHAVIAC_DLL`
+        - CMAKE_CXX_FLAGS 编译开关
+        - BUILD_SHARED_LIBS 是否动态库还是静态库
+
 
 
 ### 构建
