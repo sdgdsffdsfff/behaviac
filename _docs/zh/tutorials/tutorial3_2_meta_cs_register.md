@@ -30,7 +30,8 @@ C#中编写的游戏类从behaviac.Agent派生，并通过相关的Attribute来�
 
 如下代码样例所示：
 
-``` c#
+
+{% highlight cs %}
 
 [behaviac.TypeMetaInfo()]
 public class AgentNodeTest : behaviac.Agent
@@ -63,7 +64,7 @@ public class AgentNodeTest : behaviac.Agent
     }
 }
 
-```
+{% endhighlight %}
 
 ### 2 导出元信息
 由于C#代码中已经包含了各种Attribute来描述元信息，因而导出相比C++要简单：
@@ -74,7 +75,7 @@ public class AgentNodeTest : behaviac.Agent
 
 如下代码样例所示：
 
-``` c#
+{% highlight cs %}
 
 public bool Init ()
 {
@@ -104,7 +105,7 @@ public void Uninit()
 {
     behaviac.Workspace.Instance.Cleanup();
 }
-	
-```
+
+{% endhighlight %}
 
 更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的[BehaviacSystem.cs]({{site.repository}}/blob/master/integration/BattleCityDemo/Assets/Scripts/BehaviacSystem.cs)文件。

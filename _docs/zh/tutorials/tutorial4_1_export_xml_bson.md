@@ -10,6 +10,7 @@ lang: zh
 
 ## 行为树的导出和使用
 目前behaviac组件支持4种文件格式（XML、BSON、C++和C#）行为树的导出。在项目开发过程中，建议使用XML格式的导出文件，以便于调试和查错等；而在最终的发布（release）版本中，可以导出C++或C#格式的行为树文件，以便提高运行效率。
+
 ### 导出和使用XML/BSON行为树
 - 在编辑器中导出整个工作区文件，在“导出行为树”对话框中，勾选“Xml Behavior Exporter”或“Bson Behavior Exporter”，如下图所示：
 
@@ -82,8 +83,7 @@ void CleanupBehaviac()
 
 类似的，对于C#版的运行时端，采用如下代码样例加载使用刚才导出的行为树：
 
-``` c#
-
+{% highlight cs %}
 public bool Init ()
 {
     if (ms_fileSystem == null)
@@ -122,7 +122,6 @@ if(behaviorTree.Length > 0)
 	else
 		Debug.LogError("Behavior tree data load failed! " + behaviorTree);
 }
-
-```
+{% endhighlight %}
 
 更多细节可以参考behaviac组件C#源码中附带的integration/BattleCityDemo工程的[BehaviacSystem.cs]({{site.repository}}/blob/master/integration/BattleCityDemo/Assets/Scripts/BehaviacSystem.cs)文件。

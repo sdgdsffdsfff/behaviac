@@ -70,7 +70,7 @@ behaviac::Agent::UnbindInstance("AgentNodeTest");
 
 类似的，在C#中实例的注册和绑定相关代码如下：
 
-``` c#
+{% highlight cs %}
 
 behaviac.Agent.RegisterInstanceName<AgentNodeTest>();
 behaviac.Agent.RegisterInstanceName<behaviac.Agent>("Name_Agent_0");
@@ -90,7 +90,7 @@ Assert.NotNull(testAgent_1);
 
 behaviac.Agent.UnbindInstance("Name_Agent_0");
 behaviac.Agent.UnbindInstance("AgentNodeTest");
+{% endhighlight %}
 
-```
 
 更多细节可以参考behaviac组件C#源码中附带的integration/unity工程的[OtherUnitTest.cs]({{site.repository}}/blob/master/integration/unity/Assets/Scripts/behaviac/BehaviacUnitTest/Editor/ParUnitTest/OtherUnitTest.cs)文件。
