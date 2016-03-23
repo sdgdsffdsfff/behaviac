@@ -16,6 +16,7 @@ lang: zh
 
 ### Windows平台
  * 首先下载并安装[cmake](https://cmake.org/download/),请最好使用3.3以上版本。
+ * cmake的路径需要添加到环境变量PATH
  * 运行build目录下的cmake_generate_projects.bat生成项目文件
  * 如果需要build android版本
 
