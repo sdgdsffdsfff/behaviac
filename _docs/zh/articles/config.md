@@ -12,7 +12,7 @@ behaviac的运行时提供有核心的更新行为树的功能，在其之上，
 
 除了可以在`config.h`中定义`BEHAVIAC_RELEASE`宏为1来完全使‘开发功能’不被编译外。也可以保留这些‘开发’功能但只是使用下面所列的‘开关’来关闭或者打开某些功能。
 
-具体可以参考[优化及性能]({{ site.baseurl }}/docs/zh/tutorials/tutorial10_performence/)
+具体可以参考[优化及性能]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial10_performence/)
 
 ## Cpp ##
 

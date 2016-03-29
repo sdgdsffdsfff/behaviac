@@ -13,7 +13,7 @@ lang: zh
 每个使用行为树的对象（Agent）依据这个共享的资源创建独立的实例数据，例如对于Sequence节点，实例数据中只是存储更新到哪个子树，至于Sequence节点的配置信息等则被共享。
 
 
-![memory_shared]({{ site.baseurl }}/img/faq/memory_shared.png)
+![memory_shared]({{site.url}}{{site.baseurl}}/img/faq/memory_shared.png)
 
 -------------------------------
 

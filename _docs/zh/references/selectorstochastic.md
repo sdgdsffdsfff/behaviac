@@ -10,7 +10,7 @@ lang: zh
 
 类似选择节点（Selector），随机选择节点（SelectorStochastic）也是从子节点中选择执行一个，但不像选择节点每次都是按照排列的先后顺序选择，随机选择节点每次选择的时候随机的决定执行顺序，如下图所示：
 
-![selectorstochastic]({{ site.baseurl }}/img/references/selectorstochastic.png)
+![selectorstochastic]({{site.url}}{{site.baseurl}}/img/references/selectorstochastic.png)
 
 图1 随机选择节点
 
@@ -18,7 +18,7 @@ lang: zh
 
 随机选择节点有随机数生成器可以配置，该随机数生成器是一个返回值为0.0到1.0之间的float类型的函数，如下图所示：
 
-![selectorstochastic]({{ site.baseurl }}/img/references/selectorstochastic_prop.png)
+![selectorstochastic]({{site.url}}{{site.baseurl}}/img/references/selectorstochastic_prop.png)
 
 图2 随机选择节点的属性
 

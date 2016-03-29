@@ -16,7 +16,7 @@ behaviac组件中的编辑器和运行时库都支持热加载，但是只针对
 
 对于运行时端（或游戏端），只要在编辑器中修改了行为树文件并重新导出，那么在游戏运行过程中不用退出游戏，最新导出的行为树可以自动进行加载，这样就可以及时查看行为树最新的效果。
 
-行为树的更新执行流程请参考[更新流程]({{ site.baseurl }}/docs/zh/tutorials/tutorial13_updateloop/)。
+行为树的更新执行流程请参考[更新流程]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial13_updateloop/)。
 
 为了启动热加载功能，需要确保在运行时端直接或间接调用过Workspace::DebugUpdate()函数，有两种方式：
 

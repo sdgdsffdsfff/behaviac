@@ -10,7 +10,7 @@ lang: zh
 
 类似选择节点（Selector），概率选择节点（SelectorProbability）也是从子节点中选择执行一个，但不像选择节点每次都是按照排列的先后顺序选择，概率选择节点每次选择的时候根据子节点的“概率”进行选择，概率越大，被选到的机会越大，如下图所示：
 
-![selectorprobability]({{ site.baseurl }}/img/references/selectorprobability.png)
+![selectorprobability]({{site.url}}{{site.baseurl}}/img/references/selectorprobability.png)
 
 图1 概率选择节点
 
@@ -20,7 +20,7 @@ lang: zh
 
 概率选择节点有随机数生成器可以配置，该随机数生成器是一个返回值为0.0到1.0之间的float类型的函数，如下图所示：
 
-![selectorprobability]({{ site.baseurl }}/img/references/selectorprobability_prop.png)
+![selectorprobability]({{site.url}}{{site.baseurl}}/img/references/selectorprobability_prop.png)
 
 图2 概率选择节点的属性
 

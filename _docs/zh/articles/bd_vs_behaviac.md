@@ -20,12 +20,12 @@ behaviac是腾讯公司提供的一款行为树解决方案（[www.behaviac.com]
 
 首先给出behaviac与BD的对比表，如下表所示，后面将详细介绍。
 
-![bd_vs_behaviac]({{ site.baseurl }}/img/articles/bd_vs_behaviac.png)
+![bd_vs_behaviac]({{site.url}}{{site.baseurl}}/img/articles/bd_vs_behaviac.png)
 
 ### 费用
 BD是Unity Asset Store中的付费组件，可以获得到运行时的源码，如下图所示：
 
-![bd]({{ site.baseurl }}/img/articles/bd.png)
+![bd]({{site.url}}{{site.baseurl}}/img/articles/bd.png)
 
 behaviac完全免费使用, 已经在Github上全部开源，包括运行时和编辑器。
 
@@ -54,11 +54,11 @@ BD常用的任务包括动作和条件节点，这两个节点是用来派生出
 
 BD提供了覆盖整个Unity引擎API的各种任务，包括动画、声音、物理、角色控制、粒子系统等方面的常用类型（如下图所示），这样就允许非程序员（策划或美术）方便的创建自己的游戏AI，同时也让程序员尽量少的编写自定义的任务。
 
-![bd_nodes]({{ site.baseurl }}/img/articles/bd_nodes.png)
+![bd_nodes]({{site.url}}{{site.baseurl}}/img/articles/bd_nodes.png)
 
 behaviac提供了丰富的节点类型（如下图所示），一般情况下，开发者无需扩展自己的节点就可以工作，并不需要派生自己的动作和条件节点。除了支持常用的节点外，behaviac还提供了很多快捷节点（例如，选择监控、条件执行、概率选择、随机选择等），每个节点上还可以支持添加附件（前置、后置和事件等）。
 
-![behaviac_nodes]({{ site.baseurl }}/img/articles/behaviac_nodes.png)
+![behaviac_nodes]({{site.url}}{{site.baseurl}}/img/articles/behaviac_nodes.png)
 
 此外，behaviac还提供了有限状态机（FSM），并支持FSM跟行为树的嵌套使用。
 

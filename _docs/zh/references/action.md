@@ -10,13 +10,13 @@ lang: zh
 
 动作（Action）节点在behaviac中几乎是最重要的节点，如下图所示：
 
-![action]({{ site.baseurl }}/img/references/action.png)
+![action]({{site.url}}{{site.baseurl}}/img/references/action.png)
 
 图1 动作节点
 
 动作节点通常对应Agent的某个方法（Method），可以从下拉列表里为其选择方法，如下图所示：
 
-![action]({{ site.baseurl }}/img/references/action_prop.png)
+![action]({{site.url}}{{site.baseurl}}/img/references/action_prop.png)
 
 图2 动作节点的属性
 

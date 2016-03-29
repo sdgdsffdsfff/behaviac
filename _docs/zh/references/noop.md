@@ -10,7 +10,7 @@ lang: zh
 
 空操作（Noop）节点只是作为占位，仅执行一次就返回成功，如下图所示：
 
-![noop]({{ site.baseurl }}/img/references/noop.png)
+![noop]({{site.url}}{{site.baseurl}}/img/references/noop.png)
 
 图1 空节点
 

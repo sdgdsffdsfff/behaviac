@@ -21,7 +21,7 @@ behaviac是游戏AI的开发框架组件，也是游戏原型的快速设计工�
 
 ## 编辑器和运行时
 behaviac作为游戏AI的开发框架组件，有编辑器和运行时两个部分，这两个部分通过元信息（描述AI实例属性和能力方法的信息）交换信息。
-![meta]({{ site.baseurl }}/img/overview/meta.png)
+![meta]({{site.url}}{{site.baseurl}}/img/overview/meta.png)
 
 ### 元信息
 元信息用来描述类型的属性和方法。运行时导出元信息，如下所示。编辑器中，该元信息作为基本的语法单位用来创建行为树。
@@ -50,7 +50,7 @@ behaviac作为游戏AI的开发框架组件，有编辑器和运行时两个部�
 ### 编辑器
 
 编辑器是一个可以运行在Windows平台上的编辑工具。
-![designer]({{ site.baseurl }}/img/whatisbehaviac/designer.png)
+![designer]({{site.url}}{{site.baseurl}}/img/whatisbehaviac/designer.png)
 在编辑器内，使用鼠标或快捷键，可以添加、编辑、配置、修改行为树（包括FSM，或HTN），也可以实时或离线调试游戏的行为，既可以设断点，也可以查看或修改变量的值。
 
 ### 运行时

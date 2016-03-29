@@ -10,11 +10,11 @@ lang: zh
 
 behaviac 有以下节点类型：
 
-![nodetypes]({{ site.baseurl }}/img/references/nodetypes.png)
+![nodetypes]({{site.url}}{{site.baseurl}}/img/references/nodetypes.png)
 
 其中‘附件’有前置和后置，可以添加到任何一个节点作为前置和后置。前置往往是作为前提条件（precondition）来使用，而后置往往是当节点结束的时候施加效果（effects）。
 
-![prepost]({{ site.baseurl }}/img/references/prepost.png)
+![prepost]({{site.url}}{{site.baseurl}}/img/references/prepost.png)
 
 其中‘组合’，‘装饰器’ 类都是分支节点，‘动作’ 类，和‘条件’类大都是子节点， 而‘条件’类中的‘或’、‘与’是分支节点。
 

@@ -8,7 +8,7 @@ categories: [reference]
 lang: zh
 ---
 
-![selector]({{ site.baseurl }}/img/references/selector.png)
+![selector]({{site.url}}{{site.baseurl}}/img/references/selector.png)
 
 Selector 节点是 BT 中传统的组合节点之一。 该节点以给定的顺序依次调用其子节点，直到
 其中一个成功返回，那么该节点也返回成功。如果所有的子节点都失败，那么该节点也失败。

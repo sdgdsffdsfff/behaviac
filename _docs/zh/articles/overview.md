@@ -347,7 +347,7 @@ behaviac组件的预制跟Unity引擎中的预制工作机制类似，如果在�
 
 执行行为树的过程中，当状态、条件发生变化或发生事件（Event）时如何响应或打断当前的执行是个重要的问题。
 
-请详看文档《[事件处理]({{ site.baseurl }}/docs/zh/tutorials/tutorial11_event/)》。
+请详看文档《[事件处理]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial11_event/)》。
 
 #### 3.3.5 热加载
 
@@ -357,7 +357,7 @@ behaviac组件中的编辑器和运行时库都支持热加载，但是只针对
 
 对于运行时端（或游戏端），只要在编辑器中修改了行为树文件并重新导出，那么在游戏运行过程中不用退出游戏，最新导出的行为树可以自动进行加载，这样就可以及时查看行为树最新的效果。
 
-请详看文档《[热加载]({{ site.baseurl }}/docs/zh/tutorials/tutorial12_hotreload/)》。
+请详看文档《[热加载]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial12_hotreload/)》。
 
 ### 3.4 有限状态机
 

@@ -21,7 +21,7 @@ lang: zh
 - 将全部源码（包括behaviac组件的所有[.h]({{site.repository}}/blob/master/inc/behaviac)和[.cpp]({{site.repository}}/blob/master/src)文件）全部复制到自己的游戏项目中。
 - 单独编译behaviac组件库，生成lib文件，然后自己的项目包含.h文件和生成的.lib文件。
 
-对于上面的第二种用法，请先参考[如何编译构建]({{ site.baseurl }}/docs/zh/tutorials/how_to_build/)文档来编译构建behavaic组件。
+对于上面的第二种用法，请先参考[如何编译构建]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/how_to_build/)文档来编译构建behavaic组件。
 
 在Windows平台，如果是使用VS来管理项目的，需要在VS的项目“Property Pages”->“Configuration Properties”->“C/C++”->“General”中的“Additional Include Directories”项中添加behaviac组件头文件（即图1中的inc文件夹）所在的路径，如下图所示：
 

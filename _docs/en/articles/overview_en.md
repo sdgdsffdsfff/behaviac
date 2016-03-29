@@ -348,7 +348,7 @@ SelectorMonitor node and WithPrecondition node as the expansion of the tradition
 
 Event as an attachment is mainly used when the game logic sends out Event; after receiving the respond, it interrupts the current ongoing Behavior Tree and switch to another Behavior Tree that is set.
 
-请详看文档《[事件处理]({{ site.baseurl }}/docs/zh/tutorials/tutorial11_event/)》。
+请详看文档《[事件处理]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial11_event/)》。
 
 ### Hot-loading
 

@@ -15,7 +15,7 @@ lang: zh
 ### 构建编辑器
 
 源码目录结构如图：
-![source_designer_path.png]({{ site.baseurl }}/img/faq/source_designer_path.png)
+![source_designer_path.png]({{site.url}}{{site.baseurl}}/img/faq/source_designer_path.png)
 
 请使用vs2010或以上打开并构建`tools/designer/BehaviacDesigner.sln`。
 
@@ -27,7 +27,7 @@ lang: zh
 
 ### Unity下构建C#
 
-![cs.png]({{ site.baseurl }}/img/faq/cs.png)
+![cs.png]({{site.url}}{{site.baseurl}}/img/faq/cs.png)
 `/integration`目录下是C#的两个项目：
 
  - `/integration/unity`是单元测试

@@ -10,7 +10,7 @@ lang: zh
 
 或（Or）节点接受两个以上的条件子节点，执行逻辑"或（||）"操作，如下图所示：
 
-![or]({{ site.baseurl }}/img/references/or.png)
+![or]({{site.url}}{{site.baseurl}}/img/references/or.png)
 
 图1 或节点
 

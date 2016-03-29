@@ -10,7 +10,7 @@ lang: zh
 
 条件执行节点（IfElse）是behaviac组件的一个扩展或快捷方式。条件执行节点必须要有3个子节点，第一个子节点是条件分支，第二个子节点是“真时执行”分支，第三个子节点是“假时执行”分支。如果条件为真，那么执行“真时执行”分支；否则，执行“假时执行”分支。而条件执行节点的执行结果则根据具体执行分支的执行结果来决定，如下图所示：
 
-![ifelse]({{ site.baseurl }}/img/references/ifelse.png)
+![ifelse]({{site.url}}{{site.baseurl}}/img/references/ifelse.png)
 
 图1 条件执行节点
 

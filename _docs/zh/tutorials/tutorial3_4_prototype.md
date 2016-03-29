@@ -128,8 +128,8 @@ lang: zh
 
 为了方便讨论，下面只介绍生成C++源码文件，生成C#源码文件的流程基本类似，也可以分别参考下面两篇文档：
 
-- [导出和使用C++行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_2_export_cpp/)
-- [导出和使用C#行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_3_export_cs/)
+- [导出和使用C++行为树]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial4_2_export_cpp/)
+- [导出和使用C#行为树]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial4_3_export_cs/)
 
 开始导出C++源码文件，点击工具栏中的“导出行为树”按钮，如下图所示：
 
@@ -235,7 +235,7 @@ int FirstAgent::FirstMethod()
 
 ### 6 导出元信息文件
 
-将上面自动生成的“FirstAgent.h”和“FirstAgent.cpp”文件添加到自己的游戏项目中，并参考[C++元信息的注册和导出]({{ site.baseurl }}/docs/zh/tutorials/tutorial3_1_meta_cpp_register/)的做法导出元信息文件。
+将上面自动生成的“FirstAgent.h”和“FirstAgent.cpp”文件添加到自己的游戏项目中，并参考[C++元信息的注册和导出]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial3_1_meta_cpp_register/)的做法导出元信息文件。
 
 这里我们假设生成的元信息文件名为“firstagent.xml”，并放在meta文件夹中，meta文件夹放在这个工作区的路径中，如下图所示：
 
@@ -273,7 +273,7 @@ int FirstAgent::FirstMethod()
 
 图6.6 第一棵导出的XML行为树
 
-有了导出的行为树，就可以参考[C++运行时端的使用上手]({{ site.baseurl }}/docs/zh/tutorials/tutorial14_cpp_workflow/)的做法开始使用运行时库。
+有了导出的行为树，就可以参考[C++运行时端的使用上手]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial14_cpp_workflow/)的做法开始使用运行时库。
 
 ### 7 导出行为树
 

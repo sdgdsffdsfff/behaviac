@@ -10,7 +10,7 @@ lang: zh
 
 类似序列节点（Sequence），随机序列节点（SequenceStochastic）也是从子节点中顺序执行，但不像序列节点每次都是按照排列的先后顺序，随机序列节点每次执行的时候随机的决定执行顺序，如下图所示：
 
-![sequencestochastic]({{ site.baseurl }}/img/references/sequencestochastic.png)
+![sequencestochastic]({{site.url}}{{site.baseurl}}/img/references/sequencestochastic.png)
 
 图1 随机选择节点
 
@@ -18,7 +18,7 @@ lang: zh
 
 与随机选择节点相同的是，随机序列节点也有随机数生成器可以配置，该随机数生成器是一个返回值为0.0到1.0之间的float类型的函数，如下图所示：
 
-![sequencestochastic]({{ site.baseurl }}/img/references/sequencestochastic_prop.png)
+![sequencestochastic]({{site.url}}{{site.baseurl}}/img/references/sequencestochastic_prop.png)
 
 图2 随机选择节点的属性
 

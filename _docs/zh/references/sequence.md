@@ -8,7 +8,7 @@ categories: [reference]
 lang: zh
 ---
 
-![sequence]({{ site.baseurl }}/img/references/sequence.png)
+![sequence]({{site.url}}{{site.baseurl}}/img/references/sequence.png)
 
 Sequence 节点是 BT 中传统的组合节点之一。 该节点以给定的顺序依次执行其子节点，直到所有子节点成功返回，该节点也返回成功。只要其中某个子节点失败，那么该节点也失败。
 

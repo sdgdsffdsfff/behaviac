@@ -23,4 +23,4 @@ lang: zh
 
 目前behaviac组件支持三种方式来处理状态变化或事件发生：并行节点、选择监测节点、事件附件等。简而言之，并行和选择监测节点的工作方式是采用“轮询”的方式，每次执行时需要重新评估所有子节点，而不是像其他节点会保留上一次正在执行的子节点以便在下一次执行时继续执行。事件附件是在游戏逻辑发出事件时，才按需得到响应。
 
-请详看文档《[事件处理]({{ site.baseurl }}/docs/zh/tutorials/tutorial11_event/)》。
+请详看文档《[事件处理]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial11_event/)》。

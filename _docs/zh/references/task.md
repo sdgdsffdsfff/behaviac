@@ -22,6 +22,6 @@ lang: zh
 
 图2 任务节点的属性
 
-带有任务节点的行为树主要用于事件的处理，请详看文档《[事件处理]({{ site.baseurl }}/docs/zh/tutorials/tutorial11_event/)》。
+带有任务节点的行为树主要用于事件的处理，请详看文档《[事件处理]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial11_event/)》。
 
 具体的执行逻辑可以查看[htn/task.cpp]({{site.repository}}/blob/master/src/htn/task.cpp)

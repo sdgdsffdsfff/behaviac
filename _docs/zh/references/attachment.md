@@ -14,13 +14,13 @@ lang: zh
 
 显式附件包括前置和后置，如下图所示：
 
-![attachment]({{ site.baseurl }}/img/references/attachment.png)
+![attachment]({{site.url}}{{site.baseurl}}/img/references/attachment.png)
 
 可以在任何一个节点通过鼠标拖拽来添加前置或后置附件，前置往往是作为前提条件（precondition）来使用，而后置往往是当节点结束的时候施加效果（effect）。
 
 前置的属性主要有“联合”、“执行时机”、“左参数”、“操作符”和“右参数”等，如下图所示：
 
-![attachment]({{ site.baseurl }}/img/references/preaction_prop.png)
+![attachment]({{site.url}}{{site.baseurl}}/img/references/preaction_prop.png)
 
 其中，“联合”是用于同一个节点的多个前置是“与（&&）”还是“或（||）”的运算关系，执行时的逻辑顺序是从上往下依次执行，不管“与”还是“或”。
 
@@ -34,7 +34,7 @@ lang: zh
 
 后置的属性主要有“执行时机”、“左参数”、“操作符”和“右参数”等，如下图所示：
 
-![attachment]({{ site.baseurl }}/img/references/postaction_prop.png)
+![attachment]({{site.url}}{{site.baseurl}}/img/references/postaction_prop.png)
 
 “执行时机”分为Success、Failure和Both三种类型：
 
@@ -48,4 +48,4 @@ lang: zh
 
 隐式附件主要是指事件这种附件，编辑器中没有单独的事件节点供拖拽来产生，需要通过拖拽另一棵行为树到目标行为树的节点来间接产生该事件附件。
 
-请详看文档《[事件处理]({{ site.baseurl }}/docs/zh/tutorials/tutorial11_event/)》。
+请详看文档《[事件处理]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial11_event/)》。

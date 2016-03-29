@@ -27,7 +27,7 @@ lang: zh
 
 而当BEHAVIAC_RELEASE定义的时候的最终版里，logging和socketing是关闭的，也不支持连接编辑器。
 
-具体可以参考[开发功能开关]({{ site.baseurl }}/docs/zh/articles/config/)
+具体可以参考[开发功能开关]({{site.url}}{{site.baseurl}}/docs/zh/articles/config/)
 
 总之，针对效率可以有下述选择：
 

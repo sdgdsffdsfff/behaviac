@@ -12,7 +12,7 @@ lang: zh
 
 运行时（游戏）端使用行为树之前，需要确保行为树文件已经成功导出。
 
-如何注册和导出元信息请参考[C++元信息的注册和导出]({{ site.baseurl }}/docs/zh/tutorials/tutorial3_1_meta_cpp_register/)，如何导出行为树请参考[导出和使用XML/BSON行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_1_export_xml_bson/)。
+如何注册和导出元信息请参考[C++元信息的注册和导出]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial3_1_meta_cpp_register/)，如何导出行为树请参考[导出和使用XML/BSON行为树]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial4_1_export_xml_bson/)。
 
 通过编辑器导出行为树文件后，运行时端的执行主要分为三个部分：
 
@@ -84,7 +84,7 @@ bool InitPlayer(const char* pszTreeName)
 
 在游戏的主循环中，添加执行Agent实例的行为树相关代码，也即通过调用Agent类的接口btexec()或Workspace类的接口Update()来执行行为树。
 
-这两种执行方式的区别，请参考[更新流程]({{ site.baseurl }}/docs/zh/tutorials/tutorial13_updateloop/)。
+这两种执行方式的区别，请参考[更新流程]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial13_updateloop/)。
 
 如下代码样例所示：
 

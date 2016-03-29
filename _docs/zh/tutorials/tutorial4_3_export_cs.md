@@ -32,7 +32,7 @@ lang: zh
 
 - 注意：这些自动生成的文件都需要包含到自己的游戏项目中，一起参与整个项目代码的编译和构建。
 
-- 在项目中包含了这些自动生成的`.cs`文件后，就可以与前面提及的[导出和使用XML/BSON行为树]({{ site.baseurl }}/docs/zh/tutorials/tutorial4_1_export_xml_bson/)一样的接口和方式加载使用这些文件，只是需要将文件格式改为`EFF_cs`：
+- 在项目中包含了这些自动生成的`.cs`文件后，就可以与前面提及的[导出和使用XML/BSON行为树]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial4_1_export_xml_bson/)一样的接口和方式加载使用这些文件，只是需要将文件格式改为`EFF_cs`：
 
 {% highlight cs %}
 behaviac.Workspace.Instance.FileFormat = behaviac.Workspace.EFileFormat.EFF_cs;

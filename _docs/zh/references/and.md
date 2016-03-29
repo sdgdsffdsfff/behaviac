@@ -10,7 +10,7 @@ lang: zh
 
 与（And）节点接受两个以上的条件子节点，执行逻辑"与（&&）"操作，如下图所示：
 
-![and]({{ site.baseurl }}/img/references/and.png)
+![and]({{site.url}}{{site.baseurl}}/img/references/and.png)
 
 图1 与节点
 

@@ -17,13 +17,13 @@ lang: zh
 
 在图1中，该等待信号节点一直“阻塞”直到它上面附加的条件是true的时候才结束“阻塞”，从而继续序列节点中后面的节点：
 
-![waitforsignal]({{ site.baseurl }}/img/references/waitforsignal.png)
+![waitforsignal]({{site.url}}{{site.baseurl}}/img/references/waitforsignal.png)
 
 图1 不带子节点的等待信号节点
 
 而在图2中，则是在该等待信号节点上附加的条件是true的时候，结束“阻塞”而执行其子节点。
 
-![waitforsignal]({{ site.baseurl }}/img/references/waitforsignal2.png)
+![waitforsignal]({{site.url}}{{site.baseurl}}/img/references/waitforsignal2.png)
 
 图2 带子节点的等待信号节点
 

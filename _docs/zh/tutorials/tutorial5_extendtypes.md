@@ -12,7 +12,7 @@ lang: zh
 这里有两种情况，其处理方式是不同的：
 
 - 有些类型是程序中本来就有的，该类型可能是某个第三方库中提供的，但这些类型是不方便随意修改的。
-- 另外一些可以随便修改的类型，请参考[自定义类或结构体]({{ site.baseurl }}/docs/zh/tutorials/tutorial6_customtypes/)。
+- 另外一些可以随便修改的类型，请参考[自定义类或结构体]({{site.url}}{{site.baseurl}}/docs/zh/tutorials/tutorial6_customtypes/)。
 
 ### 字符串和数组类型
 

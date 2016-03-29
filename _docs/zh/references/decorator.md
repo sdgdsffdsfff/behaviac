@@ -16,13 +16,13 @@ lang: zh
 
 输出消息节点作为调试的辅助工具，执行完子节点后，输出配置的消息，如下图所示：
 
-![log]({{ site.baseurl }}/img/references/log.png)
+![log]({{site.url}}{{site.baseurl}}/img/references/log.png)
 
 图1 输出消息节点
 
 可以在“输出消息”属性中设置想输出的任何消息，如下图所示：
 
-![log]({{ site.baseurl }}/img/references/log_prop.png)
+![log]({{site.url}}{{site.baseurl}}/img/references/log_prop.png)
 
 图2 输出消息节点的属性
 
@@ -32,7 +32,7 @@ lang: zh
 
 非节点将子节点的返回值取反，如下图所示：
 
-![not]({{ site.baseurl }}/img/references/not.png)
+![not]({{site.url}}{{site.baseurl}}/img/references/not.png)
 
 图3 非节点
 
@@ -50,7 +50,7 @@ lang: zh
 
 循环节点循环执行子节点指定的次数，如下图所示：
 
-![loop]({{ site.baseurl }}/img/references/loop.png)
+![loop]({{site.url}}{{site.baseurl}}/img/references/loop.png)
 
 图4 循环节点
 
@@ -60,13 +60,13 @@ lang: zh
 
 循环直到节点在指定的次数到达后返回成功，在指定的次数到达前一直返回正在执行。如果指定的次数小于0，则表示无限循环，总是返回正在执行。如下图所示：
 
-![loopuntil]({{ site.baseurl }}/img/references/loopuntil.png)
+![loopuntil]({{site.url}}{{site.baseurl}}/img/references/loopuntil.png)
 
 图5 循环直到节点
 
 循环直到节点除了像循环节点可以配置循环的次数，还有一个属性“直到子树”需要配置，如下图所示：
 
-![loopuntil_prop]({{ site.baseurl }}/img/references/loopuntil_prop.png)
+![loopuntil_prop]({{site.url}}{{site.baseurl}}/img/references/loopuntil_prop.png)
 
 图6 循环直到节点的属性
 
@@ -88,7 +88,7 @@ lang: zh
 
 重复节点根据指定的次数，在一次更新过程中重复执行子节点然后返回，如下图所示：
 
-![repeat]({{ site.baseurl }}/img/references/repeat.png)
+![repeat]({{site.url}}{{site.baseurl}}/img/references/repeat.png)
 
 图7 重复节点
 
@@ -104,7 +104,7 @@ lang: zh
 
 重复节点可以配置重复执行的“次数”和“子节点结束时作用”，如下图所示：
 
-![repeat_prop]({{ site.baseurl }}/img/references/repeat_prop.png)
+![repeat_prop]({{site.url}}{{site.baseurl}}/img/references/repeat_prop.png)
 
 图8 重复节点的属性
 
@@ -114,13 +114,13 @@ lang: zh
 
 时间节点用于在指定的时间内，持续调用其子节点，如下图所示：
 
-![time]({{ site.baseurl }}/img/references/time.png)
+![time]({{site.url}}{{site.baseurl}}/img/references/time.png)
 
 图9 时间节点
 
 时间节点可以配置其属性“时间”，该属性是float或double类型，可以配置一个常量、成员属性或方法的返回值，如下图所示：
 
-![time]({{ site.baseurl }}/img/references/time_prop.png)
+![time]({{site.url}}{{site.baseurl}}/img/references/time_prop.png)
 
 图10 时间节点的属性
 
@@ -130,13 +130,13 @@ lang: zh
 
 帧数节点用于在指定的帧数内，持续调用其子节点，如下图所示：
 
-![frames]({{ site.baseurl }}/img/references/frames.png)
+![frames]({{site.url}}{{site.baseurl}}/img/references/frames.png)
 
 图11 帧数节点
 
 帧数节点可以配置其属性“帧数”，该属性是int类型，可以配置一个常量、成员属性或方法的返回值，如下图所示：
 
-![frames]({{ site.baseurl }}/img/references/frames_prop.png)
+![frames]({{site.url}}{{site.baseurl}}/img/references/frames_prop.png)
 
 图12 帧数节点的属性
 
@@ -146,7 +146,7 @@ lang: zh
 
 计数限制节点不同于循环节点，它在指定的循环次数到达前返回子节点返回的状态，无论成功、失败还是正在执行，如下图所示：
 
-![countlimit]({{ site.baseurl }}/img/references/countlimit.png)
+![countlimit]({{site.url}}{{site.baseurl}}/img/references/countlimit.png)
 
 图13 计数限制节点
 
@@ -154,7 +154,7 @@ lang: zh
 
 此外，计数限制节点上还可以添加中断条件作为重新开始条件，如下图所示：
 
-![countlimit]({{ site.baseurl }}/img/references/countlimit_interupt.png)
+![countlimit]({{site.url}}{{site.baseurl}}/img/references/countlimit_interupt.png)
 
 图14 带中断条件的计数限制节点
 
@@ -164,13 +164,13 @@ lang: zh
 
 返回成功直到节点在指定的次数到达前返回成功，指定的次数到达后返回失败。如果指定的次数小于0，则总是返回成功。如下图所示：
 
-![successuntil]({{ site.baseurl }}/img/references/successuntil.png)
+![successuntil]({{site.url}}{{site.baseurl}}/img/references/successuntil.png)
 
 图15 返回成功直到节点
 
 返回失败直到节点在指定的次数到达前返回失败，指定的次数到达后返回成功。如果指定的次数小于0，则总是返回失败。如下图所示：
 
-![failureuntil]({{ site.baseurl }}/img/references/failureuntil.png)
+![failureuntil]({{site.url}}{{site.baseurl}}/img/references/failureuntil.png)
 
 图16 返回失败直到节点
 
