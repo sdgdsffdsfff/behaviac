@@ -36,7 +36,6 @@ lang: zh
 - 在.h文件中，通过宏BEHAVIAC_EXTEND_EXISTING_TYPE特化某个需要的类型。
 如下代码样例所示（假设TestNS::Float2是某个第三方库中的类型，需要用到但不能修改它）：
 
-
 ```cpp
 
 BEHAVIAC_EXTEND_EXISTING_TYPE(myFloat2, TestNS::Float2);
@@ -45,6 +44,7 @@ BEHAVIAC_EXTEND_EXISTING_TYPE(myFloat2, TestNS::Float2);
 
 - 定义一个“相似”的struct（myFloat2），该struct的作用是用来定义那个已存在的类的成员，以便behaviac能够访问该类。
 
+- 通过DECLARE_BEHAVIAC_STRUCT的第二个参数isRefType为true或false表示该类型是否为引用类型，如下代码所示。
 
 ```cpp
 
@@ -52,7 +52,7 @@ struct myFloat2
 {
     float x;
     float y;
-    DECLARE_BEHAVIAC_STRUCT (myFloat2);
+    DECLARE_BEHAVIAC_STRUCT (myFloat2, false);
     myFloat2()
 	{
 	}
@@ -64,7 +64,6 @@ struct myFloat2
 ```
 
 - 在命名空间StringUtils的嵌套子空间Private中实现该类型的ToString()和FromString()函数。注意myFloat2中需要实现相应的转换构造函数（myFloat2(const TestNS::Float2& v)），如下代码样例所示：
-
 
 ```cpp
 
@@ -106,7 +105,6 @@ namespace behaviac
 
 - 实现该类型的模板函数SwapByteTempl()，注意该函数不能放在任何命名空间（namespace）中，如下代码样例所示：
 
-
 ```cpp
 
 template< typename SWAPPER >
@@ -119,7 +117,6 @@ inline void SwapByteTempl(TestNS::Float2& v)
 ```
 
 - 在命名空间behaviac的嵌套子空间Details中实现该类型的Equal()模板函数，如下代码样例所示：
-
 
 ```cpp
 
@@ -138,7 +135,6 @@ namespace behaviac
 ```
 
 - 在初始化注册（Register）的部分需要加上如下的代码，反注册（UnRegister）的部分添加相应UnRegister的代码。注意：这部分Register/UnRegister的代码不是必须的，如果该类型没有用作par或者没有用作条件比较，就可以不需要。
-
 
 ```cpp
 
