@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and limitations under the License.
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TestNS
@@ -31,8 +32,43 @@ public enum EnumTest
 {
     EnumTest_One = 0,
     EnumTest_OneAfterOne = 1,
-};
+}
 
+[behaviac.TypeMetaInfo("ActionClip", "动作", behaviac.ERefType.ERT_ValueType)]
+public class Act
+{
+    [behaviac.MemberMetaInfo("Var_B_Loop", "动作Loop")]
+    public bool Var_B_Loop;
+
+    [behaviac.MemberMetaInfo("Var_Lis_Enum", "枚举类型的数组")]
+    public List<EnumTest> Var_List_EnumTest;
+}
+
+namespace BSASN
+{
+    [behaviac.TypeMetaInfo()]
+    public struct SpatialCoord
+    {
+        [behaviac.MemberMetaInfo()]
+        public float coordX;
+
+        [behaviac.MemberMetaInfo()]
+        public float coordY;
+    }
+
+    [behaviac.TypeMetaInfo()]
+    public struct TransitPlan
+    {
+        [behaviac.MemberMetaInfo()]
+        public string plan_ID;
+
+        [behaviac.MemberMetaInfo()]
+        public int plan_selection_precedence;
+
+        [behaviac.MemberMetaInfo()]
+        public List<SpatialCoord> transit_points;
+    }
+}
 
 [behaviac.TypeMetaInfo()]
 public class AgentNodeTest : behaviac.Agent
@@ -60,6 +96,9 @@ public class AgentNodeTest : behaviac.Agent
 
     [behaviac.MemberMetaInfo()]
     public EnumTest testColor = EnumTest.EnumTest_One;
+
+    [behaviac.MemberMetaInfo()]
+    public Act testVar_Act = null;
 
     public bool m_bCanSee = false;
 
@@ -100,7 +139,8 @@ public class AgentNodeTest : behaviac.Agent
         TestFloat2.y = 2.0f;
 
         testVar_str_0 = string.Empty;
-        this.Variables.Clear();
+
+        testVar_Act = null;
     }
 
     [behaviac.MethodMetaInfo()]
@@ -108,10 +148,19 @@ public class AgentNodeTest : behaviac.Agent
     {
         var testChildAgent = getChildAgent<ChildNodeTest>("par_child_agent_1");
         this.SetVariable<ChildNodeTest>("par_child_agent_1", testChildAgent);
+
+        if (this.IsValidVariable("par_child"))
+            this.SetVariable<ChildNodeTest>("par_child", _child);
+    }
+
+    private ChildNodeTest _child = null;
+    public void SetChildAgent(ChildNodeTest child)
+    {
+        _child = child;
     }
 
     public T getChildAgent<T>(string strChildAgentName)
-where T : behaviac.Agent
+        where T : behaviac.Agent
     {
         var childAgent = gameObject.AddComponent<T>();
         return childAgent;
@@ -119,6 +168,7 @@ where T : behaviac.Agent
 
     public void init() {
         base.Init();
+
         resetProperties();
     }
 
@@ -332,6 +382,24 @@ where T : behaviac.Agent
         testVar_str_0 = str;
         action_2_exit_count++;
     }
+
+    [behaviac.MethodMetaInfo()]
+   	public string GetRefTree()  {
+		return "node_test/reference_sub_0";
+	}
+
+    [behaviac.MethodMetaInfo()]
+    void testVectorStruct(List<TestNS.Float2> param)
+	{}
+
+    [behaviac.MethodMetaInfo()]
+	void transitPlanTactics(BSASN.TransitPlan task_tactics_type, EnumTest enumTest, string platform_ID)
+	{
+		behaviac.Debug.Check(task_tactics_type.transit_points.Count == 3);
+        behaviac.Debug.Check(enumTest == EnumTest.EnumTest_OneAfterOne);
+        behaviac.Debug.Check(string.IsNullOrEmpty(platform_ID));
+	}
+
 }
 
 

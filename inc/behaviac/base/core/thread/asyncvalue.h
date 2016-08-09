@@ -105,7 +105,9 @@ namespace behaviac
 		virtual double GetDouble() const
 		{
 			BEHAVIAC_ASSERT(GetClassTypeNumberId<double>() == GetClassTypeNumberId<TTYPE>() || 
-				GetClassTypeNumberId<float>() == GetClassTypeNumberId<TTYPE>());
+				GetClassTypeNumberId<float>() == GetClassTypeNumberId<TTYPE>() ||
+				GetClassTypeNumberId<int>() == GetClassTypeNumberId<TTYPE>() || 
+				GetClassTypeNumberId<long>() == GetClassTypeNumberId<TTYPE>());
 
 			double r = ConvertToDouble(mValue->value);
 			return r;
@@ -135,7 +137,7 @@ namespace behaviac
 
         virtual void GetTypeName(behaviac::string& typeName)
         {
-            typeName = ::GetTypeDescString<T>();
+            typeName = GetTypeDescString<T>();
         }
 
         virtual const char* GetString() const
@@ -275,7 +277,7 @@ namespace behaviac
 
         virtual void GetTypeName(behaviac::string& typeName)
         {
-            typeName = ::GetTypeDescString<const char*>();
+            typeName = GetTypeDescString<const char*>();
         }
 
         virtual const char* GetString() const
@@ -371,7 +373,7 @@ namespace behaviac
 
         virtual void GetTypeName(behaviac::string& typeName)
         {
-            typeName = ::GetTypeDescString<char*>();
+            typeName = GetTypeDescString<char*>();
         }
 
         virtual const char* GetString() const
@@ -468,7 +470,7 @@ namespace behaviac
 
         virtual void GetTypeName(behaviac::string& typeName)
         {
-            typeName = ::GetTypeDescString<char*>();
+            typeName = GetTypeDescString<char*>();
         }
 
         virtual const char* GetString() const

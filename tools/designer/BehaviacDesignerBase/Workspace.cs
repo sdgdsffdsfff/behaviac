@@ -65,16 +65,21 @@ namespace Behaviac.Design
                 }
             }
         }
-
         public static bool DebugWorkspace = true;
 
-        private string _name;
+        public const string kExtraMeta = "_extra_meta.xml";
 
-        /// <summary>
-        /// The name of the workspace.
-        /// </summary>
-        public string Name {
+        private string _name = "";
+        public string Name
+        {
             get { return _name; }
+        }
+
+        private string _language = "";
+        public string Language
+        {
+            get { return _language; }
+            set { _language = value; }
         }
 
         private string _file_name;
@@ -162,13 +167,6 @@ namespace Behaviac.Design
                 set { _exportUnifiedFile = value; }
             }
 
-            private bool _generateCustomizedTypes = true;
-            public bool GenerateCustomizedTypes
-            {
-                get { return _generateCustomizedTypes; }
-                set { _generateCustomizedTypes = value; }
-            }
-
             /// <summary>
             /// ExportFolder should be saved as relative path, but used as absoluted path.
             /// </summary>
@@ -192,8 +190,13 @@ namespace Behaviac.Design
             get { return _exportDatas; }
         }
 
-        public void SetExportInfo(string format, bool isExported, bool exportUnifiedFile, bool generateCustomizedTypes, string folder = null, List<string> includedFilenames = null)
+        public void SetExportInfo(string format, bool isExported, bool exportUnifiedFile, string folder = null, List<string> includedFilenames = null)
         {
+            if (string.IsNullOrEmpty(format))
+            {
+                return;
+            }
+
             if (!_exportDatas.ContainsKey(format)) {
                 _exportDatas[format] = new ExportData();
             }
@@ -201,7 +204,6 @@ namespace Behaviac.Design
             ExportData data = _exportDatas[format];
             data.IsExported = isExported;
             data.ExportUnifiedFile = exportUnifiedFile;
-            data.GenerateCustomizedTypes = generateCustomizedTypes;
 
             if (folder != null)
                 data.ExportFolder = folder;
@@ -218,12 +220,20 @@ namespace Behaviac.Design
                 return data.IsExported;
             }
 
-            return true;
+            // export xml only by default
+            if (format == "xml")
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool ExportedUnifiedFile(string format) {
             if (format == "xml" || format == "bson")
+            {
                 return false;
+            }
 
             if (_exportDatas.ContainsKey(format))
             {
@@ -234,18 +244,15 @@ namespace Behaviac.Design
             return true;
         }
 
-        public bool GenerateCustomizedTypes(string format)
+        public bool IsSetExportFolder(string format)
         {
-            if (format == "xml" || format == "bson")
-                return false;
-
             if (_exportDatas.ContainsKey(format))
             {
                 ExportData data = _exportDatas[format];
-                return data.GenerateCustomizedTypes;
+                return !string.IsNullOrEmpty(data.ExportFolder);
             }
 
-            return true;
+            return false;
         }
 
         public string GetExportFolder(string format) {
@@ -268,6 +275,7 @@ namespace Behaviac.Design
 
         public string GetExportAbsoluteFolder(string format) {
             string wsFilename = Workspace.Current.FileName.Replace('/', '\\');
+
             string exportFolder = Workspace.Current.GetExportFolder(format);
             exportFolder = exportFolder.Replace('/', '\\');
 
@@ -301,6 +309,7 @@ namespace Behaviac.Design
 
             string path = Path.GetDirectoryName(_file_name);
             string result = Path.Combine(path, absolute);
+            result = Path.GetFullPath(result);
             return result;
         }
 
@@ -317,9 +326,11 @@ namespace Behaviac.Design
         /// <param name="name">The name of the workspace.</param>
         /// <param name="folder">The folder the behaviors will be loaded from.</param>
         /// <param name="defaultExportFolder">The folder behaviours are exported to by default.</param>
-        public Workspace(string path, string name, string xmlfolder, string folder, string defaultExportFolder, Dictionary<string, ExportData> exportDatas = null) {
+        public Workspace(string language, string path, string name, string xmlfolder, string folder, string defaultExportFolder, Dictionary<string, ExportData> exportDatas = null)
+        {
             _file_name = Path.GetFullPath(path);
             _name = name;
+            _language = language;
 
             Debug.Check(_file_name != null);
             _xmlFolder = MakeAbsolutePath(xmlfolder);
@@ -449,6 +460,7 @@ namespace Behaviac.Design
                 XmlNode root = xml.ChildNodes[1];
 
                 if (root.Name == "workspace") {
+                    string language = GetAttribute(root, "language");
                     string name = GetAttribute(root, "name");
                     string xmlfolder = GetAttribute(root, "xmlmetafolder");
                     string folder = GetAttribute(root, "folder");
@@ -461,7 +473,7 @@ namespace Behaviac.Design
                         throw new Exception(Resources.LoadWorkspaceError);
                     }
 
-                    Workspace ws = new Workspace(filename, name, xmlfolder, folder, defaultExportFolder);
+                    Workspace ws = new Workspace(language, filename, name, xmlfolder, folder, defaultExportFolder);
 
                     foreach(XmlNode subnode in root) {
                         if (subnode.NodeType == XmlNodeType.Element) {
@@ -493,10 +505,6 @@ namespace Behaviac.Design
 
                                                     case "exportunifiedfile":
                                                         data.ExportUnifiedFile = Boolean.Parse(exportInfoNode.InnerText.Trim());
-                                                        break;
-
-                                                    case "generatecustomizedtypes":
-                                                        data.GenerateCustomizedTypes = Boolean.Parse(exportInfoNode.InnerText.Trim());
                                                         break;
 
                                                     case "folder":
@@ -583,14 +591,6 @@ namespace Behaviac.Design
                                 exporter.AppendChild(exportUnifiedFile);
                             }
 
-                            // Create generateCustomizedTypes node.
-                            if (format != "xml" && format != "bson")
-                            {
-                                XmlElement generateCustomizedTypes = xml.CreateElement("generatecustomizedtypes");
-                                generateCustomizedTypes.InnerText = data.GenerateCustomizedTypes.ToString();
-                                exporter.AppendChild(generateCustomizedTypes);
-                            }
-
                             // Create folder node.
                             if (!string.IsNullOrEmpty(data.ExportFolder)) {
                                 XmlElement folder = xml.CreateElement("folder");
@@ -629,13 +629,18 @@ namespace Behaviac.Design
             }
         }
 
-        private string getBlackboardPath() {
-            //string wsDir = Path.GetDirectoryName(this.FileName);
-            string wsDir = this.Folder;
-            return Path.Combine(wsDir, "behaviac.bb.xml");
+        private string getExtraMetaPath()
+        {
+            return Path.Combine(this.XMLFolder, kExtraMeta);
         }
 
-        private string getExportCustomMembersXmlPath() {
+        private string getBlackboardPath()
+        {
+            return Path.Combine(this.Folder, "behaviac.bb.xml");
+        }
+
+        private string getExportCustomMembersXmlPath()
+        {
             return Path.Combine(this.DefaultExportFolder, "behaviac.bb.xml");
         }
 
@@ -661,28 +666,37 @@ namespace Behaviac.Design
 
             XmlDocument bbfile = new XmlDocument();
 
-            try {
+            try
+            {
                 FileStream fs = new FileStream(bbPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 bbfile.Load(fs);
                 fs.Close();
 
-                XmlNode root = bbfile.ChildNodes[1];
-
-                if (root.Name == "meta") {
-                    foreach(XmlNode xmlNode in root.ChildNodes) {
-                        if (xmlNode.Name == "agents") {
-                            _agentsXMLNode = xmlNode;
-
-                        } else if (xmlNode.Name == "types") {
-                            _typesXMLNode = xmlNode;
+                for (int i = 1; i < bbfile.ChildNodes.Count; ++i)
+                {
+                    XmlNode root = bbfile.ChildNodes[i];
+                    if (root.Name == "meta")
+                    {
+                        foreach (XmlNode xmlNode in root.ChildNodes)
+                        {
+                            if (xmlNode.Name == "agents")
+                            {
+                                _agentsXMLNode = xmlNode;
+                            }
+                            else if (xmlNode.Name == "types")
+                            {
+                                _typesXMLNode = xmlNode;
+                            }
                         }
                     }
-
-                } else if (root.Name == "agents") {
-                    _agentsXMLNode = root;
+                    else if (root.Name == "agents")
+                    {
+                        _agentsXMLNode = root;
+                    }
                 }
-
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 MessageBox.Show(e.Message, Resources.LoadError, MessageBoxButtons.OK);
 
                 bbfile.RemoveAll();
@@ -699,251 +713,313 @@ namespace Behaviac.Design
 
         private static void LoadCustomMembers(List<Nodes.Node.ErrorCheck> result, XmlNode rootNode)
         {
-            if (rootNode == null)
-            { return; }
+            try
+            {
+                if (rootNode == null)
+                { return; }
 
-            // Set the default base agent.
-            if (Plugin.AgentTypes.Count == 0) {
-                AgentType agent = new AgentType(typeof(Agent), "Agent", false, false, "Agent", "");
-                Plugin.AgentTypes.Add(agent);
-            }
+                // Set the default base agent.
+                if (Plugin.AgentTypes.Count == 0)
+                {
+                    AgentType agent = new AgentType(typeof(Agent), "Agent", false, false, "Agent", "");
+                    Plugin.AgentTypes.Add(agent);
+                }
 
-            foreach(XmlNode xmlNode in rootNode.ChildNodes) {
-                if (xmlNode.Name == "agent") {
-                    string agentName = GetAttribute(xmlNode, "type");
-                    string agentBase = GetAttribute(xmlNode, "base");
-                    int baseIndex = -1;
+                foreach (XmlNode xmlNode in rootNode.ChildNodes)
+                {
+                    if (xmlNode.Name == "agent")
+                    {
+                        string agentName = GetAttribute(xmlNode, "type");
+                        string agentBase = GetAttribute(xmlNode, "base");
+                        int baseIndex = -1;
 
-                    for (int i = 0; i < Plugin.AgentTypes.Count; ++i) {
-                        if (Plugin.AgentTypes[i].AgentTypeName == agentBase) {
-                            baseIndex = i;
-                            break;
-                        }
-                    }
-
-                    string agentDisp = GetAttribute(xmlNode, "disp");
-                    string agentDesc = GetAttribute(xmlNode, "desc");
-
-                    if (string.IsNullOrEmpty(agentDisp))
-                    { agentDisp = agentName; }
-
-                    AgentType agent = Plugin.GetAgentType(agentName);
-
-                    if (agent == null) {
-                        agent = new AgentType(agentName, (baseIndex > -1) ? Plugin.AgentTypes[baseIndex] : null, agentDisp, agentDesc);
-                        Plugin.AgentTypes.Add(agent);
-                    }
-
-                    foreach(XmlNode bbNode in xmlNode) {
-                        if (bbNode.Name == "properties") {
-                            foreach(XmlNode propNode in bbNode) {
-                                if (propNode.Name == "property") {
-                                    string propName = GetAttribute(propNode, "name");
-
-                                    string isStatic = GetAttribute(propNode, "static");
-                                    bool bStatic = false;
-
-                                    if (!string.IsNullOrEmpty(isStatic) && isStatic == "true")
-                                    { bStatic = true; }
-
-                                    string isPublic = GetAttribute(propNode, "public");
-                                    bool bPublic = false;
-
-                                    if (string.IsNullOrEmpty(isPublic) || isPublic == "true")
-                                    { bPublic = true; }
-
-                                    string isReadonly = GetAttribute(propNode, "readonly");
-                                    bool bReadonly = false;
-
-                                    if (!string.IsNullOrEmpty(isReadonly) && isReadonly == "true")
-                                    { bReadonly = true; }
-
-                                    string propType = GetAttribute(propNode, "type");
-                                    Type type = Plugin.GetTypeFromName(propType);
-
-                                    string classname = GetAttribute(propNode, "classname");
-
-                                    if (string.IsNullOrEmpty(classname))
-                                    { classname = agent.AgentTypeName; }
-
-                                    string propDisp = GetAttribute(propNode, "disp");
-
-                                    if (string.IsNullOrEmpty(propDisp))
-                                    { propDisp = propName; }
-
-                                    string propDesc = GetAttribute(propNode, "desc");
-
-                                    PropertyDef prop = new PropertyDef(agent, type, classname, propName, propDisp, propDesc);
-                                    prop.IsStatic = bStatic;
-                                    prop.IsPublic = bPublic;
-                                    prop.IsReadonly = bReadonly;
-
-                                    string defaultValue = GetAttribute(propNode, "defaultvalue");
-
-                                    if (!string.IsNullOrEmpty(defaultValue)) {
-                                        prop.Variable = new VariableDef(null);
-                                        Plugin.InvokeTypeParser(result, type, defaultValue, (object value) => prop.Variable.Value = value, null);
-                                    }
-
-                                    agent.AddProperty(prop);
-                                }
+                        for (int i = 0; i < Plugin.AgentTypes.Count; ++i)
+                        {
+                            if (Plugin.AgentTypes[i].AgentTypeName == agentBase)
+                            {
+                                baseIndex = i;
+                                break;
                             }
+                        }
 
-                        } else if (bbNode.Name == "methods") {
-                            foreach(XmlNode methodNode in bbNode) {
-                                if (methodNode.Name == "method") {
-                                    string methodName = GetAttribute(methodNode, "name");
-                                    Type returnType = Plugin.GetTypeFromName(GetAttribute(methodNode, "returntype"));
+                        string agentDisp = GetAttribute(xmlNode, "disp");
+                        string agentDesc = GetAttribute(xmlNode, "desc");
 
-                                    string isStatic = GetAttribute(methodNode, "static");
-                                    bool bStatic = false;
+                        if (string.IsNullOrEmpty(agentDisp))
+                        { agentDisp = agentName; }
 
-                                    if (!string.IsNullOrEmpty(isStatic) && isStatic == "true")
-                                    { bStatic = true; }
+                        AgentType agent = Plugin.GetAgentType(agentName);
 
-                                    string isPublic = GetAttribute(methodNode, "public");
-                                    bool bPublic = false;
+                        if (agent == null)
+                        {
+                            agent = new AgentType(agentName, (baseIndex > -1) ? Plugin.AgentTypes[baseIndex] : null, agentDisp, agentDesc);
+                            Plugin.AgentTypes.Add(agent);
+                        }
 
-                                    if (string.IsNullOrEmpty(isPublic) || isPublic == "true")
-                                    { bPublic = true; }
+                        foreach (XmlNode bbNode in xmlNode)
+                        {
+                            if (bbNode.Name == "properties")
+                            {
+                                foreach (XmlNode propNode in bbNode)
+                                {
+                                    if (propNode.Name == "property")
+                                    {
+                                        string propName = GetAttribute(propNode, "name");
+                                        try
+                                        {
+                                            string isStatic = GetAttribute(propNode, "static");
+                                            bool bStatic = false;
 
-                                    string classname = GetAttribute(methodNode, "classname");
+                                            if (!string.IsNullOrEmpty(isStatic) && isStatic == "true")
+                                            { bStatic = true; }
 
-                                    if (string.IsNullOrEmpty(classname))
-                                    { classname = agent.AgentTypeName; }
+                                            string isPublic = GetAttribute(propNode, "public");
+                                            bool bPublic = false;
 
-                                    string methodDisp = GetAttribute(methodNode, "disp");
+                                            if (string.IsNullOrEmpty(isPublic) || isPublic == "true")
+                                            { bPublic = true; }
 
-                                    if (string.IsNullOrEmpty(methodDisp))
-                                    { methodDisp = methodName; }
+                                            string isReadonly = GetAttribute(propNode, "readonly");
+                                            bool bReadonly = false;
 
-                                    string methodDesc = GetAttribute(methodNode, "desc");
+                                            if (!string.IsNullOrEmpty(isReadonly) && isReadonly == "true")
+                                            { bReadonly = true; }
 
-                                    bool istask = (GetAttribute(methodNode, "istask") == "true");
-                                    //bool isevent = (GetAttribute(methodNode, "isevent") == "true");
+                                            string propType = GetAttribute(propNode, "type");
+                                            Type type = Plugin.GetTypeFromName(propType);
 
-                                    MemberType memberType = MemberType.Method;
+                                            string classname = GetAttribute(propNode, "classname");
 
-                                    if (istask) {
-                                        memberType = MemberType.Task;
+                                            if (string.IsNullOrEmpty(classname))
+                                            { classname = agent.AgentTypeName; }
+
+                                            string propDisp = GetAttribute(propNode, "disp");
+
+                                            if (string.IsNullOrEmpty(propDisp))
+                                            { propDisp = propName; }
+
+                                            string propDesc = GetAttribute(propNode, "desc");
+
+                                            PropertyDef prop = new PropertyDef(agent, type, classname, propName, propDisp, propDesc);
+                                            prop.IsStatic = bStatic;
+                                            prop.IsPublic = bPublic;
+                                            prop.IsReadonly = bReadonly;
+
+                                            string defaultValue = GetAttribute(propNode, "defaultvalue");
+
+                                            if (!string.IsNullOrEmpty(defaultValue))
+                                            {
+                                                prop.Variable = new VariableDef(null);
+                                                Plugin.InvokeTypeParser(result, type, defaultValue, (object value) => prop.Variable.Value = value, null);
+                                            }
+
+                                            agent.AddProperty(prop);
+                                        }
+                                        catch(Exception)
+                                        {
+                                            string errorInfo = string.Format("error when loading Agent '{0}' Member '{1}'", agentName, propName);
+                                            MessageBox.Show(errorInfo, "Loading Custom Meta", MessageBoxButtons.OK);
+                                        }
                                     }
+                                }
 
-                                    methodName = string.Format("{0}::{1}", agent.AgentTypeName, methodName);
+                            }
+                            else if (bbNode.Name == "methods")
+                            {
+                                foreach (XmlNode methodNode in bbNode)
+                                {
+                                    if (methodNode.Name == "method")
+                                    {
+                                        string methodName = GetAttribute(methodNode, "name");
+                                        try
+                                        {
+                                            Type returnType = Plugin.GetTypeFromName(GetAttribute(methodNode, "returntype"));
 
-                                    MethodDef method = new MethodDef(agent, memberType, classname, methodName, methodDisp, methodDesc, "", returnType);
-                                    method.IsStatic = bStatic;
-                                    method.IsPublic = bPublic;
+                                            string isStatic = GetAttribute(methodNode, "static");
+                                            bool bStatic = false;
 
-                                    agent.AddMethod(method);
+                                            if (!string.IsNullOrEmpty(isStatic) && isStatic == "true")
+                                            { bStatic = true; }
 
-                                    foreach(XmlNode paramNode in methodNode) {
-                                        string paramName = GetAttribute(paramNode, "name");
-                                        Type paramType = Plugin.GetTypeFromName(GetAttribute(paramNode, "type"));
-                                        bool isOut = (GetAttribute(paramNode, "isout") == "true");
-                                        bool isRef = (GetAttribute(paramNode, "isref") == "true");
-                                        string nativeType = Plugin.GetNativeTypeName(paramType);
+                                            string isPublic = GetAttribute(methodNode, "public");
+                                            bool bPublic = false;
 
-                                        string paramDisp = GetAttribute(paramNode, "disp");
+                                            if (string.IsNullOrEmpty(isPublic) || isPublic == "true")
+                                            { bPublic = true; }
 
-                                        if (string.IsNullOrEmpty(paramDisp))
-                                        { paramDisp = paramName; }
+                                            string classname = GetAttribute(methodNode, "classname");
 
-                                        string paramDesc = GetAttribute(paramNode, "desc");
+                                            if (string.IsNullOrEmpty(classname))
+                                            { classname = agent.AgentTypeName; }
 
-                                        MethodDef.Param param = new MethodDef.Param(paramName, paramType, nativeType, paramDisp, paramDesc);
-                                        param.IsOut = isOut;
-                                        param.IsRef = isRef;
+                                            string methodDisp = GetAttribute(methodNode, "disp");
 
-                                        method.Params.Add(param);
+                                            if (string.IsNullOrEmpty(methodDisp))
+                                            { methodDisp = methodName; }
+
+                                            string methodDesc = GetAttribute(methodNode, "desc");
+
+                                            bool istask = (GetAttribute(methodNode, "istask") == "true");
+                                            //bool isevent = (GetAttribute(methodNode, "isevent") == "true");
+
+                                            MemberType memberType = MemberType.Method;
+
+                                            if (istask)
+                                            {
+                                                memberType = MemberType.Task;
+                                            }
+
+                                            methodName = string.Format("{0}::{1}", agent.AgentTypeName, methodName);
+
+                                            MethodDef method = new MethodDef(agent, memberType, classname, methodName, methodDisp, methodDesc, "", returnType);
+                                            method.IsStatic = bStatic;
+                                            method.IsPublic = bPublic;
+
+                                            agent.AddMethod(method);
+
+                                            foreach (XmlNode paramNode in methodNode)
+                                            {
+                                                string paramName = GetAttribute(paramNode, "name");
+                                                Type paramType = Plugin.GetTypeFromName(GetAttribute(paramNode, "type"));
+                                                bool isOut = (GetAttribute(paramNode, "isout") == "true");
+                                                bool isRef = (GetAttribute(paramNode, "isref") == "true");
+                                                string nativeType = Plugin.GetNativeTypeName(paramType);
+
+                                                string paramDisp = GetAttribute(paramNode, "disp");
+
+                                                if (string.IsNullOrEmpty(paramDisp))
+                                                { paramDisp = paramName; }
+
+                                                string paramDesc = GetAttribute(paramNode, "desc");
+
+                                                MethodDef.Param param = new MethodDef.Param(paramName, paramType, nativeType, paramDisp, paramDesc);
+                                                param.IsOut = isOut;
+                                                param.IsRef = isRef;
+
+                                                method.Params.Add(param);
+                                            }
+                                        }
+                                        catch (Exception)
+                                        {
+                                            string errorInfo = string.Format("error when loading Agent '{0}' Method '{1}'", agentName, methodName);
+                                            MessageBox.Show(errorInfo, "Loading Custom Meta", MessageBoxButtons.OK);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+            catch(Exception)
+            {
+                string errorInfo = string.Format("error when loading custom members");
+
+                MessageBox.Show(errorInfo, "Loading Custom Meta", MessageBoxButtons.OK);
             }
         }
 
         private static void LoadCustomTypes(XmlNode rootNode) {
-            if (rootNode == null)
-            { return; }
-
-            CustomizedTypeManager.Instance.Enums.Clear();
-            CustomizedTypeManager.Instance.Structs.Clear();
-
-            foreach(XmlNode xmlNode in rootNode.ChildNodes) {
-                if (xmlNode.Name == "enumtype") {
-                    string enumName = GetAttribute(xmlNode, "Type");
-                    string[] enumNames = enumName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                    enumName = enumNames[enumNames.Length - 1];
-
-                    string displayName = GetAttribute(xmlNode, "DisplayName");
-                    string desc = GetAttribute(xmlNode, "Desc");
-
-                    CustomizedEnum customizedEnum = new CustomizedEnum(null);
-                    customizedEnum.Name = enumName;
-                    customizedEnum.DisplayName = displayName;
-                    customizedEnum.Description = desc;
-
-                    foreach(XmlNode memberNode in xmlNode.ChildNodes) {
-                        if (memberNode.Name == "enum") {
-                            string memberName = GetAttribute(memberNode, "Value");
-                            string[] memberNames = memberName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                            memberName = memberNames[memberNames.Length - 1];
-
-                            string memberDisplayName = GetAttribute(memberNode, "DisplayName");
-                            string memberDesc = GetAttribute(memberNode, "Desc");
-                            string memberValue = GetAttribute(memberNode, "MemberValue");
-
-                            CustomizedEnum.CustomizedEnumMember enumMember = new CustomizedEnum.CustomizedEnumMember(null);
-                            enumMember.Name = memberName;
-                            enumMember.DisplayName = memberDisplayName;
-                            enumMember.Description = memberDesc;
-
-                            try {
-                                enumMember.Value = int.Parse(memberValue);
-
-                            } catch {
-                                enumMember.Value = -1;
-                            }
-
-                            customizedEnum.Members.Add(enumMember);
-                        }
-                    }
-
-                    CustomizedTypeManager.Instance.Enums.Add(customizedEnum);
-
-                } else if (xmlNode.Name == "struct") {
-                    string structName = GetAttribute(xmlNode, "Type");
-                    string[] structNames = structName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                    structName = structNames[structNames.Length - 1];
-
-                    string displayName = GetAttribute(xmlNode, "DisplayName");
-                    string desc = GetAttribute(xmlNode, "Desc");
-
-                    CustomizedStruct customizedStruct = new CustomizedStruct(null);
-                    customizedStruct.Name = structName;
-                    customizedStruct.DisplayName = displayName;
-                    customizedStruct.Description = desc;
-
-                    foreach(XmlNode memberNode in xmlNode.ChildNodes) {
-                        if (memberNode.Name == "Member") {
-                            string memberName = GetAttribute(memberNode, "Name");
-                            string[] memberNames = memberName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                            memberName = memberNames[memberNames.Length - 1];
-
-                            string memberType = GetAttribute(memberNode, "Type");
-                            Type type = Plugin.GetTypeFromName(memberType);
-                            string memberDisplayName = GetAttribute(memberNode, "DisplayName");
-                            string memberDesc = GetAttribute(memberNode, "Desc");
-
-                            PropertyDef structProp = new PropertyDef(null, type, structName, memberName, memberDisplayName, memberDesc);
-                            customizedStruct.Properties.Add(structProp);
-                        }
-                    }
-
-                    CustomizedTypeManager.Instance.Structs.Add(customizedStruct);
+            try
+            {
+                if (rootNode == null)
+                {
+                    return;
                 }
+
+                CustomizedTypeManager.Instance.Enums.Clear();
+                CustomizedTypeManager.Instance.Structs.Clear();
+
+                foreach (XmlNode xmlNode in rootNode.ChildNodes)
+                {
+                    if (xmlNode.Name == "enumtype")
+                    {
+                        string enumName = GetAttribute(xmlNode, "Type");
+                        string[] enumNames = enumName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        enumName = enumNames[enumNames.Length - 1];
+
+                        string displayName = GetAttribute(xmlNode, "DisplayName");
+                        string desc = GetAttribute(xmlNode, "Desc");
+
+                        CustomizedEnum customizedEnum = new CustomizedEnum(null);
+                        customizedEnum.Name = enumName;
+                        customizedEnum.DisplayName = displayName;
+                        customizedEnum.Description = desc;
+
+                        foreach (XmlNode memberNode in xmlNode.ChildNodes)
+                        {
+                            if (memberNode.Name == "enum")
+                            {
+                                string memberName = GetAttribute(memberNode, "Value");
+                                string[] memberNames = memberName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                                memberName = memberNames[memberNames.Length - 1];
+
+                                string memberDisplayName = GetAttribute(memberNode, "DisplayName");
+                                string memberDesc = GetAttribute(memberNode, "Desc");
+                                string memberValue = GetAttribute(memberNode, "MemberValue");
+
+                                CustomizedEnum.CustomizedEnumMember enumMember = new CustomizedEnum.CustomizedEnumMember(null);
+                                enumMember.Name = memberName;
+                                enumMember.DisplayName = memberDisplayName;
+                                enumMember.Description = memberDesc;
+
+                                try
+                                {
+                                    enumMember.Value = int.Parse(memberValue);
+
+                                }
+                                catch
+                                {
+                                    enumMember.Value = -1;
+                                }
+
+                                customizedEnum.Members.Add(enumMember);
+                            }
+                        }
+
+                        CustomizedTypeManager.Instance.Enums.Add(customizedEnum);
+
+                    }
+                    else if (xmlNode.Name == "struct")
+                    {
+                        string structName = GetAttribute(xmlNode, "Type");
+                        string[] structNames = structName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        structName = structNames[structNames.Length - 1];
+
+                        string displayName = GetAttribute(xmlNode, "DisplayName");
+                        string desc = GetAttribute(xmlNode, "Desc");
+
+                        CustomizedStruct customizedStruct = new CustomizedStruct(null);
+                        customizedStruct.Name = structName;
+                        customizedStruct.DisplayName = displayName;
+                        customizedStruct.Description = desc;
+
+                        foreach (XmlNode memberNode in xmlNode.ChildNodes)
+                        {
+                            if (memberNode.Name == "Member")
+                            {
+                                string memberName = GetAttribute(memberNode, "Name");
+                                string[] memberNames = memberName.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                                memberName = memberNames[memberNames.Length - 1];
+
+                                string memberType = GetAttribute(memberNode, "Type");
+                                Type type = Plugin.GetTypeFromName(memberType);
+                                string memberDisplayName = GetAttribute(memberNode, "DisplayName");
+                                string memberDesc = GetAttribute(memberNode, "Desc");
+
+                                PropertyDef structProp = new PropertyDef(null, type, structName, memberName, memberDisplayName, memberDesc);
+                                customizedStruct.Properties.Add(structProp);
+                            }
+                        }
+
+                        CustomizedTypeManager.Instance.Structs.Add(customizedStruct);
+                    }
+                }
+            }
+            catch(Exception)
+            {
+                string errorInfo = string.Format("errors when loading custom types");
+                MessageBox.Show(errorInfo, "Loading Meta", MessageBoxButtons.OK);
             }
         }
 
@@ -951,6 +1027,126 @@ namespace Behaviac.Design
         public bool IsBlackboardDirty {
             get { return _isBlackboardDirty; }
             set { _isBlackboardDirty = value; }
+        }
+
+        public static bool SaveExtraMeta(Workspace ws)
+        {
+            string extraPath = ws.getExtraMetaPath();
+            XmlDocument extrafile = new XmlDocument();
+
+            try
+            {
+                FileManagers.SaveResult result = FileManagers.FileManager.MakeWritable(extraPath, Resources.SaveFileWarning);
+
+                if (FileManagers.SaveResult.Succeeded != result)
+                    return false;
+
+                extrafile.RemoveAll();
+
+                XmlDeclaration declaration = extrafile.CreateXmlDeclaration("1.0", "utf-8", null);
+                extrafile.AppendChild(declaration);
+
+                XmlComment comment = extrafile.CreateComment("EXPORTED BY TOOL, DON'T MODIFY IT!");
+                extrafile.AppendChild(comment);
+
+                XmlElement meta = extrafile.CreateElement("extrameta");
+                extrafile.AppendChild(meta);
+
+                if (SaveExtraMembers(extrafile, meta))
+                    extrafile.Save(extraPath);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                extrafile.RemoveAll();
+
+                string msgError = string.Format(Resources.SaveFileError, extraPath, ex.Message);
+                MessageBox.Show(msgError, Resources.SaveError, MessageBoxButtons.OK);
+            }
+
+            return false;
+        }
+
+        private static bool SaveExtraMembers(XmlDocument extrafile, XmlNode meta)
+        {
+            XmlElement root = extrafile.CreateElement("agents");
+            meta.AppendChild(root);
+
+            bool hasChangeableType = false;
+
+            foreach (AgentType agent in Plugin.AgentTypes)
+            {
+                XmlElement extraEle = extrafile.CreateElement("agent");
+                extraEle.SetAttribute("classfullname", agent.AgentTypeName);
+
+                XmlElement propsEle = extrafile.CreateElement("properties");
+                bool hasChangeableProperty = false;
+
+                foreach (PropertyDef prop in agent.GetProperties())
+                {
+                    if (prop.IsChangeableType)
+                    {
+                        hasChangeableProperty = true;
+
+                        XmlElement propEle = extrafile.CreateElement("property");
+
+                        propEle.SetAttribute("name", prop.BasicName);
+                        propEle.SetAttribute("type", prop.NativeType);
+
+                        propsEle.AppendChild(propEle);
+                    }
+                }
+
+                if (hasChangeableProperty)
+                    extraEle.AppendChild(propsEle);
+
+                XmlElement methodsEle = extrafile.CreateElement("methods");
+                bool hasChangeabledMethod = false;
+
+                foreach (MethodDef method in agent.GetMethods())
+                {
+                    if (method.IsChangeableType)
+                    {
+                        hasChangeabledMethod = true;
+
+                        XmlElement methodEle = extrafile.CreateElement("method");
+
+                        methodEle.SetAttribute("name", method.BasicName);
+                        methodEle.SetAttribute("returntype", method.ReturnType.FullName);
+
+                        foreach (MethodDef.Param param in method.Params)
+                        {
+                            XmlElement paramEle = extrafile.CreateElement("parameter");
+
+                            paramEle.SetAttribute("name", param.Name);
+                            paramEle.SetAttribute("type", param.NativeType);
+
+                            if (param.IsOut)
+                                paramEle.SetAttribute("isout", "true");
+
+                            if (param.IsRef)
+                                paramEle.SetAttribute("isref", "true");
+
+                            methodEle.AppendChild(paramEle);
+                        }
+
+                        methodsEle.AppendChild(methodEle);
+                    }
+                }
+
+                if (hasChangeabledMethod)
+                    extraEle.AppendChild(methodsEle);
+
+                if (hasChangeableProperty || hasChangeabledMethod)
+                {
+                    hasChangeableType = true;
+
+                    root.AppendChild(extraEle);
+                }
+            }
+
+            return hasChangeableType;
         }
 
         public static bool SaveCustomMeta(Workspace ws) {
@@ -967,6 +1163,9 @@ namespace Behaviac.Design
 
                 XmlDeclaration declaration = bbfile.CreateXmlDeclaration("1.0", "utf-8", null);
                 bbfile.AppendChild(declaration);
+
+                XmlComment comment = bbfile.CreateComment("EXPORTED BY TOOL, DON'T MODIFY IT!");
+                bbfile.AppendChild(comment);
 
                 XmlElement meta = bbfile.CreateElement("meta");
                 bbfile.AppendChild(meta);
@@ -1273,6 +1472,7 @@ namespace Behaviac.Design
 
             return false;
         }
+
 
         private static bool ExportBsonCustomMembers(Workspace ws) {
             string bbPath = ws.getExportCustomMembersBsonPath();

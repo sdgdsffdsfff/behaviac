@@ -25,11 +25,12 @@
 #include "behaviac/base/meta/isenum.h"
 #include "behaviac/base/meta/types.h"
 
-template<typename T>
-behaviac::string EnumValueToString(const T& v);
 
 namespace behaviac
 {
+	template<typename T>
+	behaviac::string EnumValueToString(const T& v);
+
     namespace StringUtils
     {
         template<typename T>
@@ -105,7 +106,7 @@ namespace behaviac
                 string_sprintf(str, "%lu", val);
                 return str;
             }
-#if !BEHAVIAC_COMPILER_GCC_LINUX
+#if !BEHAVIAC_COMPILER_64BITS
             inline behaviac::string ToString(int64_t val)
             {
                 char str[23];
@@ -241,7 +242,7 @@ namespace behaviac
             {
                 static behaviac::string ToString(const T& v)
                 {
-                    return EnumValueToString(v);
+                    return behaviac::EnumValueToString(v);
                 }
             };
 

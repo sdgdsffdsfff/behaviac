@@ -49,29 +49,29 @@ namespace PluginBehaviac.Exporters
             _filename = "behaviors/generated_behaviors.h";
         }
 
-        public override Behaviac.Design.FileManagers.SaveResult Export(List<BehaviorNode> behaviors, bool exportUnifiedFile, bool generateCustomizedTypes)
+        public override Behaviac.Design.FileManagers.SaveResult Export(List<BehaviorNode> behaviors, bool exportUnifiedFile, bool exportBehaviors)
         {
             string behaviorFilename = "behaviors/generated_behaviors.h";
             string agentFolder = string.Empty;
-            Behaviac.Design.FileManagers.SaveResult result = VerifyFilename(ref behaviorFilename, ref agentFolder);
+            Behaviac.Design.FileManagers.SaveResult result = VerifyFilename(exportBehaviors, ref behaviorFilename, ref agentFolder);
             if (Behaviac.Design.FileManagers.SaveResult.Succeeded == result)
             {
-                string behaviorFolder = Path.GetDirectoryName(behaviorFilename);
-                clearFolder(behaviorFolder);
-                //clearFolder(agentFolder);
-
-                ExportBehaviors(behaviors, behaviorFilename, exportUnifiedFile);
-
-                ExportCustomizedMembers(agentFolder);
-
-                if (generateCustomizedTypes)
+                if (exportBehaviors)
                 {
-                    ExportAgentsDefinition(agentFolder);
-                    ExportAgentsImplemention(agentFolder);
+                    string behaviorFolder = Path.GetDirectoryName(behaviorFilename);
+                    clearFolder(behaviorFolder);
+                    //clearFolder(agentFolder);
 
-                    ExportCustomizedTypesDefinition(agentFolder);
-                    ExportCustomizedTypesImplemention(agentFolder);
+                    ExportBehaviors(behaviors, behaviorFilename, exportUnifiedFile);
+
+                    ExportCustomizedMembers(agentFolder);
                 }
+
+                ExportAgentsDefinition(agentFolder);
+                ExportAgentsImplemention(agentFolder);
+
+                ExportCustomizedTypesDefinition(agentFolder);
+                ExportCustomizedTypesImplemention(agentFolder);
             }
 
             return result;
@@ -129,7 +129,7 @@ namespace PluginBehaviac.Exporters
                         behaviorFilename = Path.Combine("behaviors", behaviorFilename);
                         string agentFolder = string.Empty;
 
-                        Behaviac.Design.FileManagers.SaveResult result = VerifyFilename(ref behaviorFilename, ref agentFolder);
+                        Behaviac.Design.FileManagers.SaveResult result = VerifyFilename(true ,ref behaviorFilename, ref agentFolder);
 
                         if (Behaviac.Design.FileManagers.SaveResult.Succeeded == result)
                         {
@@ -155,7 +155,7 @@ namespace PluginBehaviac.Exporters
             }
         }
 
-        private Behaviac.Design.FileManagers.SaveResult VerifyFilename(ref string behaviorFilename, ref string agentFolder)
+        private Behaviac.Design.FileManagers.SaveResult VerifyFilename(bool exportBehaviors, ref string behaviorFilename, ref string agentFolder)
         {
             behaviorFilename = Path.Combine(_outputFolder, behaviorFilename);
             agentFolder = Path.Combine(_outputFolder, "types");
@@ -168,9 +168,13 @@ namespace PluginBehaviac.Exporters
             if (!Directory.Exists(agentFolder))
                 Directory.CreateDirectory(agentFolder);
 
-            // verify it can be writable
-            Behaviac.Design.FileManagers.SaveResult result = Behaviac.Design.FileManagers.FileManager.MakeWritable(behaviorFilename, Resources.ExportFileWarning);
-            return result;
+            if (exportBehaviors)
+            {
+                // verify it can be writable
+                return Behaviac.Design.FileManagers.FileManager.MakeWritable(behaviorFilename, Resources.ExportFileWarning);
+            }
+
+            return Behaviac.Design.FileManagers.SaveResult.Succeeded;
         }
 
         private List<string> GetNamespaces(string ns)
@@ -709,7 +713,7 @@ namespace PluginBehaviac.Exporters
                     }
                 }
 
-                if (hasCustomizedProperty || hasCustomizedMethod)
+                //if (hasCustomizedProperty || hasCustomizedMethod)
                 {
                     string filename = Path.Combine(agentFolder, agent.BasicClassName + ".h");
                     Encoding utf8WithBom = new UTF8Encoding(true);
@@ -1116,10 +1120,10 @@ namespace PluginBehaviac.Exporters
                             file.WriteLine();
 
                         CustomizedEnum customizedEnum = CustomizedTypeManager.Instance.Enums[e];
-                        
-                        file.WriteLine("BEGIN_ENUM_DESCRIPTION({0}, {0})", customizedEnum.Name);
+
+                        file.WriteLine("BEHAVIAC_BEGIN_ENUM({0}, {0})", customizedEnum.Name);
                         file.WriteLine("{");
-                        file.WriteLine("\tENUMCLASS_DISPLAY_INFO(L\"{0}\", L\"{1}\");", customizedEnum.DisplayName, customizedEnum.Description);
+                        file.WriteLine("\tBEHAVIAC_ENUMCLASS_DISPLAY_INFO(L\"{0}\", L\"{1}\");", customizedEnum.DisplayName, customizedEnum.Description);
                         file.WriteLine();
 
                         for (int m = 0; m < customizedEnum.Members.Count; ++m)
@@ -1132,11 +1136,11 @@ namespace PluginBehaviac.Exporters
                             if (member.DisplayName != member.Name || !string.IsNullOrEmpty(member.Description))
                                 file.WriteLine("\tDEFINE_ENUM_VALUE({0}, \"{0}\").DISPLAY_INFO(L\"{1}\", L\"{2}\");", member.Name, member.DisplayName, member.Description);
                             else
-                                file.WriteLine("\tDEFINE_ENUM_VALUE({0}, \"{0}\");", member.Name);
+                                file.WriteLine("\tBEHAVIAC_ENUM_ITEM({0}, \"{0}\");", member.Name);
                         }
 
                         file.WriteLine("}");
-                        file.WriteLine("END_ENUM_DESCRIPTION()");
+                        file.WriteLine("BEHAVIAC_END_ENUM()");
                     }
 
                     if (CustomizedTypeManager.Instance.Enums.Count > 0)
@@ -1153,10 +1157,10 @@ namespace PluginBehaviac.Exporters
 
                         CustomizedStruct customizedStruct = CustomizedTypeManager.Instance.Structs[s];
 
-                        file.WriteLine("BEGIN_PROPERTIES_DESCRIPTION({0})", customizedStruct.Name);
+                        file.WriteLine("BEHAVIAC_BEGIN_PROPERTIES({0})", customizedStruct.Name);
                         file.WriteLine("{");
-                        file.WriteLine("\tCLASS_DISPLAYNAME(L\"{0}\");", customizedStruct.DisplayName);
-                        file.WriteLine("\tCLASS_DESC(L\"{0}\");", customizedStruct.Description);
+                        file.WriteLine("\tBEHAVIAC_CLASS_DISPLAYNAME(L\"{0}\");", customizedStruct.DisplayName);
+                        file.WriteLine("\tBEHAVIAC_CLASS_DESC(L\"{0}\");", customizedStruct.Description);
                         file.WriteLine();
 
                         for (int m = 0; m < customizedStruct.Properties.Count; ++m)
@@ -1166,13 +1170,13 @@ namespace PluginBehaviac.Exporters
 
                             PropertyDef member = customizedStruct.Properties[m];
                             if (member.DisplayName != member.Name || !string.IsNullOrEmpty(member.BasicDescription))
-                                file.WriteLine("\tREGISTER_PROPERTY({0}).DISPLAYNAME(L\"{1}\").DESC(L\"{2}\");", member.BasicName, member.DisplayName, member.BasicDescription);
+                                file.WriteLine("\tBEHAVIAC_REGISTER_PROPERTY({0}).DISPLAYNAME(L\"{1}\").DESC(L\"{2}\");", member.BasicName, member.DisplayName, member.BasicDescription);
                             else
-                                file.WriteLine("\tREGISTER_PROPERTY({0});", member.BasicName);
+                                file.WriteLine("\tBEHAVIAC_REGISTER_PROPERTY({0});", member.BasicName);
                         }
 
                         file.WriteLine("}");
-                        file.WriteLine("END_PROPERTIES_DESCRIPTION()");
+                        file.WriteLine("BEHAVIAC_END_PROPERTIES()");
                     }
                 }
             }

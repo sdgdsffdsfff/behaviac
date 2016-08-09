@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <!--Source File: par_test\static_property_as_ref_param.xml-->
-<behavior name="par_test/static_property_as_ref_param" agenttype="EmployeeParTestAgent" version="3">
+<behavior name="par_test/static_property_as_ref_param" agenttype="EmployeeParTestAgent" version="5">
   <node class="Sequence" id="0">
     <node class="Sequence" id="1">
       <node class="Action" id="4">
@@ -47,7 +47,7 @@
         <property ResultOption="BT_SUCCESS" />
       </node>
       <node class="Action" id="11">
-        <property Method="Self.ParTestAgent::Func_kEmployeeListRef(static behaviac::vector&lt;TNS::ST::PER::WRK::kEmployee&gt; Self.ParTestAgent::STV_LIST_KEMPLOYEE_0)" />
+        <property Method="Self.ParTestAgent::Func_kEmployeeListRef(static vector&lt;TNS::ST::PER::WRK::kEmployee&gt; Self.ParTestAgent::STV_LIST_KEMPLOYEE_0)" />
         <property ResultOption="BT_SUCCESS" />
       </node>
     </node>
@@ -73,7 +73,7 @@
         <property ResultOption="BT_SUCCESS" />
       </node>
       <node class="Action" id="20">
-        <property Method="Self.EmployeeParTestAgent::Func_AgentListRef(static behaviac::vector&lt;behaviac::Agent&gt; Self.EmployeeParTestAgent::STV_LIST_AGENT_0)" />
+        <property Method="Self.EmployeeParTestAgent::Func_AgentListRef(static vector&lt;behaviac::Agent&gt; Self.EmployeeParTestAgent::STV_LIST_AGENT_0)" />
         <property ResultOption="BT_SUCCESS" />
       </node>
     </node>

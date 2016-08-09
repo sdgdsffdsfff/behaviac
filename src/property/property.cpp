@@ -119,7 +119,7 @@ namespace behaviac
         IList::Cleanup();
     }
 
-    Property::Property(const CMemberBase* pMemberBase, bool bIsConst) :
+    Property::Property(const behaviac::CMemberBase* pMemberBase, bool bIsConst) :
         m_parent(0), m_index(0), m_bIsStatic(false), m_bIsLocal(false)
     {
         m_memberBase = pMemberBase;
@@ -243,7 +243,7 @@ namespace behaviac
         return pParent;
     }
 
-    const int kInstanceLength = 256;
+	const size_t kInstanceLength = 256;
     const char*  Property::ParseInstanceNameProperty(const char* fullName, char* agentIntanceName, char* agentType)
     {
         //Self.AgentActionTest::Action2(0)
@@ -251,7 +251,7 @@ namespace behaviac
 
         if (pClassBegin)
         {
-            int posClass = pClassBegin - fullName;
+			size_t posClass = pClassBegin - fullName;
             BEHAVIAC_ASSERT(posClass < kInstanceLength);
             string_ncpy(agentIntanceName, fullName, posClass);
             agentIntanceName[posClass] = '\0';
@@ -260,7 +260,7 @@ namespace behaviac
 
             const char* pPropertyName = strrchr(pAgentType, ':');
             BEHAVIAC_ASSERT(pPropertyName);
-            int agentTypeLength = pPropertyName - 1 - pAgentType;
+			size_t agentTypeLength = pPropertyName - 1 - pAgentType;
             string_ncpy(agentType, pAgentType, agentTypeLength);
             agentType[agentTypeLength] = '\0';
 
@@ -288,6 +288,12 @@ namespace behaviac
 		Property*  p = Property::create(0, bConst, typeName, nameStr, 0, valueStr);
 
 		return p;
+	}
+
+	Property* Property::clone() {
+		BEHAVIAC_ASSERT(false);
+
+		return 0;
 	}
 
     const char* Property::GetInstanceName()
@@ -323,7 +329,13 @@ namespace behaviac
             {
                 //Properties().insert(std::pair<Property*, bool>(pProperty, true));
                 BEHAVIAC_ASSERT(strcmp(pProperty->Name(), variableName) == 0);
-                pProperty->SetInstanceName(instanceName);
+
+				Property* pNew = pProperty->clone();
+				pNew->SetInstanceName(instanceName);
+
+				pProperty = pNew;
+
+				AgentProperties::AddPropertyInstance(agentType, pNew);
             }
             else
             {
@@ -341,7 +353,7 @@ namespace behaviac
         }
         else
         {
-            //BEHAVIAC_ASSERT(false, "accessing a not declared local variable");
+            BEHAVIAC_ASSERT(false, "accessing a not declared local variable");
             const char* valueStr = 0;
             pProperty = AgentProperties::AddLocal(agentType, typeName, variableName, valueStr);
         }
@@ -354,7 +366,7 @@ namespace behaviac
         BEHAVIAC_ASSERT(propertyName);
         BEHAVIAC_ASSERT(!StringUtils::EndsWith(propertyName, "]"));
 
-        const CMemberBase* pMember = 0;
+        const behaviac::CMemberBase* pMember = 0;
         bool bConst = false;
 
         if (agentType)
@@ -387,7 +399,7 @@ namespace behaviac
     //     return bAgentPtr;
     // }
 
-    Property*  Property::create(const CMemberBase* pMember, bool bConst, const char* typeName, const char* variableName, const char* instanceName, const char* valueStr)
+    Property*  Property::create(const behaviac::CMemberBase* pMember, bool bConst, const char* typeName, const char* variableName, const char* instanceName, const char* valueStr)
     {
         BEHAVIAC_ASSERT(variableName == 0 || !StringUtils::EndsWith(variableName, "]"));
         bool bValidName = variableName && variableName[0] != '\0';

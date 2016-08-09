@@ -28,10 +28,10 @@ namespace behaviac
             ms_instance = this;
         }
 
-        ~FileManager()
-        {
-            ms_instance = null;
-        }
+        //~FileManager()
+        //{
+        //    ms_instance = null;
+        //}
 
         #endregion Singleton
 
@@ -62,7 +62,8 @@ namespace behaviac
         {
             try
             {
-#if !UNITY_WEBPLAYER && (UNITY_EDITOR || UNITY_STANDALONE_WIN)
+//#if !UNITY_WEBPLAYER && (UNITY_EDITOR || UNITY_STANDALONE_WIN)
+#if !UNITY_WEBPLAYER && UNITY_EDITOR
                 //if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
                 {
                     if (ext == ".bson")

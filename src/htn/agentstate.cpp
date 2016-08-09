@@ -22,11 +22,11 @@ namespace behaviac
 
     int AgentState::Depth()
     {
-        int d = 1;
+		size_t d = 1;
 
         if (this->state_stack.size() > 0)
         {
-            for (int i = this->state_stack.size() - 1; i >= 0; --i)
+			for (int i = (int)this->state_stack.size() - 1; i >= 0; --i)
             {
                 AgentState* t = this->state_stack[i];
 #if BEHAVIAC_ENABLE_PUSH_OPT
@@ -37,14 +37,14 @@ namespace behaviac
             }
         }
 
-        return d;
+        return (int)d;
     }
 
     int AgentState::Top()
     {
         if (this->state_stack.size() > 0)
         {
-            return this->state_stack.size() - 1;
+            return (int)this->state_stack.size() - 1;
         }
 
         return -1;
@@ -137,7 +137,7 @@ namespace behaviac
             return;
         }
 
-        this->Clear();
+        this->Clear(true);
         //Debug.Check(this->state_stack == NULL);
         BEHAVIAC_ASSERT(this->state_stack.size() == 0);
         //Debug.Check(this.parent != NULL);
@@ -159,6 +159,28 @@ namespace behaviac
         this->state_stack.pop_back();//
     }
 
+	void AgentState::Clear(bool bFull) {
+		if (bFull) {
+#if BEHAVIAC_ENABLE_PUSH_OPT
+			this->m_forced = false;
+			this->m_pushed = 0;
+#endif
+			if (this->state_stack.size() > 0)
+			{
+				for (int i = (int)this->state_stack.size() - 1; i >= 0; --i)
+				{
+					AgentState* t = this->state_stack[i];
+
+					t->Clear(bFull);
+				}
+
+				this->state_stack.clear();
+			}
+		}
+
+		Variables::Clear(bFull);
+	}
+
     void AgentState::Log(Agent* pAgent, bool bForce)
     {
         BEHAVIAC_UNUSED_VAR(pAgent);
@@ -171,7 +193,7 @@ namespace behaviac
             {
                 map<behaviac::string, bool> logged;
 
-                for (int i = this->state_stack.size() - 1; i >= 0; --i)
+                for (int i = (int)this->state_stack.size() - 1; i >= 0; --i)
                 {
                     AgentState* t = this->state_stack[i];
                     behaviac::map<uint32_t, IVariable*>& _value = t->Vars();

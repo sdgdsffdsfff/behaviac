@@ -63,7 +63,7 @@ namespace Behaviac.Design.Attachments
 
         public virtual string DocLink
         {
-            get { return "http://www.behaviac.com/docs/zh/references/attachment/"; }
+            get { return "http://www.behaviac.com/language/zh/attachment/"; }
         }
 
         public virtual bool CanBeDisabled()
@@ -130,8 +130,13 @@ namespace Behaviac.Design.Attachments
         /// <summary>
         /// The description of this node.
         /// </summary>
-        public virtual string Description {
-            get { return /*Resources.ResourceManager.GetString(*/_description/*, Resources.Culture)*/; }
+        public virtual string Description
+        {
+            get
+            {
+                string desc = Resources.PressF1 + "\n" + _description;
+                return desc;
+            }
         }
 
         public Behaviac.Design.Nodes.BehaviorNode Behavior {

@@ -216,22 +216,28 @@ namespace Behaviac.Design.Attributes
                     if (_valueOwner != VariableDef.kSelf && p.IsPar)
                         continue;
 
+                    Type listType = Plugin.GetType("XMLPluginBehaviac.IList");
+                    bool isArrayType = Plugin.IsArrayType(this.FilterType) || this.FilterType == typeof(System.Collections.IList) || (listType != null && this.FilterType == listType);
+
                     if (Plugin.IsCompatibleType(this.ValueType, this.FilterType, p.Type, bArrayOnly) ||
-                        ((bArrayOnly && this.FilterType == typeof(System.Collections.IList)) && Plugin.IsArrayType(p.Type))) {
+                        (bArrayOnly && isArrayType && Plugin.IsArrayType(p.Type)))
+                    {
                         bool isInt = Plugin.IsIntergerType(p.Type);
                         bool isFloat = Plugin.IsFloatType(p.Type);
                         bool isBool = Plugin.IsBooleanType(p.Type);
+                        bool isString = Plugin.IsStringType(p.Type);
                         bool bOk = false;
 
                         if (bArrayOnly) {
-                            bool isArray = Plugin.IsArrayType(p.Type) && !Plugin.IsArrayType(this.FilterType);
+                            //bool isArray = Plugin.IsArrayType(p.Type) && !Plugin.IsArrayType(this.FilterType);
+                            bool isArray = Plugin.IsArrayType(p.Type);
                             bOk = isArray;
-
                         } else {
                             bOk = (this.ValueType == ValueTypes.All) ||
                                   (isBool && ((this.ValueType & ValueTypes.Bool) == ValueTypes.Bool)) ||
                                   (isInt && ((this.ValueType & ValueTypes.Int) == ValueTypes.Int)) ||
-                                  (isFloat && ((this.ValueType & ValueTypes.Float) == ValueTypes.Float));
+                                  (isFloat && ((this.ValueType & ValueTypes.Float) == ValueTypes.Float) ||
+                                  (isString && ((this.ValueType & ValueTypes.String) == ValueTypes.String)));
                         }
 
                         if (bOk) {

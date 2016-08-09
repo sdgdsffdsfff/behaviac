@@ -120,7 +120,8 @@
 
 #if BEHAVIAC_COMPILER_MSVC
 /// Define the force inline compiler indicator
-#define BEHAVIAC_FORCEINLINE __forceinline
+//#define BEHAVIAC_FORCEINLINE __forceinline
+#define BEHAVIAC_FORCEINLINE __inline
 #define BEHAVIAC_FORCENOINLINE _declspec(noinline)
 
 #if _MSC_VER >= 1400
@@ -158,8 +159,8 @@
 #define BEHAVIAC_ALIGN_SUFFIX(alignment)				__attribute__ ((aligned(n)))
 
 #ifdef BEHAVIAC_DLL
-#	define BEHAVIAC_DLL_ENTRY_IMPORT					__attribute__ ((dllimport))
-#	define BEHAVIAC_DLL_ENTRY_EXPORT					__attribute__ ((dllexport))
+#	define BEHAVIAC_DLL_ENTRY_IMPORT					
+#	define BEHAVIAC_DLL_ENTRY_EXPORT					__attribute__((visibility("default")))
 #else
 #	define BEHAVIAC_DLL_ENTRY_IMPORT
 #	define BEHAVIAC_DLL_ENTRY_EXPORT
@@ -179,8 +180,8 @@
 #define BEHAVIAC_ALIGN_SUFFIX(alignment)				__attribute__ ((aligned(n)))
 
 #ifdef BEHAVIAC_DLL
-#	define BEHAVIAC_DLL_ENTRY_IMPORT					__attribute__ ((dllimport))
-#	define BEHAVIAC_DLL_ENTRY_EXPORT					__attribute__ ((dllexport))
+#	define BEHAVIAC_DLL_ENTRY_IMPORT					
+#	define BEHAVIAC_DLL_ENTRY_EXPORT					__attribute__((visibility("default")))
 #else
 #	define BEHAVIAC_DLL_ENTRY_IMPORT
 #	define BEHAVIAC_DLL_ENTRY_EXPORT
@@ -217,6 +218,7 @@
 	//#if BEHAVIAC_COMPILER_MSVC2015
 	//	#pragma warning(disable : 4714) //__forceinline
 	//#endif
+
 #endif//BEHAVIAC_COMPILER_MSVC
 
 #include <stdio.h>
@@ -228,34 +230,6 @@
 // declare the variable as used (to remove unused variable warning)
 #define BEHAVIAC_UNUSED_VAR(var)         ((void) &var)
 
-#define BEHAVIAC_JOIN_TOKENS(a, b)			BEHAVIAC_JOIN_TOKENS_IMPL(a, b)
-#define BEHAVIAC_JOIN_TOKENS_IMPL(a,	b)	BEHAVIAC_JOIN_TOKENS_IMPL2(a, b)
-#define BEHAVIAC_JOIN_TOKENS_IMPL2(a, b)	a ## b
-
-/**
-usage:
-int BEHAVIAC_UNIQUE_NAME(intVar) = 0;
-*/
-#define BEHAVIAC_UNIQUE_NAME(name) BEHAVIAC_JOIN_TOKENS(name, __LINE__)
-
-//#define VA_NARGS(...) VA_NARGS_II((VA_NARGS_PREFIX_ ## __VA_ARGS__ ## _VA_NARGS_POSTFIX,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
-//#define VA_NARGS_II(__args) VA_NARGS_I __args
-//#define VA_NARGS_PREFIX__VA_NARGS_POSTFIX ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
-//#define VA_NARGS_I(__p0,__p1,__p2,__p3,__p4,__p5,__p6,__p7,__p8,__p9,__p10,__p11,__p12,__p13,__p14,__p15,__p16,__p17,__p18,__p19,__p20,__p21,__p22,__p23,__p24,__p25,__p26,__p27,__p28,__p29,__p30,__p31,__n,...) __n
-
-namespace behaviac
-{
-	namespace Private
-	{
-		template <bool> struct STATIC_ASSERT_FAILURE;
-		template <> struct STATIC_ASSERT_FAILURE<true>
-		{
-			enum { value = 1 };
-		};
-
-		template<int x> struct static_assert_test {};
-	}//namespae Private
-}//namespace behaviac
 
 // A macro to mark variables or types as unused, avoiding compiler warnings.
 #if BEHAVIAC_COMPILER_MSVC
@@ -266,7 +240,6 @@ namespace behaviac
 # define BEHAVIAC_ALIAS __attribute__((__may_alias__))
 #endif
 
-#define BEHAVIAC_STATIC_ASSERT(x)    typedef behaviac::Private::static_assert_test<sizeof(behaviac::Private::STATIC_ASSERT_FAILURE< (bool)( (x) ) >)> BEHAVIAC_UNIQUE_NAME(_behaviac_static_assert_typedef_) BEHAVIAC_UNUSED
 
 #define _BEHAVIAC_OFFSETOF_BASE_ 0x01000000
 #define BEHAVIAC_OFFSETOF(TYPE, MEMBER) (size_t)((unsigned char*)(&(((TYPE*)_BEHAVIAC_OFFSETOF_BASE_)->MEMBER)) - (unsigned char*)(TYPE*)_BEHAVIAC_OFFSETOF_BASE_)
@@ -282,7 +255,7 @@ namespace behaviac
 #define string_snprintf _snprintf
 #define string_vnprintf vsnprintf
 #define string_vnwprintf _vsnwprintf_s
-#define string_sprintf(s, fmt, ...) BEHAVIAC_ASSERT(BEHAVIAC_ARRAY_LENGTH(s) > 0); _snprintf(s, BEHAVIAC_ARRAY_LENGTH(s), fmt, __VA_ARGS__); s[BEHAVIAC_ARRAY_LENGTH(s) - 1] = '\0'
+#define string_sprintf(s, fmt, ...) BEHAVIAC_ASSERT(BEHAVIAC_ARRAY_LENGTH(s) > 0); _snprintf(s, BEHAVIAC_ARRAY_LENGTH(s), fmt, __VA_ARGS__); s[BEHAVIAC_ARRAY_LENGTH(s) - 1] = '\0';
 #elif BEHAVIAC_COMPILER_APPLE || BEHAVIAC_COMPILER_ANDROID || BEHAVIAC_COMPILER_GCC_LINUX || BEHAVIAC_COMPILER_GCC_CYGWIN
 #define string_cpy strcpy
 #define string_ncpy strncpy

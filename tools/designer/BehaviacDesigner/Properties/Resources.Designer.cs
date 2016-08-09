@@ -652,7 +652,7 @@ namespace Behaviac.Design.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error List.
+        ///   Looks up a localized string similar to Information.
         /// </summary>
         internal static string ErrorList {
             get {
@@ -766,6 +766,15 @@ namespace Behaviac.Design.Properties {
         internal static string ExportFileCountInfo {
             get {
                 return ResourceManager.GetString("ExportFileCountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to types are genereated at &apos;{0}&apos;.
+        /// </summary>
+        internal static string ExportMessages {
+            get {
+                return ResourceManager.GetString("ExportMessages", resourceCulture);
             }
         }
         
@@ -995,6 +1004,15 @@ namespace Behaviac.Design.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The path for the generated type is empty, so please go to the Meta Browser to set it..
+        /// </summary>
+        internal static string InvalidExportedTypePath {
+            get {
+                return ResourceManager.GetString("InvalidExportedTypePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The language setting will take effect when the editor is launched next time..
         /// </summary>
         internal static string LanguageChangedWarning {
@@ -1108,6 +1126,24 @@ namespace Behaviac.Design.Properties {
         internal static string Menu_SaveBehaviorAs_Default {
             get {
                 return ResourceManager.GetString("Menu_SaveBehaviorAs_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Behavior Trees Exportd: {0}.
+        /// </summary>
+        internal static string MessageBTExport {
+            get {
+                return ResourceManager.GetString("MessageBTExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messages.
+        /// </summary>
+        internal static string MessageOutput {
+            get {
+                return ResourceManager.GetString("MessageOutput", resourceCulture);
             }
         }
         

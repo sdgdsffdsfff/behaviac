@@ -21,9 +21,9 @@ namespace behaviac
         {
         }
 
-        ~WaitTransition()
-        {
-        }
+        //~WaitTransition()
+        //{
+        //}
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -47,7 +47,7 @@ namespace behaviac
             return null;
         }
 
-        public override bool Evaluate(Agent pAgent)
+        public override bool Evaluate(Agent pAgent, EBTStatus status)
     	{
 	    	return true;
         }

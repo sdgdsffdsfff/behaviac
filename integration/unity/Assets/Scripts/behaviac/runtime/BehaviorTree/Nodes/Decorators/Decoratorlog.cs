@@ -21,9 +21,9 @@ namespace behaviac
         {
         }
 
-        ~DecoratorLog()
-        {
-        }
+        //~DecoratorLog()
+        //{
+        //}
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -84,7 +84,7 @@ namespace behaviac
             {
                 Debug.Check(this.GetNode() is DecoratorLog);
                 DecoratorLog pDecoratorLogNode = (DecoratorLog)(this.GetNode());
-                behaviac.Debug.LogWarning(string.Format("DecoratorLogTask:{0}\n", pDecoratorLogNode.m_message));
+                behaviac.Debug.Log(string.Format("DecoratorLogTask:{0}\n", pDecoratorLogNode.m_message));
 
                 return status;
             }

@@ -6,24 +6,12 @@ namespace behaviac
     {
         public const string LOCAL_TASK_PARAM_PRE = "_$local_task_param_$_";
 
+        protected IMethod m_task;
+
         protected bool m_bHTN;
-
-        protected CTaskMethod m_task;
-
-        public Task()
-        {
-        }
-
-        ~Task()
-        {
-        }
-
         public bool IsHTN
         {
-            get
-            {
-                return this.m_bHTN;
-            }
+            get { return this.m_bHTN; }
         }
 
         public int FindMethodIndex(Method method)
@@ -57,14 +45,8 @@ namespace behaviac
 
             return pTask;
         }
-        /// <summary>
-        /// implement the decompose
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="seqTask"></param>
-        /// <param name="depth"></param>
-        /// <param name="planner"></param>
-        /// <returns></returns>
+
+#if BEHAVIAC_USE_HTN
         public override bool decompose(BehaviorNode node, PlannerTaskComplex seqTask, int depth, Planner planner)
         {
             bool bOk = false;
@@ -79,6 +61,7 @@ namespace behaviac
 
             return bOk;
         }
+#endif//
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -89,18 +72,11 @@ namespace behaviac
                 property_t p = properties[i];
                 if (p.name == "Prototype")
                 {
-                    if (!string.IsNullOrEmpty(p.value))
-                    {
-                        CMethodBase m = Action.LoadMethod(p.value);
-                        this.m_task = m as CTaskMethod;
-                    }//if (p.value[0] != '\0')
+                    this.m_task = AgentMeta.ParseMethod(p.value);
                 }
                 else if (p.name == "IsHTN")
                 {
-                    if (p.value == "true")
-                    {
-                        this.m_bHTN = true;
-                    }
+                    this.m_bHTN = (p.value == "true");
                 }
             }
         }
@@ -108,12 +84,9 @@ namespace behaviac
 
     internal class TaskTask : Sequence.SequenceTask
     {
+#if BEHAVIAC_USE_HTN
         private Planner _planner = new Planner();
-
-        public TaskTask()
-            : base()
-        {
-        }
+#endif//
 
         public override void copyto(BehaviorTask target)
         {
@@ -133,16 +106,6 @@ namespace behaviac
             base.Init(node);
         }
 
-        public override void load(ISerializableNode node)
-        {
-            base.load(node);
-        }
-
-        public override void save(ISerializableNode node)
-        {
-            base.save(node);
-        }
-
         protected override void addChild(BehaviorTask pBehavior)
         {
             base.addChild(pBehavior);
@@ -155,36 +118,50 @@ namespace behaviac
             Debug.Check(this.m_activeChildIndex == CompositeTask.InvalidChildIndex);
             Task pMethodNode = (Task)(this.GetNode());
 
+#if BEHAVIAC_USE_HTN
             _planner.Init(pAgent, pMethodNode);
+#endif//
 
             return base.onenter(pAgent);
         }
 
         protected override void onexit(Agent pAgent, EBTStatus s)
         {
+#if BEHAVIAC_USE_HTN
             _planner.Uninit();
+#endif//
+
             base.onexit(pAgent, s);
         }
 
         protected override EBTStatus update(Agent pAgent, EBTStatus childStatus)
         {
-            Debug.Check(this.GetNode() is Task, "node is not an Method");
-            Task pTaskNode = (Task)(this.GetNode());
+            EBTStatus status = childStatus;
 
-            if (pTaskNode.IsHTN)
+            if (childStatus == EBTStatus.BT_RUNNING)
             {
-                EBTStatus status = _planner.Update();
+                Debug.Check(this.GetNode() is Task, "node is not an Method");
+                Task pTaskNode = (Task)(this.GetNode());
 
-                return status;
+                if (pTaskNode.IsHTN)
+                {
+#if BEHAVIAC_USE_HTN
+                    status = _planner.Update();
+#endif//
+                }
+                else
+                {
+                    Debug.Check(this.m_children.Count == 1);
+                    BehaviorTask c = this.m_children[0];
+                    status = c.exec(pAgent);
+                }
             }
             else
             {
-                Debug.Check(this.m_children.Count == 1);
-                BehaviorTask c = this.m_children[0];
-                EBTStatus status = c.exec(pAgent);
-
-                return status;
+                Debug.Check(true);
             }
+
+            return status;
         }
     }
 }

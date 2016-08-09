@@ -86,6 +86,10 @@ using namespace behaviac;
 
 namespace behaviac
 {
+}
+
+namespace behaviac
+{
 	// Source file: performance/Performance
 
 	class DecoratorLoop_bt_performance_Performance_node1 : public DecoratorLoop
@@ -95,6 +99,7 @@ namespace behaviac
 		DecoratorLoop_bt_performance_Performance_node1()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 	protected:
 		virtual int GetCount(Agent* pAgent) const

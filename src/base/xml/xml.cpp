@@ -136,13 +136,13 @@ namespace behaviac
 	//! Get XML Node child nodes.
 	int CXmlNode::getAttrCount() const
 	{
-		return m_attributes.size();
+		return (int)m_attributes.size();
 	}
 
 	//! Get XML Node child nodes.
 	const char* CXmlNode::getAttr(int index) const
 	{
-		if ((uint32_t)index < m_attributes.size())
+		if ((size_t)index < m_attributes.size())
 		{
 			return m_attributes[index].GetValue();
 		}
@@ -667,6 +667,7 @@ namespace behaviac
 		}
 		else
 		{
+			BEHAVIAC_LOGERROR("CXmlNode::SaveLevel, cannot open for write %s, xml won't be saved\n", fileName);
 			BEHAVIAC_ASSERT(0, "CXmlNode::SaveLevel, cannot open for write %s, xml won't be saved\n", fileName);
 		}
 
@@ -684,7 +685,7 @@ namespace behaviac
 
 			behaviac::string out;
 			behaviac::StringUtils::Wide2Char(out, temp);
-			file->Write(out.c_str(), out.size());
+			file->Write(out.c_str(), (uint32_t)out.size());
 
 			return true;
 		}

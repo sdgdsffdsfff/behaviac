@@ -17,7 +17,7 @@
 
 namespace behaviac
 {
-    CMethodBase* CTaskMethod::clone() const
+    behaviac::CMethodBase* CTaskMethod::clone() const
     {
         return BEHAVIAC_NEW CTaskMethod(*this);
     }
@@ -36,8 +36,9 @@ namespace behaviac
                 behaviac::Property* valueProperty = this->m_params[i];
                 BEHAVIAC_ASSERT(valueProperty);
 
-                behaviac::string paramName = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, i);
-                this->SetTaskParam(pAgent, agentT, paramName.c_str(), valueProperty);
+				char paramName[1024];
+				string_sprintf(paramName, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, i);
+                this->SetTaskParam(pAgent, agentT, paramName, valueProperty);
             }
         }
     }
@@ -47,6 +48,7 @@ namespace behaviac
     {
 		BEHAVIAC_ASSERT(agentT);
         behaviac::Property* pProperty = agentT->GetLocal(paramName);
+		BEHAVIAC_ASSERT(pProperty);
         pProperty->SetFrom(pAgent, valueProperty, pAgent);
     }
 }

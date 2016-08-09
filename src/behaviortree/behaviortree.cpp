@@ -22,31 +22,34 @@
 #include "behaviac/fsm/state.h"
 #include "behaviac/htn/agentproperties.h"
 
-namespace rapidxml
+namespace behaviac
 {
-    //! When exceptions are disabled by defining RAPIDXML_NO_EXCEPTIONS,
-    //! this function is called to notify user about the error.
-    //! It must be defined by the user.
-    //! <br><br>
-    //! This function cannot return. If it does, the results are undefined.
-    //! <br><br>
-    //! A very simple definition might look like that:
-    //! <pre>
-    //! void %rapidxml::%parse_error_handler(const char *what, void *where)
-    //! {
-    //!     std::cout << "Parse error: " << what << "\n";
-    //!     std::abort();
-    //! }
-    //! </pre>
-    //! \param what Human readable description of the error.
-    //! \param where Pointer to character data where error was detected.
-    void parse_error_handler(const char* what, void* where)
-    {
-        BEHAVIAC_UNUSED_VAR(where);
+	namespace rapidxml
+	{
+		//! When exceptions are disabled by defining RAPIDXML_NO_EXCEPTIONS,
+		//! this function is called to notify user about the error.
+		//! It must be defined by the user.
+		//! <br><br>
+		//! This function cannot return. If it does, the results are undefined.
+		//! <br><br>
+		//! A very simple definition might look like that:
+		//! <pre>
+		//! void %rapidxml::%parse_error_handler(const char *what, void *where)
+		//! {
+		//!     std::cout << "Parse error: " << what << "\n";
+		//!     std::abort();
+		//! }
+		//! </pre>
+		//! \param what Human readable description of the error.
+		//! \param where Pointer to character data where error was detected.
+		void parse_error_handler(const char* what, void* where)
+		{
+			BEHAVIAC_UNUSED_VAR(where);
 
-        BEHAVIAC_LOGERROR("rapidxml parse error: %s\n", what);
-        BEHAVIAC_ASSERT(0);
-    }
+			BEHAVIAC_LOGERROR("rapidxml parse error: %s\n", what);
+			BEHAVIAC_ASSERT(0);
+		}
+	}
 }
 
 namespace behaviac
@@ -80,14 +83,14 @@ namespace behaviac
     //bson deserizer
 
     //keep this version equal to designers' NewVersion
-    const int SupportedVersion = 3;
+    const int SupportedVersion = 5;
 
-    BEGIN_PROPERTIES_DESCRIPTION(BehaviorTree::Descriptor_t);
+    BEHAVIAC_BEGIN_PROPERTIES(BehaviorTree::Descriptor_t);
     {
-        REGISTER_PROPERTY(Descriptor);
-        REGISTER_PROPERTY(Reference);
+        BEHAVIAC_REGISTER_PROPERTY(Descriptor);
+        BEHAVIAC_REGISTER_PROPERTY(Reference);
     }
-    END_PROPERTIES_DESCRIPTION();
+    BEHAVIAC_END_PROPERTIES();
 
     CFactory<BehaviorNode>* BehaviorNode::ms_factory;
     CFactory<BehaviorNode>& BehaviorNode::Factory()
@@ -397,12 +400,12 @@ namespace behaviac
     {
         if (this->m_children)
         {
-            return this->m_children->size();
+			return (uint32_t)this->m_children->size();
         }
 
         return 0;
     }
-	BehaviorNode* BehaviorNode::GetChildById(uint32_t nodeId) const
+	BehaviorNode* BehaviorNode::GetChildById(int16_t nodeId) const
     {
         size_t m_childCount = this->m_children->size();
 
@@ -442,14 +445,14 @@ namespace behaviac
         return this->m_className;
     }
 
-	uint16_t BehaviorNode::GetId() const
+	int16_t BehaviorNode::GetId() const
     {
         //BEHAVIAC_ASSERT(this->m_id != INVALID_NODE_ID);
 
         return this->m_id;
     }
 
-	void BehaviorNode::SetId(uint16_t id)
+	void BehaviorNode::SetId(int16_t id)
     {
         this->m_id = id;
     }
@@ -524,7 +527,7 @@ namespace behaviac
         this->m_customCondition = node;
     }
 
-    //CMethodBase* LoadMethod(const char* value_);
+    //behaviac::CMethodBase* LoadMethod(const char* value_);
 
     bool BehaviorNode::IsValid(Agent* pAgent, BehaviorTask* pTask) const
     {
@@ -810,6 +813,7 @@ namespace behaviac
                         else if (StringUtils::StrEqual(c->name(), kStrNode))
                         {
                             BehaviorNode* pChildNode = BehaviorNode::load(agentType, c, version);
+							BEHAVIAC_ASSERT(pChildNode);
                             bHasEvents |= pChildNode->m_bHasEvents;
 
                             this->AddChild(pChildNode);
@@ -962,6 +966,7 @@ namespace behaviac
             {
                 pNode->SetClassNameString(pClassName);
                 const char* idStr = node->first_attribute(kStrId)->value();//node.Attribute("id");
+				BEHAVIAC_ASSERT(idStr);
 				pNode->SetId((uint16_t)atoi(idStr));
 
                 pNode->load_properties_pars_attachments_children(true, version, agentType, node);
@@ -1096,6 +1101,7 @@ namespace behaviac
         {
             pNode->SetClassNameString(pClassName);
             const char* idString = d.ReadString();
+			BEHAVIAC_ASSERT(idString);
 			pNode->SetId((uint16_t)atoi(idString));
 
             pNode->load_properties_pars_attachments_children(version, agentType, d, false);
@@ -1570,6 +1576,7 @@ namespace behaviac
         d.OpenDocument();
 
         BehaviorNode* pChildNode = this->load(agentType, d, version);
+		BEHAVIAC_ASSERT(pChildNode);
         bool bHasEvents = pChildNode->m_bHasEvents;
 
         this->AddChild(pChildNode);

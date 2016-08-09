@@ -35,6 +35,8 @@ namespace behaviac
         static unsigned short ms_socketPort;
 
     public:
+		static void LogInfo();
+
         static bool IsProfiling();
 
         /**
@@ -127,7 +129,7 @@ namespace behaviac
 		version_str is used to make sure the lib compiling defines are the same with app's
 		just use this default param and don't provode any param unless you know what you are doing
 		*/
-		static Workspace* GetInstance(const char* version_str = BEHAVIAC_VERSION_STR);
+		static Workspace* GetInstance(const char* version_str = BEHAVIAC_BUILD_CONFIG_STR);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         /**
@@ -165,12 +167,15 @@ namespace behaviac
 		void DebugUpdate();
 
         /**
-        this is called for every behavior node, in which uses can do some custom stuff
+        this is called for every behavior node, in which users can do some custom stuff
         */
         typedef void (*BehaviorNodeLoader)(const char* nodeType, const properties_t& properties);
         void SetBehaviorNodeLoader(BehaviorNodeLoader loaderCallback);
 
-        void BehaviorNodeLoaded(const char* nodeType, const properties_t& properties);
+		/**
+		either override BehaviorNodeLoaded or call 'SetBehaviorNodeLoader' to set a callback
+		*/
+        virtual void BehaviorNodeLoaded(const char* nodeType, const properties_t& properties);
 
         bool ExportMetas(const char* xmlMetaFilePath);
         void Cleanup();
@@ -238,11 +243,11 @@ namespace behaviac
         bool RegisterBehaviorTreeCreator(const char* relativePath, BehaviorTreeCreator_t creator);
         void UnRegisterBehaviorTreeCreators();
 
-        bool PopFileFromBuffer(const char* file, const char* str, char* pBuffer);
+		bool PopFileFromBuffer(const char* file, const char* str, char* pBuffer, uint32_t bufferSize);
         void LogCurrentStates();
 
         void HandleFileFormat(const behaviac::string& fullPath, behaviac::string& ext, Workspace::EFileFormat& f);
-        char* ReadFileToBuffer(const char* file, const char* ext);
+        char* ReadFileToBuffer(const char* file, const char* ext, uint32_t& bufferSize);
 
     protected:
         Workspace();
@@ -252,9 +257,9 @@ namespace behaviac
         bool LoadWorkspaceSetting(const char* file, behaviac::string& workspaceFile);
         bool LoadWorkspaceFile(const char* file);
 
-        char* ReadFileToBuffer(const char* file);
+		char* ReadFileToBuffer(const char* file, uint32_t& bufferSize);
 
-        void PopFileFromBuffer(char* pBuffer);
+		void PopFileFromBuffer(char* pBuffer, uint32_t bufferSize);
 
         /**
         a shared buffer is kept for file loading.
@@ -308,7 +313,6 @@ namespace behaviac
         behaviac::Mutex			m_cs;
 
         static const int kMaxPath = 260 * 2;
-        static const int kFileBufferDepth = 20;
 
         char					m_szWorkspaceExportPath[kMaxPath];
 
@@ -338,10 +342,22 @@ namespace behaviac
         BehaviorNodeLoader		m_pBehaviorNodeLoader;
         BehaviorTreeCreators_t* m_behaviortreeCreators;
 
-        char* m_fileBuffer;
-        uint32_t m_fileBufferLength;
-        int m_fileBufferTop;
-        uint32_t m_fileBufferOffset[kFileBufferDepth];
+		// we keep 5 (kFileBuffers) buffers, each buffer is allocated once and used from buffer[0] until 
+		// it is used out then to try to use buffer[1], etc. 
+		// our goal is to use memory as less as possible and allocate as not often as possible
+		const static int kFileBuffers = 5;
+
+		struct FileBuffer_t
+		{
+			char* 		start;
+			uint32_t	length;
+			uint32_t	offset;
+
+			FileBuffer_t() : start(0), length(0), offset(0)
+			{}
+		};
+
+		FileBuffer_t m_fileBuffers[kFileBuffers];
 
 		int m_frame;
 
@@ -367,7 +383,8 @@ protected:
         behaviac::LogManager::GetInstance()->Flush(0); \
         behaviac::Socket::Flush(); \
         const char* filterStr = (filter == 0 || *filter == '\0') ? "empty" : filter; \
-        const char* msg = FormatString("BehaviorTreeTask AppLog Breaked at: %s(%d)\n\n'%s:%s'\n\nOk to break, Cancel to continue.", __FILE__, __LINE__, filterStr, appLog); \
+		char msg[1024];\
+		string_sprintf(msg, "BehaviorTreeTask AppLog Breaked at: %s(%d)\n\n'%s:%s'\n\nOk to break, Cancel to continue.", __FILE__, __LINE__, filterStr, appLog); \
         if (IDOK == MessageBoxA(0, msg, "BehaviorTreeTask AppLog", MB_OKCANCEL | MB_ICONHAND | MB_SETFOREGROUND | MB_SYSTEMMODAL)) \
         { \
             DebugBreak_(); \

@@ -51,6 +51,11 @@ namespace behaviac
         return ms_nStarted >= 1;
     }
 
+	const char* GetVersionString() {
+		//return BEHAVIAC_VERSION_STRING;
+		return BEHAVIAC_BUILD_CONFIG_STR;
+	}
+
     bool BaseStart()
     {
         //BEHAVIAC_ASSERT(ms_nStarted == 0, "behaviac::Stop was not invoked! or behaviac::Start had been invoked already!");
@@ -59,17 +64,6 @@ namespace behaviac
             ms_nStarted++;
 
             behaviac::SetMainThread();
-
-            //const char* verStr = behaviac::VersionString();
-
-            //if (strcmp(verStr, versionString) != 0)
-            //{
-            //	BEHAVIAC_LOG2(BEHAVIAC_LOG_ERROR, "[behaviac]Behaviac Start Failed, Your Version %s while DLL Version %s\n", versionString, verStr);
-            //	BEHAVIAC_ASSERT(0, "[behaviac]Behaviac Start Failed, Your Version %s while DLL Version %s\n", versionString, verStr);
-            //	BEHAVIAC_LOGERROR("[behaviac]Behaviac Start Failed, Your Version %s while DLL Version %s\n, Please Make sure Debug/Release or Header/Lib are compatible\n", versionString, verStr);
-
-            //	return false;
-            //}
 
             behaviac::Workspace::GetInstance()->RegisterBasicNodes();
 

@@ -13,11 +13,13 @@ public class FSMAgentTest : behaviac.Agent
     public void resetProperties() {
         TestVar = -1;
         Message = EMessage.Invalid;
-        this.Variables.Clear();
+        SetVariable<int>("EnergyCount", 0);
+        SetVariable<long>("ExitCount", 0);
     }
 
     public void init() {
-        base.Init();
+		base.Init();
+
         resetProperties();
     }
 

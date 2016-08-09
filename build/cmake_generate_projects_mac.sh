@@ -1,5 +1,6 @@
 
 echo "please visit http://www.behaviac.com/docs/zh/articles/build/ for more information"
+echo ---------------------------------------------------------------------------------
 
 mkdir cmake_binary
 cd cmake_binary
@@ -10,12 +11,12 @@ cd linux
 
 mkdir debug
 cd debug
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug --build ../../../..
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DBUILD_USE_64BITS=ON --build ../../../..
 cd ..
 
 mkdir release
 cd release
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release --build ../../../..
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_USE_64BITS=ON --build ../../../..
 cd ..
 
 # linux
@@ -23,6 +24,9 @@ cd ..
 # --------------------------------------------------------------
 mkdir xcode
 cd xcode
+# cmake -G "Xcode" -DBUILD_USE_64BITS=ON --build ../../..
+# cmake -G "Xcode" -DCMAKE_BUILD_TYPE=Release --build ../../..
+# cmake -G "Xcode" --build -DCMAKE_BUILD_TYPE=Debug ../../..
 cmake -G "Xcode" --build ../../..
 cd ..
 # --------------------------------------------------------------

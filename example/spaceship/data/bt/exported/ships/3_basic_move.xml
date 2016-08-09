@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <!--Source File: ships\3_basic_move.xml-->
-<behavior name="ships/3_basic_move" agenttype="framework::Ship" version="3">
+<behavior name="ships/3_basic_move" agenttype="framework::Ship" version="5">
   <node class="Parallel" id="1">
     <property ChildFinishPolicy="CHILDFINISH_LOOP" />
     <property ExitPolicy="EXIT_NONE" />
@@ -10,6 +10,7 @@
     <node class="DecoratorLoop" id="2">
       <property Count="const int -1" />
       <property DecorateWhenChildEnds="true" />
+      <property DoneWithinFrame="false" />
       <node class="Sequence" id="3">
         <node class="Condition" id="4">
           <property Operator="Equal" />
@@ -33,6 +34,7 @@
     <node class="DecoratorLoop" id="8">
       <property Count="const int -1" />
       <property DecorateWhenChildEnds="true" />
+      <property DoneWithinFrame="false" />
       <node class="Sequence" id="9">
         <node class="Condition" id="10">
           <property Operator="Equal" />

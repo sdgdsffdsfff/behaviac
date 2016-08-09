@@ -53,6 +53,15 @@ namespace Behaviac.Design
         private bool _initialized = false;
         private bool _isDirty = false;
 
+        private bool _exportBehaviors = true;
+        public bool ExportBehaviors
+        {
+            get
+            {
+                return _exportBehaviors;
+            }
+        }
+
         public ExportDialog(BehaviorTreeList behaviorTreeList, BehaviorNode node, bool ignoreErrors, TreeNode selectedTreeRoot, int formatIndex) {
             _initialized = false;
 
@@ -241,6 +250,11 @@ namespace Behaviac.Design
             this.fileCountLabel.Text = string.Format(Resources.ExportFileCountInfo, exportedFileCount, errorsFilesCount);
 
             return errorsFilesCount;
+        }
+
+        public string GetExportedInfo()
+        {
+            return fileCountLabel.Text;
         }
 
         private void ShowNodes(TreeNodeCollection treenodes, bool onlyShowFaultBehaviors)
@@ -511,7 +525,7 @@ namespace Behaviac.Design
             if (columnIndex == 0) // Enable
             {
                 Debug.Check(Workspace.Current != null);
-                Workspace.Current.SetExportInfo(info.ID, (bool)row.Cells["Enable"].EditedFormattedValue, Workspace.Current.ExportedUnifiedFile(info.ID), Workspace.Current.GenerateCustomizedTypes(info.ID));
+                Workspace.Current.SetExportInfo(info.ID, (bool)row.Cells["Enable"].EditedFormattedValue, Workspace.Current.ExportedUnifiedFile(info.ID));
 
                 exportIndex = -1;
 
@@ -567,6 +581,16 @@ namespace Behaviac.Design
             {
                 update();
             }
+        }
+
+        private void exportAllButton_Click(object sender, EventArgs e)
+        {
+            _exportBehaviors = true;
+        }
+
+        private void exportTypesButton_Click(object sender, EventArgs e)
+        {
+            _exportBehaviors = false;
         }
     }
 }

@@ -17,20 +17,20 @@ namespace behaviac
 {
     CCustomMethod::~CCustomMethod()
     {
-        if (this->m_bCopy)
-        {
-            for (behaviac::vector<behaviac::Property*>::iterator it = this->m_params.begin(); it != this->m_params.end(); ++it)
-            {
-                behaviac::Property* p = *it;
+        //if (this->m_bCopy)
+        //{
+        //    for (behaviac::vector<behaviac::Property*>::iterator it = this->m_params.begin(); it != this->m_params.end(); ++it)
+        //    {
+        //        behaviac::Property* p = *it;
 
-                BEHAVIAC_DELETE p;
-            }
-        }
+        //        BEHAVIAC_DELETE p;
+        //    }
+        //}
 
         this->m_params.clear();
     }
 
-    Property* CCustomMethod::LoadFromXML(CTagObject* parent, const ISerializableNode& xmlNode, const char* typeName, const char* paramName)
+    Property* CCustomMethod::LoadFromXML(behaviac::CTagObject* parent, const ISerializableNode& xmlNode, const char* typeName, const char* paramName)
     {
         BEHAVIAC_UNUSED_VAR(parent);
 
@@ -71,14 +71,15 @@ namespace behaviac
         return pProperty;
     }
 
-    void CCustomMethod::LoadFromXML(CTagObject* parent, const ISerializableNode& xmlNode)
+    void CCustomMethod::LoadFromXML(behaviac::CTagObject* parent, const ISerializableNode& xmlNode)
     {
         for (uint32_t i = 0; i < this->m_paramTypes.size(); ++i)
         {
             const behaviac::string& paramTypeName = this->m_paramTypes[i];
 
-            const char* paramName = FormatString("param%d", i + 1);
-            Property* p = this->LoadFromXML(parent, xmlNode, paramTypeName.c_str(), paramName);
+			char temp[1024];
+			string_sprintf(temp, "param%d", i + 1);
+			Property* p = this->LoadFromXML(parent, xmlNode, paramTypeName.c_str(), temp);
 
             this->m_params.push_back(p);
         }

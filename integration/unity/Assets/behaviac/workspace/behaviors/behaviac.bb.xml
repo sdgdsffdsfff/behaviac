@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <meta>
   <types>
     <enumtype Type="ETest" DisplayName="ETest" Desc="">
@@ -11,6 +12,11 @@
     </struct>
   </types>
   <agents>
+    <agent type="HTNAgentHouseBase" base="behaviac::Agent" disp="HTNAgentHouseBase" desc="HTNAgentHouseBase">
+      <properties>
+        <property name="Money" type="System.Int32" classname="HTNAgentHouseBase" defaultvalue="0" static="false" public="true" readonly="false" disp="Money" desc="MemberProperty" />
+      </properties>
+    </agent>
     <agent type="AgentNodeTest" base="behaviac::Agent" disp="AgentNodeTest" desc="AgentNodeTest">
       <properties>
         <property name="testFloat2" type="XMLPluginBehaviac.TestNS_Float2" classname="AgentNodeTest" defaultvalue="{x=0;y=0;}" static="false" public="true" readonly="false" disp="testFloat2" desc="local_node" />
@@ -19,6 +25,8 @@
         <property name="par_child_agent_1" type="XMLPluginBehaviac.ChildNodeTest" classname="AgentNodeTest" defaultvalue="null" static="false" public="true" readonly="false" disp="par_child_agent_1" desc="par_child_agent_1" />
         <property name="c_ReturnFloat2" type="XMLPluginBehaviac.TestNS_Float2" classname="AgentNodeTest" defaultvalue="{x=0;y=0;}" static="false" public="true" readonly="false" disp="c_ReturnFloat2" desc="c_ReturnFloat2" />
         <property name="c_ReturnFloat2Const" type="XMLPluginBehaviac.TestNS_Float2" classname="AgentNodeTest" defaultvalue="{x=0;y=0;}" static="false" public="true" readonly="false" disp="c_ReturnFloat2Const" desc="c_ReturnFloat2Const" />
+        <property name="redirectCount" type="System.UInt32" classname="AgentNodeTest" defaultvalue="0" static="false" public="true" readonly="false" disp="redirectCount" desc="redirectCount" />
+        <property name="redirectTime" type="System.UInt32" classname="AgentNodeTest" defaultvalue="0" static="false" public="true" readonly="false" disp="redirectTime" desc="redirectTime" />
       </properties>
       <methods>
         <method name="event_test_int" returntype="System.Boolean" classname="AgentNodeTest" static="false" public="true" istask="true" disp="event_test_int" desc="event_test_int">
@@ -41,6 +49,12 @@
         <method name="event_test_agent" returntype="System.Void" classname="AgentNodeTest" static="false" public="true" istask="true" disp="event_test_agent" desc="event_test_agent">
           <parameter name="agent" type="XMLPluginBehaviac.AgentNodeTest" disp="agent" desc="" />
         </method>
+        <method name="event_test_float2" returntype="System.Void" classname="AgentNodeTest" static="false" public="true" istask="true" disp="event_test_float2" desc="event_test_float2">
+          <parameter name="float2" type="XMLPluginBehaviac.TestNS_Float2" disp="float2" desc="" />
+        </method>
+        <method name="event_test_float2_ref" returntype="System.Void" classname="AgentNodeTest" static="false" public="true" istask="true" disp="event_test_float2_ref" desc="event_test_float2_ref">
+          <parameter name="float2" type="XMLPluginBehaviac.TestNS_Float2" isref="true" disp="float2" desc="" />
+        </method>
       </methods>
     </agent>
     <agent type="CustomPropertyAgent" base="behaviac::Agent" disp="CustomPropertyAgent" desc="CustomPropertyAgent">
@@ -50,6 +64,8 @@
         <property name="c_StaticString" type="System.String" classname="CustomPropertyAgent" defaultvalue="" static="true" public="true" readonly="false" disp="c_StaticString" desc="c_StaticString" />
         <property name="c_Enum" type="XMLPluginBehaviac.TNS_NE_NAT_eColor" classname="CustomPropertyAgent" defaultvalue="RED" static="false" public="true" readonly="false" disp="c_Enum" desc="c_Enum" />
         <property name="c_Location" type="XMLPluginBehaviac.UnityEngine_Vector3" classname="CustomPropertyAgent" defaultvalue="{x=0;y=0;z=0;}" static="false" public="true" readonly="false" disp="c_Location" desc="CustomPropertyAgent::c_Location" />
+        <property name="TestMember1" type="XMLPluginBehaviac.TestNamespace_ClassAsValueType" classname="CustomPropertyAgent" defaultvalue="{x=0;y=0;}" static="false" public="true" readonly="false" disp="TestMember1" desc="TestMember1" />
+        <property name="TestMember2" type="XMLPluginBehaviac.TestNamespace_Float2" classname="CustomPropertyAgent" defaultvalue="{x=0;y=0;}" static="false" public="true" readonly="false" disp="TestMember2" desc="TestMember2" />
       </properties>
       <methods>
         <method name="PIR_IntArray" returntype="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" classname="CustomPropertyAgent" static="false" public="true" istask="false" disp="PIR_IntArray" desc="PIR_IntArray">
@@ -70,11 +86,6 @@
         <property name="ExitCount" type="System.Int64" classname="FSMAgentTest" defaultvalue="0" static="false" public="true" readonly="false" disp="ExitCount" desc="ExitCount" />
         <property name="FoodCount" type="System.Int32" classname="FSMAgentTest" defaultvalue="0" static="false" public="true" readonly="false" disp="FoodCount" desc="FoodCount" />
         <property name="EnergyCount" type="System.Int32" classname="FSMAgentTest" defaultvalue="0" static="false" public="true" readonly="false" disp="EnergyCount" desc="EnergyCount" />
-      </properties>
-    </agent>
-    <agent type="HTNAgentHouseBase" base="behaviac::Agent" disp="HTNAgentHouseBase" desc="HTNAgentHouseBase">
-      <properties>
-        <property name="Money" type="System.Int32" classname="HTNAgentHouseBase" defaultvalue="0" static="false" public="true" readonly="false" disp="Money" desc="MemberProperty" />
       </properties>
     </agent>
     <agent type="HTNAgentHouse" base="HTNAgentHouseBase" disp="HTNAgentHouse" desc="HTNAgentHouse">
@@ -113,11 +124,14 @@
         <property name="c_ResultStatic" type="System.Int32" classname="PropertyReadonlyAgent" defaultvalue="0" static="true" public="true" readonly="false" disp="c_ResultStatic" desc="c_ResultStatic" />
       </properties>
     </agent>
-    <agent type="TestNS::AgentArrayAccessTest" base="behaviac::Agent" disp="ArrayAccessTest_Agent" desc="ArrayAccessTest Agent Desc">
+    <agent type="TestNS::AgentArrayAccessTest" base="behaviac::Agent" disp="TestNS::AgentArrayAccessTest" desc="TestNS::AgentArrayAccessTest">
       <properties>
         <property name="c_Int" type="System.Int32" classname="TestNS::AgentArrayAccessTest" defaultvalue="0" static="false" public="true" readonly="false" disp="c_Int" desc="TestNS::AgentArrayAccessTest::c_Int" />
         <property name="c_ListInts" type="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" classname="TestNS::AgentArrayAccessTest" defaultvalue="5:10|20|30|40|50" static="false" public="true" readonly="false" disp="c_ListInts" desc="TestNS::AgentArrayAccessTest::c_ListInts" />
         <property name="c_Count" type="System.Int32" classname="TestNS::AgentArrayAccessTest" defaultvalue="0" static="false" public="true" readonly="false" disp="c_Count" desc="TestNS::AgentArrayAccessTest::c_Count" />
+        <property name="c_douleVec" type="System.Collections.Generic.List`1[[System.Double, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" classname="TestNS::AgentArrayAccessTest" defaultvalue="3:0.01|0.02|0.03" static="false" public="true" readonly="false" disp="c_douleVec" desc="c_douleVec" />
+        <property name="c_doubleVal" type="System.Double" classname="TestNS::AgentArrayAccessTest" defaultvalue="0.05" static="false" public="true" readonly="false" disp="c_doubleVal" desc="c_doubleVal" />
+        <property name="c_doubleVec2" type="System.Collections.Generic.List`1[[System.Double, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" classname="TestNS::AgentArrayAccessTest" defaultvalue="3:0.01|0.02|0.03" static="false" public="true" readonly="false" disp="c_doubleVec2" desc="c_doubleVec2" />
       </properties>
     </agent>
   </agents>

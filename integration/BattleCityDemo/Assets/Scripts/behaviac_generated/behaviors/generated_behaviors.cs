@@ -10,112 +10,6 @@ using System.Reflection;
 
 namespace behaviac
 {
-	class AgentExtra_Generated
-	{
-		private static Dictionary<string, FieldInfo> _fields = new Dictionary<string, FieldInfo>();
-		private static Dictionary<string, PropertyInfo> _properties = new Dictionary<string, PropertyInfo>();
-		private static Dictionary<string, MethodInfo> _methods = new Dictionary<string, MethodInfo>();
-
-		public static object GetProperty(behaviac.Agent agent, string property)
-		{
-			Type type = agent.GetType();
-			string propertyName = type.FullName + property;
-			if (_fields.ContainsKey(propertyName))
-			{
-				return _fields[propertyName].GetValue(agent);
-			}
-
-			if (_properties.ContainsKey(propertyName))
-			{
-				return _properties[propertyName].GetValue(agent, null);
-			}
-
-			while (type != typeof(object))
-			{
-				FieldInfo field = type.GetField(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				if (field != null)
-				{
-					_fields[propertyName] = field;
-					return field.GetValue(agent);
-				}
-
-				PropertyInfo prop = type.GetProperty(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				if (prop != null)
-				{
-					_properties[propertyName] = prop;
-					return prop.GetValue(agent, null);
-				}
-
-				type = type.BaseType;
-			}
-			Debug.Check(false, "No property can be found!");
-			return null;
-		}
-
-		public static void SetProperty(behaviac.Agent agent, string property, object value)
-		{
-			Type type = agent.GetType();
-			string propertyName = type.FullName + property;
-			if (_fields.ContainsKey(propertyName))
-			{
-				_fields[propertyName].SetValue(agent, value);
-				return;
-			}
-
-			if (_properties.ContainsKey(propertyName))
-			{
-				_properties[propertyName].SetValue(agent, value, null);
-				return;
-			}
-
-			while (type != typeof(object))
-			{
-				FieldInfo field = type.GetField(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				if (field != null)
-				{
-					_fields[propertyName] = field;
-					field.SetValue(agent, value);
-					return;
-				}
-
-				PropertyInfo prop = type.GetProperty(property, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				if (prop != null)
-				{
-					_properties[propertyName] = prop;
-					prop.SetValue(agent, value, null);
-					return;
-				}
-
-				type = type.BaseType;
-			}
-			Debug.Check(false, "No property can be found!");
-		}
-
-		public static object ExecuteMethod(behaviac.Agent agent, string method, object[] args)
-		{
-			Type type = agent.GetType();
-			string methodName = type.FullName + method;
-			if (_methods.ContainsKey(methodName))
-			{
-				return _methods[methodName].Invoke(agent, args);;
-			}
-
-			while (type != typeof(object))
-			{
-				MethodInfo m = type.GetMethod(method, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				if (m != null)
-				{
-					_methods[methodName] = m;
-					return m.Invoke(agent, args);
-				}
-
-				type = type.BaseType;
-			}
-			Debug.Check(false, "No method can be found!");
-			return null;
-		}
-	}
-
 	// Source file: Level_DeathMatch_0
 
 	[behaviac.GeneratedTypeMetaInfo()]
@@ -124,6 +18,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Level_DeathMatch_0_node1()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -182,7 +77,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = 2;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SpawnCountPerWave") == 193379536u);
-			pAgent.SetVariable<int>("parT_SpawnCountPerWave", opr, 193379536u);
+			pAgent.SetVariable<int>("parT_SpawnCountPerWave", 193379536u, opr);
 			return result;
 		}
 	}
@@ -232,39 +127,22 @@ namespace behaviac
 		public Action_bt_Level_DeathMatch_0_node10()
 		{
 			this.m_resultOption = EBTStatus.BT_SUCCESS;
-			method_p0 = eGameForce.BLUE_FORCE;
-			method_p1 = 8f;
-			method_p2 = "Tank_Wander_RandomFire";
-			method_p3 = 2000;
-			method_p4 = 1000;
-			method_p5 = 1;
-			method_p6 = 1;
-			method_p7 = 180f;
-			method_p8 = 360f;
-			method_p10.a = 1f;
-			method_p10.b = 1f;
-			method_p10.g = 0f;
-			method_p10.r = 0f;
-			method_p11 = -1;
+			method_p0 = "Tank_Wander_RandomFire";
+			method_p2 = new UnityEngine.Color();
+			method_p2.a = 1f;
+			method_p2.b = 1f;
+			method_p2.g = 0f;
+			method_p2.r = 0f;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SpawnCountPerWave") == 193379536u);
-			int method_p9 = pAgent.GetVariable<int>(193379536u);
-			((GameLevelCommon)pAgent).spawnGameActor(method_p0, method_p1, method_p2, method_p3, method_p4, method_p5, method_p6, method_p7, method_p8, method_p9, method_p10, method_p11);
+			int method_p1 = pAgent.GetVariable<int>(193379536u);
+			((GameLevelCommon)pAgent).spawnGameActor2(method_p0, method_p1, method_p2);
 			return EBTStatus.BT_SUCCESS;
 		}
-		eGameForce method_p0;
-		float method_p1;
-		string method_p2;
-		int method_p3;
-		int method_p4;
-		int method_p5;
-		int method_p6;
-		float method_p7;
-		float method_p8;
-		UnityEngine.Color method_p10;
-		int method_p11;
+		string method_p0;
+		UnityEngine.Color method_p2;
 	}
 
 	[behaviac.GeneratedTypeMetaInfo()]
@@ -280,7 +158,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(193379536u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SpawnCountPerWave") == 193379536u);
-			pAgent.SetVariable<int>("parT_SpawnCountPerWave", (int)(opr1 - opr2), 193379536u);
+			pAgent.SetVariable<int>("parT_SpawnCountPerWave", 193379536u, (int)(opr1 - opr2));
 			return result;
 		}
 	}
@@ -322,7 +200,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(2998764825u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_WaveCount") == 2998764825u);
-			pAgent.SetVariable<int>("parT_WaveCount", (int)(opr1 - opr2), 2998764825u);
+			pAgent.SetVariable<int>("parT_WaveCount", 2998764825u, (int)(opr1 - opr2));
 			return result;
 		}
 	}
@@ -363,7 +241,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).getEnemyCount();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_EnemyCount") == 2685115492u);
-			pAgent.SetVariable<int>("parT_EnemyCount", opr, 2685115492u);
+			pAgent.SetVariable<int>("parT_EnemyCount", 2685115492u, opr);
 			return result;
 		}
 	}
@@ -423,7 +301,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			bool opr = true;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_GameStopped") == 1723664313u);
-			pAgent.SetVariable<bool>("parT_GameStopped", opr, 1723664313u);
+			pAgent.SetVariable<bool>("parT_GameStopped", 1723664313u, opr);
 			return result;
 		}
 	}
@@ -451,7 +329,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = 2;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardType") == 1346337780u);
-			pAgent.SetVariable<int>("parT_AwardType", opr, 1346337780u);
+			pAgent.SetVariable<int>("parT_AwardType", 1346337780u, opr);
 			return result;
 		}
 	}
@@ -469,7 +347,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardX") == 1534020959u);
-			pAgent.SetVariable<int>("parT_AwardX", opr, 1534020959u);
+			pAgent.SetVariable<int>("parT_AwardX", 1534020959u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -489,7 +367,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardY") == 1114930206u);
-			pAgent.SetVariable<int>("parT_AwardY", opr, 1114930206u);
+			pAgent.SetVariable<int>("parT_AwardY", 1114930206u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -572,39 +450,20 @@ namespace behaviac
 		public Action_bt_Level_DeathMatch_0_node37()
 		{
 			this.m_resultOption = EBTStatus.BT_SUCCESS;
-			method_p0 = eGameForce.RED_FORCE;
-			method_p1 = 8f;
-			method_p2 = "Tank_Nav";
-			method_p3 = 1500;
-			method_p4 = 500;
-			method_p5 = 1;
-			method_p6 = 3;
-			method_p7 = 180f;
-			method_p8 = 180f;
-			method_p9 = 0;
-			method_p10.a = 1f;
-			method_p10.b = 0f;
-			method_p10.g = 0f;
-			method_p10.r = 1f;
-			method_p11 = -1;
+			method_p0 = "Tank_Nav";
+			method_p1 = new UnityEngine.Color();
+			method_p1.a = 1f;
+			method_p1.b = 0f;
+			method_p1.g = 0f;
+			method_p1.r = 1f;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
-			((GameLevelCommon)pAgent).spawnGameActor(method_p0, method_p1, method_p2, method_p3, method_p4, method_p5, method_p6, method_p7, method_p8, method_p9, method_p10, method_p11);
+			((GameLevelCommon)pAgent).spawnGameActor3(method_p0, method_p1);
 			return EBTStatus.BT_SUCCESS;
 		}
-		eGameForce method_p0;
-		float method_p1;
-		string method_p2;
-		int method_p3;
-		int method_p4;
-		int method_p5;
-		int method_p6;
-		float method_p7;
-		float method_p8;
-		int method_p9;
-		UnityEngine.Color method_p10;
-		int method_p11;
+		string method_p0;
+		UnityEngine.Color method_p1;
 	}
 
 	public static class bt_Level_DeathMatch_0
@@ -1049,7 +908,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			int opr = (int)GameLevelCommon.getIntArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ID") == 1986102671u);
-			pAgent.SetVariable<int>("parT_ID", opr, 1986102671u);
+			pAgent.SetVariable<int>("parT_ID", 1986102671u, opr);
 			return result;
 		}
 	}
@@ -1069,7 +928,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			int opr = (int)GameLevelCommon.getIntArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_Life") == 2469591944u);
-			pAgent.SetVariable<int>("parT_Life", opr, 2469591944u);
+			pAgent.SetVariable<int>("parT_Life", 2469591944u, opr);
 			return result;
 		}
 	}
@@ -1107,7 +966,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			eGameForce opr = (eGameForce)GameLevelCommon.getGameForceArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ActorForce") == 2293135530u);
-			pAgent.SetVariable<eGameForce>("parT_ActorForce", opr, 2293135530u);
+			pAgent.SetVariable<eGameForce>("parT_ActorForce", 2293135530u, opr);
 			return result;
 		}
 	}
@@ -1149,7 +1008,7 @@ namespace behaviac
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ID") == 1986102671u);
 			int opr = pAgent.GetVariable<int>(1986102671u);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RedForceID") == 3502538092u);
-			pAgent.SetVariable<int>("parT_RedForceID", opr, 3502538092u);
+			pAgent.SetVariable<int>("parT_RedForceID", 3502538092u, opr);
 			return result;
 		}
 	}
@@ -1183,7 +1042,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(2453283515u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerIndex") == 2453283515u);
-			pAgent.SetVariable<int>("parT_PlayerIndex", (int)(opr1 + opr2), 2453283515u);
+			pAgent.SetVariable<int>("parT_PlayerIndex", 2453283515u, (int)(opr1 + opr2));
 			return result;
 		}
 	}
@@ -1206,6 +1065,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Level_DeathMatch_1_node50()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -1262,7 +1122,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = 0;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerIndex") == 2453283515u);
-			pAgent.SetVariable<int>("parT_PlayerIndex", opr, 2453283515u);
+			pAgent.SetVariable<int>("parT_PlayerIndex", 2453283515u, opr);
 			return result;
 		}
 	}
@@ -1282,7 +1142,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			int opr = (int)GameLevelCommon.getIntArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ID") == 1986102671u);
-			pAgent.SetVariable<int>("parT_ID", opr, 1986102671u);
+			pAgent.SetVariable<int>("parT_ID", 1986102671u, opr);
 			return result;
 		}
 	}
@@ -1334,7 +1194,7 @@ namespace behaviac
 			int opr_p0 = pAgent.GetVariable<int>(1986102671u);
 			int opr = (int)((GameLevelCommon)pAgent).getActorLifeCount(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_Life") == 2469591944u);
-			pAgent.SetVariable<int>("parT_Life", opr, 2469591944u);
+			pAgent.SetVariable<int>("parT_Life", 2469591944u, opr);
 			return result;
 		}
 	}
@@ -1370,7 +1230,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			eGameForce opr = (eGameForce)GameLevelCommon.getGameForceArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ActorForce") == 2293135530u);
-			pAgent.SetVariable<eGameForce>("parT_ActorForce", opr, 2293135530u);
+			pAgent.SetVariable<eGameForce>("parT_ActorForce", 2293135530u, opr);
 			return result;
 		}
 	}
@@ -1390,7 +1250,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			UnityEngine.Color opr = (UnityEngine.Color)GameLevelCommon.getColorArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ActorColor") == 1681699911u);
-			pAgent.SetVariable<UnityEngine.Color>("parT_ActorColor", opr, 1681699911u);
+			pAgent.SetVariable<UnityEngine.Color>("parT_ActorColor", 1681699911u, opr);
 			return result;
 		}
 	}
@@ -1410,7 +1270,7 @@ namespace behaviac
 			int opr_p1 = pAgent.GetVariable<int>(2453283515u);
 			string opr = (string)GameLevelCommon.getStringArrayElement(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_Tree") == 1190938892u);
-			pAgent.SetVariable<string>("parT_Tree", opr, 1190938892u);
+			pAgent.SetVariable<string>("parT_Tree", 1190938892u, opr);
 			return result;
 		}
 	}
@@ -1421,36 +1281,22 @@ namespace behaviac
 		public Action_bt_Level_DeathMatch_1_node49()
 		{
 			this.m_resultOption = EBTStatus.BT_SUCCESS;
-			method_p1 = 10f;
-			method_p3 = 1500;
-			method_p4 = 500;
-			method_p5 = 1;
-			method_p6 = 3;
-			method_p7 = 180f;
-			method_p8 = 360f;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ActorForce") == 2293135530u);
 			eGameForce method_p0 = pAgent.GetVariable<eGameForce>(2293135530u);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_Tree") == 1190938892u);
-			string method_p2 = pAgent.GetVariable<string>(1190938892u);
+			string method_p1 = pAgent.GetVariable<string>(1190938892u);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerIndex") == 2453283515u);
-			int method_p9 = pAgent.GetVariable<int>(2453283515u);
+			int method_p2 = pAgent.GetVariable<int>(2453283515u);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ActorColor") == 1681699911u);
-			UnityEngine.Color method_p10 = pAgent.GetVariable<UnityEngine.Color>(1681699911u);
+			UnityEngine.Color method_p3 = pAgent.GetVariable<UnityEngine.Color>(1681699911u);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_ID") == 1986102671u);
-			int method_p11 = pAgent.GetVariable<int>(1986102671u);
-			((GameLevelCommon)pAgent).spawnGameActor(method_p0, method_p1, method_p2, method_p3, method_p4, method_p5, method_p6, method_p7, method_p8, method_p9, method_p10, method_p11);
+			int method_p4 = pAgent.GetVariable<int>(1986102671u);
+			((GameLevelCommon)pAgent).spawnGameActor4(method_p0, method_p1, method_p2, method_p3, method_p4);
 			return EBTStatus.BT_SUCCESS;
 		}
-		float method_p1;
-		int method_p3;
-		int method_p4;
-		int method_p5;
-		int method_p6;
-		float method_p7;
-		float method_p8;
 	}
 
 	[behaviac.GeneratedTypeMetaInfo()]
@@ -1466,7 +1312,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(2469591944u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_Life") == 2469591944u);
-			pAgent.SetVariable<int>("parT_Life", (int)(opr1 - opr2), 2469591944u);
+			pAgent.SetVariable<int>("parT_Life", 2469591944u, (int)(opr1 - opr2));
 			return result;
 		}
 	}
@@ -1502,7 +1348,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(2453283515u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerIndex") == 2453283515u);
-			pAgent.SetVariable<int>("parT_PlayerIndex", (int)(opr1 + opr2), 2453283515u);
+			pAgent.SetVariable<int>("parT_PlayerIndex", 2453283515u, (int)(opr1 + opr2));
 			return result;
 		}
 	}
@@ -1668,7 +1514,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardType") == 1346337780u);
-			pAgent.SetVariable<int>("parT_AwardType", opr, 1346337780u);
+			pAgent.SetVariable<int>("parT_AwardType", 1346337780u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -1688,7 +1534,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardX") == 1534020959u);
-			pAgent.SetVariable<int>("parT_AwardX", opr, 1534020959u);
+			pAgent.SetVariable<int>("parT_AwardX", 1534020959u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -1708,7 +1554,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardY") == 1114930206u);
-			pAgent.SetVariable<int>("parT_AwardY", opr, 1114930206u);
+			pAgent.SetVariable<int>("parT_AwardY", 1114930206u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -2366,7 +2212,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = 9;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerLifeCount") == 1348569231u);
-			pAgent.SetVariable<int>("parT_PlayerLifeCount", opr, 1348569231u);
+			pAgent.SetVariable<int>("parT_PlayerLifeCount", 1348569231u, opr);
 			return result;
 		}
 	}
@@ -2395,6 +2241,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Level_Survival_node27()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -2439,7 +2286,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardType") == 1346337780u);
-			pAgent.SetVariable<int>("parT_AwardType", opr, 1346337780u);
+			pAgent.SetVariable<int>("parT_AwardType", 1346337780u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -2491,7 +2338,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			int opr = (int)((GameLevelCommon)pAgent).getEnemyCount();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_EnemyCount") == 2685115492u);
-			pAgent.SetVariable<int>("parT_EnemyCount", opr, 2685115492u);
+			pAgent.SetVariable<int>("parT_EnemyCount", 2685115492u, opr);
 			return result;
 		}
 	}
@@ -2589,7 +2436,7 @@ namespace behaviac
 			int opr_p0 = pAgent.GetVariable<int>(2931189165u);
 			int opr = (int)((GameLevelCommon)pAgent).getActorLifeCount(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerLifeCount") == 1348569231u);
-			pAgent.SetVariable<int>("parT_PlayerLifeCount", opr, 1348569231u);
+			pAgent.SetVariable<int>("parT_PlayerLifeCount", 1348569231u, opr);
 			return result;
 		}
 	}
@@ -2616,39 +2463,22 @@ namespace behaviac
 		public Action_bt_Level_Survival_node22()
 		{
 			this.m_resultOption = EBTStatus.BT_SUCCESS;
-			method_p0 = eGameForce.RED_FORCE;
-			method_p1 = 16f;
-			method_p2 = "Tank_Agressive";
-			method_p3 = 800;
-			method_p4 = 300;
-			method_p5 = 1;
-			method_p6 = 3;
-			method_p7 = 720f;
-			method_p8 = 720f;
-			method_p9 = 0;
-			method_p10.a = 1f;
-			method_p10.b = 0f;
-			method_p10.g = 1f;
-			method_p10.r = 0f;
+			method_p0 = "Tank_Agressive";
+			method_p1 = new UnityEngine.Color();
+			method_p1.a = 1f;
+			method_p1.b = 0f;
+			method_p1.g = 1f;
+			method_p1.r = 0f;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerID") == 2931189165u);
-			int method_p11 = pAgent.GetVariable<int>(2931189165u);
-			((GameLevelCommon)pAgent).spawnGameActor(method_p0, method_p1, method_p2, method_p3, method_p4, method_p5, method_p6, method_p7, method_p8, method_p9, method_p10, method_p11);
+			int method_p2 = pAgent.GetVariable<int>(2931189165u);
+			((GameLevelCommon)pAgent).spawnGameActor1(method_p0, method_p1, method_p2);
 			return EBTStatus.BT_SUCCESS;
 		}
-		eGameForce method_p0;
-		float method_p1;
-		string method_p2;
-		int method_p3;
-		int method_p4;
-		int method_p5;
-		int method_p6;
-		float method_p7;
-		float method_p8;
-		int method_p9;
-		UnityEngine.Color method_p10;
+		string method_p0;
+		UnityEngine.Color method_p1;
 	}
 
 	[behaviac.GeneratedTypeMetaInfo()]
@@ -2664,7 +2494,7 @@ namespace behaviac
 			int opr1 = pAgent.GetVariable<int>(1348569231u);
 			int opr2 = 1;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PlayerLifeCount") == 1348569231u);
-			pAgent.SetVariable<int>("parT_PlayerLifeCount", (int)(opr1 - opr2), 1348569231u);
+			pAgent.SetVariable<int>("parT_PlayerLifeCount", 1348569231u, (int)(opr1 - opr2));
 			return result;
 		}
 	}
@@ -2799,7 +2629,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			bool opr = true;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_GameStopped") == 1723664313u);
-			pAgent.SetVariable<bool>("parT_GameStopped", opr, 1723664313u);
+			pAgent.SetVariable<bool>("parT_GameStopped", 1723664313u, opr);
 			return result;
 		}
 	}
@@ -3185,6 +3015,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Agressive_node2()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -3233,7 +3064,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			bool opr = true;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_NavFailed") == 972142594u);
-			pAgent.SetVariable<bool>("parT_NavFailed", opr, 972142594u);
+			pAgent.SetVariable<bool>("parT_NavFailed", 972142594u, opr);
 			return result;
 		}
 	}
@@ -3251,7 +3082,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = (int)((GameLevelCommon)pAgent_opr).getNearestAwardID();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardID") == 2554131854u);
-			pAgent.SetVariable<int>("parT_AwardID", opr, 2554131854u);
+			pAgent.SetVariable<int>("parT_AwardID", 2554131854u, opr);
 			return result;
 		}
 	}
@@ -3287,7 +3118,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getAwardPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_NavTargetPosition") == 2368420228u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_NavTargetPosition", opr, 2368420228u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_NavTargetPosition", 2368420228u, opr);
 			return result;
 		}
 	}
@@ -3368,7 +3199,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			bool opr = false;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_NavFailed") == 972142594u);
-			pAgent.SetVariable<bool>("parT_NavFailed", opr, 972142594u);
+			pAgent.SetVariable<bool>("parT_NavFailed", 972142594u, opr);
 			return result;
 		}
 	}
@@ -3386,7 +3217,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(((GameActor)pAgent).force);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 	}
@@ -3406,7 +3237,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -3490,7 +3321,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.TOP;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -3506,7 +3337,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.RIGHT;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -3522,7 +3353,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.BOTTOM;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -3538,7 +3369,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.LEFT;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -3568,7 +3399,7 @@ namespace behaviac
 			eMapDirection opr_p0 = pAgent.GetVariable<eMapDirection>(1696414415u);
 			eMapDirection opr = (eMapDirection)((GameActor)pAgent).getBestMoveDirection(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SafeMoveDirection") == 3893705419u);
-			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", opr, 3893705419u);
+			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", 3893705419u, opr);
 			return result;
 		}
 	}
@@ -3609,7 +3440,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = (float)((Player)pAgent).detectNearestEnemyInView();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_EnemyAzimuth") == 2614361194u);
-			pAgent.SetVariable<float>("parT_EnemyAzimuth", opr, 2614361194u);
+			pAgent.SetVariable<float>("parT_EnemyAzimuth", 2614361194u, opr);
 			return result;
 		}
 	}
@@ -4108,6 +3939,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Chase_node4()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -4161,7 +3993,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(((GameActor)pAgent).force);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 	}
@@ -4181,7 +4013,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -4351,7 +4183,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(((GameActor)pAgent).force);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 	}
@@ -4387,7 +4219,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -4636,138 +4468,34 @@ namespace behaviac
 	// Source file: Tank_Fire
 
 	[behaviac.GeneratedTypeMetaInfo()]
-	class DecoratorLoop_bt_Tank_Fire_node0 : behaviac.DecoratorLoop
+	class Assignment_bt_Tank_Fire_node2 : behaviac.Assignment
 	{
-		public DecoratorLoop_bt_Tank_Fire_node0()
+		public Assignment_bt_Tank_Fire_node2()
 		{
-			m_bDecorateWhenChildEnds = true;
-		}
-		protected override int GetCount(Agent pAgent)
-		{
-			return -1;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Parallel_bt_Tank_Fire_node1 : behaviac.Parallel
-	{
-		public Parallel_bt_Tank_Fire_node1()
-		{
-			m_failPolicy = behaviac.FAILURE_POLICY.FAIL_ON_ONE;
-			m_succeedPolicy = behaviac.SUCCESS_POLICY.SUCCEED_ON_ALL;
-			m_exitPolicy = behaviac.EXIT_POLICY.EXIT_ABORT_RUNNINGSIBLINGS;
-			m_childFinishPolicy = behaviac.CHILDFINISH_POLICY.CHILDFINISH_LOOP;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class DecoratorAlwaysSuccess_bt_Tank_Fire_node5 : behaviac.DecoratorAlwaysSuccess
-	{
-		public DecoratorAlwaysSuccess_bt_Tank_Fire_node5()
-		{
-			m_bDecorateWhenChildEnds = false;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class SelectorProbability_bt_Tank_Fire_node2 : behaviac.SelectorProbability
-	{
-		public SelectorProbability_bt_Tank_Fire_node2()
-		{
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class DecoratorWeight_bt_Tank_Fire_node6 : behaviac.DecoratorWeight
-	{
-		public DecoratorWeight_bt_Tank_Fire_node6()
-		{
-			m_bDecorateWhenChildEnds = false;
-		}
-		protected override int GetWeight(Agent pAgent)
-		{
-			return 70;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Action_bt_Tank_Fire_node7 : behaviac.Action
-	{
-		public Action_bt_Tank_Fire_node7()
-		{
-			this.m_resultOption = EBTStatus.BT_INVALID;
-		}
-		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
-		{
-			behaviac.EBTStatus result = (behaviac.EBTStatus)((GameActor)pAgent).moveForward();
-			return result;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class DecoratorWeight_bt_Tank_Fire_node8 : behaviac.DecoratorWeight
-	{
-		public DecoratorWeight_bt_Tank_Fire_node8()
-		{
-			m_bDecorateWhenChildEnds = false;
-		}
-		protected override int GetWeight(Agent pAgent)
-		{
-			return 30;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Assignment_bt_Tank_Fire_node11 : behaviac.Assignment
-	{
-		public Assignment_bt_Tank_Fire_node11()
-		{
-			opr_p1 = eMapDirection.UNKNOWN;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
 			EBTStatus result = EBTStatus.BT_SUCCESS;
-			Debug.Check(behaviac.Utils.MakeVariableId("parIn_Self") == 2069719536u);
-			GameActor opr_p0 = pAgent.GetVariable<GameActor>(2069719536u);
-			behaviac.Agent pAgent_opr = behaviac.Utils.GetParentAgent(pAgent, "GameLevel");
-			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
-			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
-			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			behaviac.EBTStatus opr = behaviac.EBTStatus.BT_SUCCESS;
+			Debug.Check(behaviac.Utils.MakeVariableId("Status") == 525979889u);
+			pAgent.SetVariable<behaviac.EBTStatus>("Status", 525979889u, opr);
 			return result;
 		}
-		eMapDirection opr_p1;
 	}
 
 	[behaviac.GeneratedTypeMetaInfo()]
-	class Condition_bt_Tank_Fire_node3 : behaviac.Condition
+	class Condition_bt_Tank_Fire_node1 : behaviac.Condition
 	{
-		public Condition_bt_Tank_Fire_node3()
+		public Condition_bt_Tank_Fire_node1()
 		{
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
-			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			float opl = pAgent.GetVariable<float>(760191237u);
-			float opr = 0f;
-			bool op = opl >= opr;
+			Debug.Check(behaviac.Utils.MakeVariableId("Status") == 525979889u);
+			behaviac.EBTStatus opl = pAgent.GetVariable<behaviac.EBTStatus>(525979889u);
+			behaviac.EBTStatus opr = behaviac.EBTStatus.BT_SUCCESS;
+			bool op = opl == opr;
 			return op ? EBTStatus.BT_SUCCESS : EBTStatus.BT_FAILURE;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Action_bt_Tank_Fire_node4 : behaviac.Action
-	{
-		public Action_bt_Tank_Fire_node4()
-		{
-			this.m_resultOption = EBTStatus.BT_INVALID;
-		}
-		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
-		{
-			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			float method_p0 = pAgent.GetVariable<float>(760191237u);
-			behaviac.EBTStatus result = (behaviac.EBTStatus)((GameActor)pAgent).rotateToAngle(method_p0);
-			return result;
 		}
 	}
 
@@ -4798,135 +4526,44 @@ namespace behaviac
 #endif
 			// pars
 			bt.AddPar("Player", "Player", "parIn_Self", "null");
-			bt.AddPar("Player", "float", "parT_RotateAngle", "0");
 			// children
 			{
-				DecoratorLoop_bt_Tank_Fire_node0 node0 = new DecoratorLoop_bt_Tank_Fire_node0();
-				node0.SetClassNameString("DecoratorLoop");
+				Sequence node0 = new Sequence();
+				node0.SetClassNameString("Sequence");
 				node0.SetId(0);
 #if !BEHAVIAC_RELEASE
 				node0.SetAgentType("Player");
 #endif
 				bt.AddChild(node0);
 				{
-					Parallel_bt_Tank_Fire_node1 node1 = new Parallel_bt_Tank_Fire_node1();
-					node1.SetClassNameString("Parallel");
+					Assignment_bt_Tank_Fire_node2 node2 = new Assignment_bt_Tank_Fire_node2();
+					node2.SetClassNameString("Assignment");
+					node2.SetId(2);
+#if !BEHAVIAC_RELEASE
+					node2.SetAgentType("Player");
+#endif
+					node0.AddChild(node2);
+					node0.SetHasEvents(node0.HasEvents() | node2.HasEvents());
+				}
+				{
+					Condition_bt_Tank_Fire_node1 node1 = new Condition_bt_Tank_Fire_node1();
+					node1.SetClassNameString("Condition");
 					node1.SetId(1);
 #if !BEHAVIAC_RELEASE
 					node1.SetAgentType("Player");
 #endif
 					node0.AddChild(node1);
-					{
-						DecoratorAlwaysSuccess_bt_Tank_Fire_node5 node5 = new DecoratorAlwaysSuccess_bt_Tank_Fire_node5();
-						node5.SetClassNameString("DecoratorAlwaysSuccess");
-						node5.SetId(5);
-#if !BEHAVIAC_RELEASE
-						node5.SetAgentType("Player");
-#endif
-						node1.AddChild(node5);
-						{
-							SelectorProbability_bt_Tank_Fire_node2 node2 = new SelectorProbability_bt_Tank_Fire_node2();
-							node2.SetClassNameString("SelectorProbability");
-							node2.SetId(2);
-#if !BEHAVIAC_RELEASE
-							node2.SetAgentType("Player");
-#endif
-							node5.AddChild(node2);
-							{
-								DecoratorWeight_bt_Tank_Fire_node6 node6 = new DecoratorWeight_bt_Tank_Fire_node6();
-								node6.SetClassNameString("DecoratorWeight");
-								node6.SetId(6);
-#if !BEHAVIAC_RELEASE
-								node6.SetAgentType("Player");
-#endif
-								node2.AddChild(node6);
-								{
-									Action_bt_Tank_Fire_node7 node7 = new Action_bt_Tank_Fire_node7();
-									node7.SetClassNameString("Action");
-									node7.SetId(7);
-#if !BEHAVIAC_RELEASE
-									node7.SetAgentType("Player");
-#endif
-									node6.AddChild(node7);
-									node6.SetHasEvents(node6.HasEvents() | node7.HasEvents());
-								}
-								node2.SetHasEvents(node2.HasEvents() | node6.HasEvents());
-							}
-							{
-								DecoratorWeight_bt_Tank_Fire_node8 node8 = new DecoratorWeight_bt_Tank_Fire_node8();
-								node8.SetClassNameString("DecoratorWeight");
-								node8.SetId(8);
-#if !BEHAVIAC_RELEASE
-								node8.SetAgentType("Player");
-#endif
-								node2.AddChild(node8);
-								{
-									Sequence node9 = new Sequence();
-									node9.SetClassNameString("Sequence");
-									node9.SetId(9);
-#if !BEHAVIAC_RELEASE
-									node9.SetAgentType("Player");
-#endif
-									node8.AddChild(node9);
-									{
-										Assignment_bt_Tank_Fire_node11 node11 = new Assignment_bt_Tank_Fire_node11();
-										node11.SetClassNameString("Assignment");
-										node11.SetId(11);
-#if !BEHAVIAC_RELEASE
-										node11.SetAgentType("Player");
-#endif
-										node9.AddChild(node11);
-										node9.SetHasEvents(node9.HasEvents() | node11.HasEvents());
-									}
-									{
-										Sequence node10 = new Sequence();
-										node10.SetClassNameString("Sequence");
-										node10.SetId(10);
-#if !BEHAVIAC_RELEASE
-										node10.SetAgentType("Player");
-#endif
-										node9.AddChild(node10);
-										{
-											Condition_bt_Tank_Fire_node3 node3 = new Condition_bt_Tank_Fire_node3();
-											node3.SetClassNameString("Condition");
-											node3.SetId(3);
-#if !BEHAVIAC_RELEASE
-											node3.SetAgentType("Player");
-#endif
-											node10.AddChild(node3);
-											node10.SetHasEvents(node10.HasEvents() | node3.HasEvents());
-										}
-										{
-											Action_bt_Tank_Fire_node4 node4 = new Action_bt_Tank_Fire_node4();
-											node4.SetClassNameString("Action");
-											node4.SetId(4);
-#if !BEHAVIAC_RELEASE
-											node4.SetAgentType("Player");
-#endif
-											node10.AddChild(node4);
-											node10.SetHasEvents(node10.HasEvents() | node4.HasEvents());
-										}
-										node9.SetHasEvents(node9.HasEvents() | node10.HasEvents());
-									}
-									node8.SetHasEvents(node8.HasEvents() | node9.HasEvents());
-								}
-								node2.SetHasEvents(node2.HasEvents() | node8.HasEvents());
-							}
-							node5.SetHasEvents(node5.HasEvents() | node2.HasEvents());
-						}
-						node1.SetHasEvents(node1.HasEvents() | node5.HasEvents());
-					}
-					{
-						Action_bt_Tank_Fire_node16 node16 = new Action_bt_Tank_Fire_node16();
-						node16.SetClassNameString("Action");
-						node16.SetId(16);
-#if !BEHAVIAC_RELEASE
-						node16.SetAgentType("Player");
-#endif
-						node1.AddChild(node16);
-						node1.SetHasEvents(node1.HasEvents() | node16.HasEvents());
-					}
 					node0.SetHasEvents(node0.HasEvents() | node1.HasEvents());
+				}
+				{
+					Action_bt_Tank_Fire_node16 node16 = new Action_bt_Tank_Fire_node16();
+					node16.SetClassNameString("Action");
+					node16.SetId(16);
+#if !BEHAVIAC_RELEASE
+					node16.SetAgentType("Player");
+#endif
+					node0.AddChild(node16);
+					node0.SetHasEvents(node0.HasEvents() | node16.HasEvents());
 				}
 				bt.SetHasEvents(bt.HasEvents() | node0.HasEvents());
 			}
@@ -4942,6 +4579,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Fire_Detect_node5()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -4960,7 +4598,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = (float)((Player)pAgent).detectNearestEnemyInView();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_EnemyAzimuth") == 2614361194u);
-			pAgent.SetVariable<float>("parT_EnemyAzimuth", opr, 2614361194u);
+			pAgent.SetVariable<float>("parT_EnemyAzimuth", 2614361194u, opr);
 			return result;
 		}
 	}
@@ -5097,6 +4735,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Fire_Only_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -5119,7 +4758,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = (int)((GameLevelCommon)pAgent_opr).randomNumberInt(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_FireInterval") == 1636165819u);
-			pAgent.SetVariable<int>("parT_FireInterval", opr, 1636165819u);
+			pAgent.SetVariable<int>("parT_FireInterval", 1636165819u, opr);
 			return result;
 		}
 		int opr_p0;
@@ -5228,6 +4867,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Fire_Random_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -5266,7 +4906,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 180f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -5282,7 +4922,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 90f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -5298,7 +4938,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 0f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -5314,7 +4954,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 270f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -5495,7 +5135,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			behaviac.EBTStatus opr2 = (behaviac.EBTStatus)((GameActor)pAgent).moveForward();
 			Debug.Check(behaviac.Utils.MakeVariableId("Status") == 525979889u);
-			pAgent.SetVariable("Status", opr2, 525979889u);
+			pAgent.SetVariable("Status", 525979889u, opr2);
 			return result;
 		}
 	}
@@ -5554,7 +5194,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr2 != null || Utils.IsStaticClass("GameLevel"));
 			float opr2 = (float)((GameLevelCommon)pAgent_opr2).getAvailabeMoveDirection(opr2_p0, opr2_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("rotateAngle") == 1077650265u);
-			pAgent.SetVariable("rotateAngle", opr2, 1077650265u);
+			pAgent.SetVariable("rotateAngle", 1077650265u, opr2);
 			return result;
 		}
 		eMapDirection opr2_p1;
@@ -5585,7 +5225,7 @@ namespace behaviac
 	{
 		public Transition_bt_Tank_FSM_MoveFire_attach10()
 		{
-			this.TargetStateId = 7;
+			this.TargetStateId = 13;
 		}
 		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
 		{
@@ -5593,57 +5233,6 @@ namespace behaviac
 			int opl = ((Player)pAgent).hp;
 			int opr2 = 0;
 			bool op = (opl >= opr2);
-			if (!op)
-				result = EBTStatus.BT_FAILURE;
-			return result;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class State_bt_Tank_FSM_MoveFire_node7 : behaviac.State
-	{
-		public State_bt_Tank_FSM_MoveFire_node7()
-		{
-			this.m_bIsEndState = false;
-		}
-		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
-		{
-			return behaviac.EBTStatus.BT_RUNNING;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Precondition_bt_Tank_FSM_MoveFire_attach12 : behaviac.Precondition
-	{
-		public Precondition_bt_Tank_FSM_MoveFire_attach12()
-		{
-			this.Phase = Precondition.EPhase.E_UPDATE;
-			this.IsAnd = true;
-		}
-		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
-		{
-			EBTStatus result = EBTStatus.BT_SUCCESS;
-			behaviac.EBTStatus opr2 = (behaviac.EBTStatus)((Player)pAgent).fire();
-			Debug.Check(behaviac.Utils.MakeVariableId("Status") == 525979889u);
-			pAgent.SetVariable("Status", opr2, 525979889u);
-			return result;
-		}
-	}
-
-	[behaviac.GeneratedTypeMetaInfo()]
-	class Transition_bt_Tank_FSM_MoveFire_attach8 : behaviac.Transition
-	{
-		public Transition_bt_Tank_FSM_MoveFire_attach8()
-		{
-			this.TargetStateId = 1;
-		}
-		protected override EBTStatus update_impl(behaviac.Agent pAgent, behaviac.EBTStatus childStatus)
-		{
-			EBTStatus result = EBTStatus.BT_SUCCESS;
-			Debug.Check(behaviac.Utils.MakeVariableId("Status") == 525979889u);
-			behaviac.EBTStatus opl = pAgent.GetVariable<behaviac.EBTStatus>(525979889u);
-			behaviac.EBTStatus opr2 = behaviac.EBTStatus.BT_SUCCESS;
-			bool op = (opl == opr2);
 			if (!op)
 				result = EBTStatus.BT_FAILURE;
 			return result;
@@ -5680,6 +5269,36 @@ namespace behaviac
 			if (!op)
 				result = EBTStatus.BT_FAILURE;
 			return result;
+		}
+	}
+
+	[behaviac.GeneratedTypeMetaInfo()]
+	class ReferencedBehavior_bt_Tank_FSM_MoveFire_node13 : behaviac.ReferencedBehavior
+	{
+		public ReferencedBehavior_bt_Tank_FSM_MoveFire_node13()
+		{
+			string szTreePath = this.GetReferencedTree(null);
+			if (!string.IsNullOrEmpty(szTreePath)) {
+			BehaviorTree behaviorTree = Workspace.Instance.LoadBehaviorTree(szTreePath);
+			if (behaviorTree != null)
+			{
+				this.m_bHasEvents |= behaviorTree.HasEvents();
+			}
+			}
+		}
+		public override string GetReferencedTree(Agent pAgent)
+		{
+			return "Tank_Fire";
+		}
+	}
+
+	[behaviac.GeneratedTypeMetaInfo()]
+	class AlwaysTransition_bt_Tank_FSM_MoveFire_attach8 : behaviac.AlwaysTransition
+	{
+		public AlwaysTransition_bt_Tank_FSM_MoveFire_attach8()
+		{
+			this.TargetStateId = 1;
+			this.TransitionPhase = ETransitionPhase.ETP_Exit;
 		}
 	}
 
@@ -5775,35 +5394,6 @@ namespace behaviac
 					fsm.SetHasEvents(fsm.HasEvents() | node2.HasEvents());
 				}
 				{
-					State_bt_Tank_FSM_MoveFire_node7 node7 = new State_bt_Tank_FSM_MoveFire_node7();
-					node7.SetClassNameString("State");
-					node7.SetId(7);
-#if !BEHAVIAC_RELEASE
-					node7.SetAgentType("Player");
-#endif
-					// attachments
-					{
-						Precondition_bt_Tank_FSM_MoveFire_attach12 attach12 = new Precondition_bt_Tank_FSM_MoveFire_attach12();
-						attach12.SetClassNameString("Precondition");
-						attach12.SetId(12);
-#if !BEHAVIAC_RELEASE
-						attach12.SetAgentType("Player");
-#endif
-						node7.Attach(attach12, true, false, false);
-					}
-					{
-						Transition_bt_Tank_FSM_MoveFire_attach8 attach8 = new Transition_bt_Tank_FSM_MoveFire_attach8();
-						attach8.SetClassNameString("Transition");
-						attach8.SetId(8);
-#if !BEHAVIAC_RELEASE
-						attach8.SetAgentType("Player");
-#endif
-						node7.Attach(attach8, false, false, true);
-					}
-					fsm.AddChild(node7);
-					fsm.SetHasEvents(fsm.HasEvents() | node7.HasEvents());
-				}
-				{
 					State_bt_Tank_FSM_MoveFire_node9 node9 = new State_bt_Tank_FSM_MoveFire_node9();
 					node9.SetClassNameString("State");
 					node9.SetId(9);
@@ -5822,6 +5412,26 @@ namespace behaviac
 					}
 					fsm.AddChild(node9);
 					fsm.SetHasEvents(fsm.HasEvents() | node9.HasEvents());
+				}
+				{
+					ReferencedBehavior_bt_Tank_FSM_MoveFire_node13 node13 = new ReferencedBehavior_bt_Tank_FSM_MoveFire_node13();
+					node13.SetClassNameString("ReferencedBehavior");
+					node13.SetId(13);
+#if !BEHAVIAC_RELEASE
+					node13.SetAgentType("Player");
+#endif
+					// attachments
+					{
+						AlwaysTransition_bt_Tank_FSM_MoveFire_attach8 attach8 = new AlwaysTransition_bt_Tank_FSM_MoveFire_attach8();
+						attach8.SetClassNameString("AlwaysTransition");
+						attach8.SetId(8);
+#if !BEHAVIAC_RELEASE
+						attach8.SetAgentType("Player");
+#endif
+						node13.Attach(attach8, false, false, true);
+					}
+					fsm.AddChild(node13);
+					fsm.SetHasEvents(fsm.HasEvents() | node13.HasEvents());
 				}
 				bt.AddChild(fsm);
 			}
@@ -5852,7 +5462,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = (eMapDirection)((GameActor)pAgent).getBestMoveDirection(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SafeMoveDirection") == 3893705419u);
-			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", opr, 3893705419u);
+			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", 3893705419u, opr);
 			return result;
 		}
 		eMapDirection opr_p0;
@@ -5940,6 +5550,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_SafeWander_RandomFire_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -5965,6 +5576,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_SafeWander_RandomFire_node9()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -6003,7 +5615,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.TOP;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -6019,7 +5631,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.RIGHT;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -6035,7 +5647,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.BOTTOM;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -6051,7 +5663,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.LEFT;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RandomMoveDirection") == 1696414415u);
-			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", opr, 1696414415u);
+			pAgent.SetVariable<eMapDirection>("parT_RandomMoveDirection", 1696414415u, opr);
 			return result;
 		}
 	}
@@ -6081,7 +5693,7 @@ namespace behaviac
 			eMapDirection opr_p0 = pAgent.GetVariable<eMapDirection>(1696414415u);
 			eMapDirection opr = (eMapDirection)((GameActor)pAgent).getBestMoveDirection(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_SafeMoveDirection") == 3893705419u);
-			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", opr, 3893705419u);
+			pAgent.SetVariable<eMapDirection>("parT_SafeMoveDirection", 3893705419u, opr);
 			return result;
 		}
 	}
@@ -6121,7 +5733,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 180f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -6137,7 +5749,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 90f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -6153,7 +5765,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 0f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -6169,7 +5781,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 270f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -6470,7 +6082,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(((GameActor)pAgent).force);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 	}
@@ -6506,7 +6118,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -6539,7 +6151,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = GameLevelCommon.soilSteelWalkLevel;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PathFindLevel") == 3496548986u);
-			pAgent.SetVariable<int>("parT_PathFindLevel", opr, 3496548986u);
+			pAgent.SetVariable<int>("parT_PathFindLevel", 3496548986u, opr);
 			return result;
 		}
 	}
@@ -6557,7 +6169,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = GameLevelCommon.soilWalkLevel;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PathFindLevel") == 3496548986u);
-			pAgent.SetVariable<int>("parT_PathFindLevel", opr, 3496548986u);
+			pAgent.SetVariable<int>("parT_PathFindLevel", 3496548986u, opr);
 			return result;
 		}
 	}
@@ -6607,7 +6219,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = (int)((GameLevelCommon)pAgent_opr).getNearestAwardID();
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AwardID") == 2554131854u);
-			pAgent.SetVariable<int>("parT_AwardID", opr, 2554131854u);
+			pAgent.SetVariable<int>("parT_AwardID", 2554131854u, opr);
 			return result;
 		}
 	}
@@ -6643,7 +6255,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getAwardPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_NavTargetPosition") == 2368420228u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_NavTargetPosition", opr, 2368420228u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_NavTargetPosition", 2368420228u, opr);
 			return result;
 		}
 	}
@@ -6676,7 +6288,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = GameLevelCommon.soilSteelWalkLevel;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PathFindLevel") == 3496548986u);
-			pAgent.SetVariable<int>("parT_PathFindLevel", opr, 3496548986u);
+			pAgent.SetVariable<int>("parT_PathFindLevel", 3496548986u, opr);
 			return result;
 		}
 	}
@@ -6694,7 +6306,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			int opr = GameLevelCommon.soilWalkLevel;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_PathFindLevel") == 3496548986u);
-			pAgent.SetVariable<int>("parT_PathFindLevel", opr, 3496548986u);
+			pAgent.SetVariable<int>("parT_PathFindLevel", 3496548986u, opr);
 			return result;
 		}
 	}
@@ -7091,6 +6703,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_TendencyWander_node16()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -7157,7 +6770,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.UNKNOWN;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_TendencyDirection") == 2737250380u);
-			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", opr, 2737250380u);
+			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", 2737250380u, opr);
 			return result;
 		}
 	}
@@ -7184,7 +6797,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(((GameActor)pAgent).force);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 	}
@@ -7220,7 +6833,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -7238,7 +6851,7 @@ namespace behaviac
 			UnityEngine.Vector3 opr_p0 = pAgent.GetVariable<UnityEngine.Vector3>(1980067727u);
 			eMapDirection opr = (eMapDirection)((Player)pAgent).locationTendencyToTarget(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_TendencyDirection") == 2737250380u);
-			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", opr, 2737250380u);
+			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", 2737250380u, opr);
 			return result;
 		}
 	}
@@ -7260,7 +6873,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			pAgent.SetVariable<float>("parT_RotateAngle", 760191237u, opr);
 			return result;
 		}
 	}
@@ -7497,6 +7110,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_TendencyWander_RandomFire_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -7575,7 +7189,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			eMapDirection opr = eMapDirection.UNKNOWN;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_TendencyDirection") == 2737250380u);
-			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", opr, 2737250380u);
+			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", 2737250380u, opr);
 			return result;
 		}
 	}
@@ -7603,7 +7217,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			behaviac.Agent opr = (behaviac.Agent)((GameLevelCommon)pAgent_opr).getNearestEnemy(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_nearestEnemy") == 575719424u);
-			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", opr, 575719424u);
+			pAgent.SetVariable<behaviac.Agent>("parT_nearestEnemy", 575719424u, opr);
 			return result;
 		}
 		eGameForce opr_p0;
@@ -7640,7 +7254,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			UnityEngine.Vector3 opr = (UnityEngine.Vector3)((GameLevelCommon)pAgent_opr).getEnemyPosition(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_enemyPosition") == 1980067727u);
-			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", opr, 1980067727u);
+			pAgent.SetVariable<UnityEngine.Vector3>("parT_enemyPosition", 1980067727u, opr);
 			return result;
 		}
 	}
@@ -7658,7 +7272,7 @@ namespace behaviac
 			UnityEngine.Vector3 opr_p0 = pAgent.GetVariable<UnityEngine.Vector3>(1980067727u);
 			eMapDirection opr = (eMapDirection)((Player)pAgent).locationTendencyToTarget(opr_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_TendencyDirection") == 2737250380u);
-			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", opr, 2737250380u);
+			pAgent.SetVariable<eMapDirection>("parT_TendencyDirection", 2737250380u, opr);
 			return result;
 		}
 	}
@@ -7680,7 +7294,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			pAgent.SetVariable<float>("parT_RotateAngle", 760191237u, opr);
 			return result;
 		}
 	}
@@ -7736,7 +7350,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 180f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -7752,7 +7366,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 90f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -7768,7 +7382,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 0f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -7784,7 +7398,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 270f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -8110,6 +7724,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_WalkUtilCollision_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -8147,7 +7762,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			pAgent.SetVariable<float>("parT_RotateAngle", 760191237u, opr);
 			return result;
 		}
 		eMapDirection opr_p1;
@@ -8300,7 +7915,7 @@ namespace behaviac
 			UnityEngine.Vector3 method_p0 = pAgent.GetVariable<UnityEngine.Vector3>(3204785006u);
 			((Player)pAgent).getTarget(ref method_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_moveTarget") == 3204785006u);
-			pAgent.SetVariable<UnityEngine.Vector3>("Player::parT_moveTarget", (UnityEngine.Vector3)method_p0, 3204785006u);
+			pAgent.SetVariable<UnityEngine.Vector3>("Player::parT_moveTarget", 3204785006u, (UnityEngine.Vector3)method_p0);
 			return EBTStatus.BT_SUCCESS;
 		}
 	}
@@ -8320,9 +7935,9 @@ namespace behaviac
 			int method_p1 = pAgent.GetVariable<int>(4149689662u);
 			((Player)pAgent).getInfo(ref method_p0, ref method_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("par_w") == 1468995396u);
-			pAgent.SetVariable<float>("Player::par_w", (float)method_p0, 1468995396u);
+			pAgent.SetVariable<float>("Player::par_w", 1468995396u, (float)method_p0);
 			Debug.Check(behaviac.Utils.MakeVariableId("par_index") == 4149689662u);
-			pAgent.SetVariable<int>("Player::par_index", (int)method_p1, 4149689662u);
+			pAgent.SetVariable<int>("Player::par_index", 4149689662u, (int)method_p1);
 			return EBTStatus.BT_SUCCESS;
 		}
 	}
@@ -8333,6 +7948,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_WalkUtilCollision_2Agents_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -8370,7 +7986,7 @@ namespace behaviac
 		{
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_moveTarget") == 3204785006u);
 			method_params[0] = pAgent.GetVariable<UnityEngine.Vector3>(3204785006u);
-			behaviac.EBTStatus result = (behaviac.EBTStatus)AgentExtra_Generated.ExecuteMethod(pAgent, "moveto", method_params);
+			behaviac.EBTStatus result = (behaviac.EBTStatus)AgentMetaVisitor.ExecuteMethod(pAgent, "moveto", method_params);
 			return result;
 		}
 		object[] method_params;
@@ -8474,6 +8090,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Wander_node6()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -8545,7 +8162,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			pAgent.SetVariable<float>("parT_RotateAngle", 760191237u, opr);
 			return result;
 		}
 		eMapDirection opr_p1;
@@ -8710,6 +8327,7 @@ namespace behaviac
 		public DecoratorLoop_bt_Tank_Wander_RandomFire_node0()
 		{
 			m_bDecorateWhenChildEnds = true;
+			m_bDoneWithinFrame = false;
 		}
 		protected override int GetCount(Agent pAgent)
 		{
@@ -8748,7 +8366,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 180f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -8764,7 +8382,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 90f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -8780,7 +8398,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 0f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -8796,7 +8414,7 @@ namespace behaviac
 			EBTStatus result = EBTStatus.BT_SUCCESS;
 			float opr = 270f;
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_AimAngle") == 3496662299u);
-			pAgent.SetVariable<float>("parT_AimAngle", opr, 3496662299u);
+			pAgent.SetVariable<float>("parT_AimAngle", 3496662299u, opr);
 			return result;
 		}
 	}
@@ -8895,7 +8513,7 @@ namespace behaviac
 			Debug.Check(pAgent_opr != null || Utils.IsStaticClass("GameLevel"));
 			float opr = (float)((GameLevelCommon)pAgent_opr).getAvailabeMoveDirection(opr_p0, opr_p1);
 			Debug.Check(behaviac.Utils.MakeVariableId("parT_RotateAngle") == 760191237u);
-			pAgent.SetVariable<float>("parT_RotateAngle", opr, 760191237u);
+			pAgent.SetVariable<float>("parT_RotateAngle", 760191237u, opr);
 			return result;
 		}
 		eMapDirection opr_p1;

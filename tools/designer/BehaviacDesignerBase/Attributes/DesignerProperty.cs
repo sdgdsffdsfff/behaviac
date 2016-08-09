@@ -296,7 +296,7 @@ namespace Behaviac.Design.Attributes
         /// <summary>
         /// The enumeration defines how this attribute will be visualised in the editor.
         /// </summary>
-        public enum DisplayMode { NoDisplay, Parameter, List }
+        public enum DisplayMode { NoDisplay, Parameter, List, ListTrue }
 
         /// <summary>
         /// This method is used to sort properties by their name.
@@ -474,7 +474,9 @@ namespace Behaviac.Design.Attributes
         }
 
         protected ValueTypes _valueType = ValueTypes.All;
-        public ValueTypes ValueType {
+        public ValueTypes ValueType
+        {
+            set { _valueType = value; }
             get { return _valueType; }
         }
 

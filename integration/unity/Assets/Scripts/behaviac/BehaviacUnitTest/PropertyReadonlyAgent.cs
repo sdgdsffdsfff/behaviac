@@ -6,11 +6,11 @@ using System.Collections;
 public class PropertyReadonlyAgent : behaviac.Agent
 {
     public void resetProperties() {
-        this.Variables.Clear();
     }
 
     public void init() {
         base.Init();
+
         resetProperties();
     }
 

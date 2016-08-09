@@ -21,9 +21,9 @@ namespace behaviac
         {
         }
 
-        ~WaitforSignal()
-        {
-        }
+        //~WaitforSignal()
+        //{
+        //}
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -63,9 +63,9 @@ namespace behaviac
             m_bTriggered = false;
         }
 
-        ~WaitforSignalTask()
-        {
-        }
+        //~WaitforSignalTask()
+        //{
+        //}
 
         public override void copyto(BehaviorTask target)
         {
@@ -83,16 +83,6 @@ namespace behaviac
 
             CSerializationID triggeredId = new CSerializationID("triggered");
             node.setAttr(triggeredId, this.m_bTriggered);
-        }
-
-        public override void load(ISerializableNode node)
-        {
-            base.load(node);
-        }
-
-        public override void Init(BehaviorNode node)
-        {
-            base.Init(node);
         }
 
         protected override bool onenter(Agent pAgent)

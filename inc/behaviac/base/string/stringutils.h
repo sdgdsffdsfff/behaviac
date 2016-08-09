@@ -474,7 +474,7 @@ namespace behaviac
 
             if (end)
             {
-                int length = (end - params);
+                int length = (int)(end - params);
                 token = behaviac::string(params, length);
                 return end;
             }
@@ -496,7 +496,7 @@ namespace behaviac
 
                 if (end2)
                 {
-                    int length = (end2 - end);
+					int length = (int)(end2 - end);
                     token = behaviac::string(end, length);
                     return end2;
 
@@ -554,22 +554,25 @@ namespace behaviac
 
             return true;
         }
+
         // finds the behaviac::string in the array of strings
         // returns its 0-based index or -1 if not found
         // comparison is case-sensitive
-        // The behaviac::string array end is demarked by the NULL value
-        inline int FindString(const char* szString, const char* arrStringList[])
-        {
-            for (const char** p = arrStringList; *p; ++p)
-            {
-                if (0 == strcmp(*p, szString))
-                {
-                    return int(p - arrStringList);
-                }
-            }
+		inline int FindString(const char* szString, const char* arrStringList[], unsigned int arrStrCount)
+		{
+			if (szString)
+			{
+				for (unsigned int i = 0; i < arrStrCount; ++i)
+				{
+					if (0 == strcmp(arrStringList[i], szString))
+					{
+						return i;
+					}
+				}
+			}
 
-            return -1; // behaviac::string was not found
-        }
+			return -1; // behaviac::string was not found
+		}
 
         /////////////////////////////////////////////
         // File related functions
@@ -1016,6 +1019,12 @@ namespace behaviac
 
             return 0 == strncmp(str + str_len - suffix_len, suffix, suffix_len);
         }
+
+		inline const char* StrFind(const char* str1, const char sep)
+		{
+			return strchr(str1, sep);
+		}
+
 
         inline bool StrEqual(const char* str1, const char* str2)
         {

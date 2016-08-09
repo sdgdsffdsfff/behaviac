@@ -115,7 +115,7 @@ namespace behaviac
 		{
 			uint32_t error = ::GetLastError();
 			BEHAVIAC_UNUSED_VAR(error);
-			BEHAVIAC_LOGWARNING("Invalid file %s (error code %u)\n", szFullPath, error);
+			BEHAVIAC_LOGERROR("Invalid file '%s' (error code %u)\n", szFullPath, error);
 		}
 
 		return hFile;
@@ -334,7 +334,7 @@ namespace behaviac
 		)
 	{
 		WIN32_FIND_DATAW findData;
-		const int dirLength = dir.size();
+		size_t dirLength = dir.size();
 		dir += filter;
 		HANDLE findHandle = FindFirstFileW(dir.c_str(), &findData);
 		dir.resize(dirLength);
@@ -630,7 +630,8 @@ namespace behaviac
 
 			CloseHandle(hToken);
 
-			return bSuccess;
+			//return bSuccess;
+			return TRUE;
 		}
 	};
 
@@ -973,9 +974,9 @@ namespace behaviac
 			const DWORD kWaitTimeOut = 1;
 			if (s_pFileSysMon->GetQueuedStatus(vecChanges, kWaitTimeOut) == E_FILESYSMON_SUCCESS)
 			{
-				unsigned uiCount = vecChanges.size();
+				size_t uiCount = vecChanges.size();
 
-				for (unsigned i = 0; i < uiCount; ++i)
+				for (size_t i = 0; i < uiCount; ++i)
 				{
 					if ((vecChanges.at(i).dwAction & FILE_NOTIFY_CHANGE_LAST_WRITE) == FILE_NOTIFY_CHANGE_LAST_WRITE ||
 						(vecChanges.at(i).dwAction & FILE_ACTION_ADDED) == FILE_ACTION_ADDED ||

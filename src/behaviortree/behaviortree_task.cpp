@@ -24,23 +24,23 @@
 #include "behaviac/behaviortree/attachments/effector.h"
 #include "behaviac/fsm/startcondition.h"
 #include "behaviac/fsm/transitioncondition.h"
-
+#include "behaviac/behaviortree/nodes/composites/referencebehavior.h"
 
 #if BEHAVIAC_COMPILER_MSVC
 #include <windows.h>
 #endif//BEHAVIAC_COMPILER_MSVC
 
-BEGIN_ENUM_DESCRIPTION(behaviac::EBTStatus, EBTStatus)
+BEHAVIAC_BEGIN_ENUM(behaviac::EBTStatus, EBTStatus)
 {
-    ENUMCLASS_DISPLAYNAME(L"BT状态");
-    ENUMCLASS_DESC(L"BT状态");
+    BEHAVIAC_ENUMCLASS_DISPLAYNAME(L"BT状态");
+    BEHAVIAC_ENUMCLASS_DESC(L"BT状态");
 
-    DEFINE_ENUM_VALUE(behaviac::BT_INVALID, "invalid");
-    DEFINE_ENUM_VALUE(behaviac::BT_SUCCESS, "success");
-    DEFINE_ENUM_VALUE(behaviac::BT_FAILURE, "failure");
-    DEFINE_ENUM_VALUE(behaviac::BT_RUNNING, "running");
+    BEHAVIAC_ENUM_ITEM(behaviac::BT_INVALID, "BT_INVALID");
+    BEHAVIAC_ENUM_ITEM(behaviac::BT_SUCCESS, "BT_SUCCESS");
+    BEHAVIAC_ENUM_ITEM(behaviac::BT_FAILURE, "BT_FAILURE");
+    BEHAVIAC_ENUM_ITEM(behaviac::BT_RUNNING, "BT_RUNNING");
 }
-END_ENUM_DESCRIPTION()
+BEHAVIAC_END_ENUM()
 
 namespace behaviac
 {
@@ -302,10 +302,55 @@ namespace behaviac
         return BehaviorTask::GetTickInfo(pAgent, b->GetNode(), action);
     }
 
+	const behaviac::string GetParentTreeName(const Agent* pAgent, const BehaviorNode* n)
+	{
+		behaviac::string btName;
+
+		if (ReferencedBehavior::DynamicCast(n))
+		{
+			n = n->GetParent();
+		}
+
+		bool bIsTree = false;
+		bool bIsRefTree = false;
+
+		while (n != 0)
+		{
+			bIsTree = BehaviorTree::DynamicCast(n) != 0;
+			bIsRefTree = ReferencedBehavior::DynamicCast(n) != 0;
+
+			if (bIsTree || bIsRefTree)
+			{
+				break;
+			}
+
+			n = n->GetParent();
+		}
+
+		if (bIsTree)
+		{
+			const BehaviorTree* bt = BehaviorTree::DynamicCast(n);
+			btName = bt->GetName();
+		}
+		else if (bIsRefTree)
+		{
+			const ReferencedBehavior* refTree = ReferencedBehavior::DynamicCast(n);
+			btName = refTree->GetReferencedTree(pAgent);
+		}
+		else
+		{
+			BEHAVIAC_ASSERT(false);
+		}
+
+		return btName;
+	}
+
     behaviac::string BehaviorTask::GetTickInfo(const behaviac::Agent* pAgent, const behaviac::BehaviorNode* n, const char* action)
     {
         if (pAgent && pAgent->IsMasked())
         {
+			char temp[1024];
+
             //BEHAVIAC_PROFILE("GetTickInfo", true);
 
             const behaviac::string& bClassName = n->GetClassNameString();
@@ -313,24 +358,25 @@ namespace behaviac
             //filter out intermediate bt, whose class name is empty
             if (!bClassName.empty())
             {
-                int nodeId = n->GetId();
-                const BehaviorTreeTask* bt = pAgent ? pAgent->btgetcurrent() : 0;
+				const behaviac::string& btName = GetParentTreeName(pAgent, n);
 
+                int nodeId = n->GetId();
                 //TestBehaviorGroup\scratch.xml->EventetTask[0]:enter
                 behaviac::string bpstr;
 
-                if (bt)
+				if (!StringUtils::IsNullOrEmpty(btName.c_str()))
                 {
-                    const behaviac::string& btName = bt->GetName();
-
-                    bpstr = FormatString("%s.xml->", btName.c_str());
+					string_sprintf(temp, "%s.xml->", btName.c_str());
+					bpstr = temp;
                 }
 
-                bpstr += FormatString("%s[%i]", bClassName.c_str(), nodeId);
+				string_sprintf(temp, "%s[%i]", bClassName.c_str(), nodeId);
+				bpstr += temp;
 
-                if (action)
+				if (!StringUtils::IsNullOrEmpty(action))
                 {
-                    bpstr += FormatString(":%s", action);
+					string_sprintf(temp, ":%s", action);
+					bpstr += temp;
                 }
 
                 return bpstr;
@@ -342,12 +388,6 @@ namespace behaviac
 
 #define _MY_BREAKPOINT_BREAK_(pAgent, btMsg, actionResult) \
     { \
-        /*const char* actionResultStr = GetActionResultStr(actionResult); \
-                                                                			const char* msg = FormatString("BehaviorTreeTask Breakpoints at: %s(%d)\n\n'%s%s'\n\nOk to continue.", __FILE__, __LINE__, btMsg, actionResultStr); \
-                                                                			if (IDOK == MessageBoxA(0, msg, "BehaviorTreeTask Breakpoints", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_SYSTEMMODAL)) \
-                                                                			{ \
-                                                                				DebugBreak_(); \
-                                                                			}*/ \
         Workspace::GetInstance()->WaitforContinue(); \
     }
 
@@ -362,6 +402,8 @@ namespace behaviac
 				LogManager::GetInstance()->Log(pAgent, bpstr.c_str(), actionResult, ELM_tick);
 				if (Workspace::GetInstance()->CheckBreakpoint(pAgent, b, action, actionResult))
 				{
+					//log the current variables, otherwise, its value is not the latest
+					pAgent->LogVariables(false);
 					LogManager::GetInstance()->Log(pAgent, bpstr.c_str(), actionResult, ELM_breaked);
 					LogManager::GetInstance()->Flush(pAgent);
 					behaviac::Socket::Flush();
@@ -516,7 +558,7 @@ namespace behaviac
     {
     public:
         /// Construct. begin a profiling block with the specified name and optional call count.
-        AutoProfileBlockSend(Profiler* profiler, const behaviac::string& taskClassid, const Agent* agent) : profiler_(profiler)
+        AutoProfileBlockSend(Profiler* profiler, const char* taskClassid, const Agent* agent) : profiler_(profiler)
         {
             if (Config::IsProfiling())
             {
@@ -524,7 +566,7 @@ namespace behaviac
 
                 if (profiler_)
                 {
-                    profiler_->BeginBlock(taskClassid.c_str(), agent);
+                    profiler_->BeginBlock(taskClassid, agent);
                 }
             }
         }
@@ -555,21 +597,21 @@ namespace behaviac
 
     EBTStatus BehaviorTask::exec(Agent* pAgent, EBTStatus childStatus)
     {
+#if !BEHAVIAC_RELEASE
+		char temp[1024];
+#endif
+
 #if BEHAVIAC_ENABLE_PROFILING
-#if 1
         const char* classStr = (this->m_node ? this->m_node->GetClassNameString().c_str() : "BT");
         int nodeId = (this->m_node ? this->m_node->GetId() : -1);
-        behaviac::string taskClassid = FormatString("%s[%i]", classStr, nodeId);
+        string_sprintf(temp, "%s[%i]", classStr, nodeId);
 
-        AutoProfileBlockSend profiler_block(Profiler::GetInstance(), taskClassid, pAgent);
-#else
-        const char* classStr = (this->m_node ? this->m_node->GetClassNameString().c_str() : "BT");
-        BEHAVIAC_PROFILE(classStr);
-#endif
+		AutoProfileBlockSend profiler_block(Profiler::GetInstance(), temp, pAgent);
 #endif//#if BEHAVIAC_ENABLE_PROFILING
-
-        BEHAVIAC_ASSERT(!this->m_node || this->m_node->IsValid(pAgent, this),
-                        FormatString("Agent In BT:%s while the Agent used for: %s", this->m_node->m_agentType.c_str(), pAgent->GetClassTypeName()));
+#if !BEHAVIAC_RELEASE
+		string_sprintf(temp, "Agent In BT:%s while the Agent used for: %s", this->m_node->m_agentType.c_str(), pAgent->GetClassTypeName());
+		BEHAVIAC_ASSERT(!this->m_node || this->m_node->IsValid(pAgent, this), temp);
+#endif
 
         bool bEnterResult = false;
 
@@ -699,6 +741,18 @@ namespace behaviac
 		return bValid;
 	}
 
+	bool getRunningNodes_handler(BehaviorTask* node, Agent* pAgent, void* user_data)
+	{
+		BEHAVIAC_UNUSED_VAR(user_data);
+
+		if (node->m_status == BT_RUNNING)
+		{
+			(*(behaviac::vector<BehaviorTask*>*)(user_data)).push_back(node);
+		}
+
+		return true;
+	}
+
     bool abort_handler(BehaviorTask* node, Agent* pAgent, void* user_data)
     {
         BEHAVIAC_UNUSED_VAR(user_data);
@@ -729,9 +783,31 @@ namespace behaviac
         return true;
     }
 
+	behaviac::vector<BehaviorTask*> BehaviorTask::GetRunningNodes(bool onlyLeaves)
+	{
+		behaviac::vector<BehaviorTask*> nodes;
+		this->traverse(true, &getRunningNodes_handler, NULL, &nodes);
+
+		if (onlyLeaves && nodes.size() > 0)
+		{
+			behaviac::vector<BehaviorTask*> leaves;
+			for (unsigned int i = 0; i < nodes.size(); ++i)
+			{
+				if (LeafTask::DynamicCast(nodes[i]))
+				{
+					leaves.push_back(nodes[i]);
+				}
+			}
+
+			return leaves;
+		}
+
+		return nodes;
+	}
+
     void BehaviorTask::abort(Agent* pAgent)
     {
-        this->traverse(&abort_handler, pAgent, 0);
+        this->traverse(true, &abort_handler, pAgent, 0);
     }
 
     void BehaviorTask::reset(Agent* pAgent)
@@ -739,7 +815,7 @@ namespace behaviac
 #if BEHAVIAC_ENABLE_PROFILING
         BEHAVIAC_PROFILE("BehaviorTask::reset");
 #endif
-        this->traverse(&reset_handler, pAgent, 0);
+        this->traverse(true, &reset_handler, pAgent, 0);
     }
 
     AttachmentTask::AttachmentTask() : BehaviorTask()
@@ -753,7 +829,7 @@ namespace behaviac
     AttachmentTask::~AttachmentTask()
     {}
 
-    void AttachmentTask::traverse(NodeHandler_t handler, Agent* pAgent, void* user_data)
+    void AttachmentTask::traverse(bool childFirst, NodeHandler_t handler, Agent* pAgent, void* user_data)
     {
         handler(this, pAgent, user_data);
     }
@@ -958,7 +1034,7 @@ namespace behaviac
             int id = this->m_currentTask->GetId();
             getnode_t temp(id);
 
-            ttask->traverse(&getid_handler, 0, &temp);
+            ttask->traverse(true, &getid_handler, 0, &temp);
             BEHAVIAC_ASSERT(temp.task_);
 
             ttask->m_currentTask = temp.task_;
@@ -1192,7 +1268,7 @@ namespace behaviac
                 BehaviorTask* childTask = this->m_children[i];
 
                 //CSerializationID  nodeId("node");
-                ISerializableNode* chidlNode = node->getChild(i);
+                ISerializableNode* chidlNode = node->getChild((int32_t)i);
                 childTask->load(chidlNode);
             }
         }
@@ -1259,18 +1335,31 @@ namespace behaviac
         this->m_children.push_back(pBehavior);
     }
 
-    void CompositeTask::traverse(NodeHandler_t handler, Agent* pAgent, void* user_data)
+    void CompositeTask::traverse(bool childFirst, NodeHandler_t handler, Agent* pAgent, void* user_data)
     {
-        if (handler(this, pAgent, user_data))
-        {
-            for (BehaviorTasks_t::iterator it = this->m_children.begin();
-                 it != this->m_children.end(); ++it)
-            {
-                //BehaviorTask* task = *it;
-                (*it)->traverse(handler, pAgent, user_data);
-                //task->traverse(handler, pAgent, user_data);
-            }
-        }
+		if (childFirst) {
+			for (BehaviorTasks_t::iterator it = this->m_children.begin();
+				it != this->m_children.end(); ++it)
+			{
+				//BehaviorTask* task = *it;
+				(*it)->traverse(childFirst, handler, pAgent, user_data);
+				//task->traverse(handler, pAgent, user_data);
+			}
+
+			handler(this, pAgent, user_data);
+		}
+		else {
+			if (handler(this, pAgent, user_data))
+			{
+				for (BehaviorTasks_t::iterator it = this->m_children.begin();
+					it != this->m_children.end(); ++it)
+				{
+					//BehaviorTask* task = *it;
+					(*it)->traverse(childFirst, handler, pAgent, user_data);
+					//task->traverse(handler, pAgent, user_data);
+				}
+			}
+		}
     }
 
     SingeChildTask::SingeChildTask() : m_root(0)
@@ -1288,15 +1377,25 @@ namespace behaviac
         this->m_root = pBehavior;
     }
 
-    void SingeChildTask::traverse(NodeHandler_t handler, Agent* pAgent, void* user_data)
+    void SingeChildTask::traverse(bool childFirst, NodeHandler_t handler, Agent* pAgent, void* user_data)
     {
-        if (handler(this, pAgent, user_data))
-        {
-            if (this->m_root)
-            {
-                this->m_root->traverse(handler, pAgent, user_data);
-            }
-        }
+		if (childFirst) {
+			if (this->m_root)
+			{
+				this->m_root->traverse(childFirst, handler, pAgent, user_data);
+			}
+
+			handler(this, pAgent, user_data);
+		}
+		else {
+			if (handler(this, pAgent, user_data))
+			{
+				if (this->m_root)
+				{
+					this->m_root->traverse(childFirst, handler, pAgent, user_data);
+				}
+			}
+		}
     }
 
     void SingeChildTask::Init(const BehaviorNode* node)
@@ -1390,10 +1489,9 @@ namespace behaviac
 
     EBTStatus SingeChildTask::update(Agent* pAgent, EBTStatus childStatus)
     {
-        BEHAVIAC_UNUSED_VAR(childStatus);
         if (this->m_root)
         {
-            EBTStatus s = this->m_root->exec(pAgent);
+			EBTStatus s = this->m_root->exec(pAgent, childStatus);
             return s;
         }
 
@@ -1495,7 +1593,7 @@ namespace behaviac
     LeafTask::~LeafTask()
     {}
 
-    void LeafTask::traverse(NodeHandler_t handler, Agent* pAgent, void* user_data)
+    void LeafTask::traverse(bool childFirst, NodeHandler_t handler, Agent* pAgent, void* user_data)
     {
         handler(this, pAgent, user_data);
     }
@@ -1655,7 +1753,7 @@ namespace behaviac
         bool bGoOn = this->m_currentTask->onevent(pAgent, eventName);
 
         //give the handling back to parents
-        if (bGoOn)
+		if (bGoOn && this->m_currentTask)
         {
             BranchTask* parentBranch = this->m_currentTask->GetParent();
 

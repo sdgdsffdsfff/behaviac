@@ -63,7 +63,7 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE TAGENT* Agent::Create(const char* agentInstanceName, int contextId, short priority)
     {
         const char* agentInstanceNameAny = agentInstanceName;
-        if (!agentInstanceName)
+        if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -88,7 +88,7 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE TAGENT* Agent::Create(T1 p1, const char* agentInstanceName, int contextId, short priority)
     {
         const char* agentInstanceNameAny = agentInstanceName;
-        if (!agentInstanceName)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -113,7 +113,7 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE TAGENT* Agent::Create(T1 p1, T2 p2, const char* agentInstanceName, int contextId, short priority)
     {
         const char* agentInstanceNameAny = agentInstanceName;
-        if (!agentInstanceName)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -138,7 +138,7 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE TAGENT* Agent::Create(T1 p1, T2 p2, T3 p3, const char* agentInstanceName, int contextId, short priority)
     {
         const char* agentInstanceNameAny = agentInstanceName;
-        if (!agentInstanceName)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -163,7 +163,7 @@ namespace behaviac
     BEHAVIAC_FORCEINLINE TAGENT* Agent::Create(T1 p1, T2 p2, T3 p3, T4 p4, const char* agentInstanceName, int contextId, short priority)
     {
         const char* agentInstanceNameAny = agentInstanceName;
-        if (!agentInstanceName)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -209,7 +209,7 @@ namespace behaviac
     {
         const char* agentInstanceNameAny = agentInstanceName;
 
-        if (!agentInstanceNameAny)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -240,7 +240,7 @@ namespace behaviac
             }
             else
             {
-                BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
+                //BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
             }
         }
     }
@@ -274,7 +274,7 @@ namespace behaviac
             }
             else
             {
-                BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
+                //BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
             }
         }
     }
@@ -308,7 +308,7 @@ namespace behaviac
             }
             else
             {
-                BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
+                //BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
             }
         }
     }
@@ -342,7 +342,7 @@ namespace behaviac
             }
             else
             {
-                BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
+                //BEHAVIAC_ASSERT(0, "unregistered event %s", eventName);
             }
         }
     }
@@ -384,7 +384,7 @@ namespace behaviac
     {
         static const VariableType* Get(const AgentState& variables, const Agent* pAgent, Property* pProperty, uint32_t variableId)
         {
-            const CMemberBase* pMember = pProperty != 0 ? pProperty->GetMember() : 0;
+            const behaviac::CMemberBase* pMember = pProperty != 0 ? pProperty->GetMember() : 0;
             return variables.Get<VariableType>(pAgent, true, pMember, variableId);
         }
     };
@@ -470,7 +470,7 @@ namespace behaviac
     template<typename VariableType, bool bRefType>
     struct VariableSettterDispatcher
     {
-        static void Set(AgentState& variables, bool bMemberSet, Agent* pAgent, bool bLocal, const CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t variableId)
+        static void Set(AgentState& variables, bool bMemberSet, Agent* pAgent, bool bLocal, const behaviac::CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t variableId)
         {
             variables.Set(bMemberSet, pAgent, bLocal, pMember, variableName, value, variableId);
         }
@@ -479,7 +479,7 @@ namespace behaviac
     template<typename VariableType>
     struct VariableSettterDispatcher<VariableType, true>
     {
-        static void Set(AgentState& variables, bool bMemberSet, Agent* pAgent, bool bLocal, const CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t variableId)
+        static void Set(AgentState& variables, bool bMemberSet, Agent* pAgent, bool bLocal, const behaviac::CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t variableId)
         {
             variables.Set(bMemberSet, pAgent, bLocal, pMember, variableName, (void*)value, variableId);
         }
@@ -520,11 +520,11 @@ namespace behaviac
 
     BEHAVIAC_FORCEINLINE bool Agent::Invoke(Agent* pAgent, const char* methodName)
     {
-        const CMethodBase* pMethod = Agent::FindMethodBase(methodName);
+        const behaviac::CMethodBase* pMethod = Agent::FindMethodBase(methodName);
 
         if (pMethod)
         {
-            const_cast<CMethodBase*>(pMethod)->vCall(pAgent);
+            const_cast<behaviac::CMethodBase*>(pMethod)->vCall(pAgent);
             return true;
         }
 
@@ -534,11 +534,11 @@ namespace behaviac
     template <typename P1>
     BEHAVIAC_FORCEINLINE bool Agent::Invoke(Agent* pAgent, const char* methodName, P1 p1)
     {
-        const CMethodBase* pMethod = Agent::FindMethodBase(methodName);
+        const behaviac::CMethodBase* pMethod = Agent::FindMethodBase(methodName);
 
         if (pMethod)
         {
-            const_cast<CMethodBase*>(pMethod)->vCall(pAgent, &p1);
+            const_cast<behaviac::CMethodBase*>(pMethod)->vCall(pAgent, &p1);
             return true;
         }
 
@@ -548,11 +548,11 @@ namespace behaviac
     template <typename P1, typename P2>
     BEHAVIAC_FORCEINLINE bool Agent::Invoke(Agent* pAgent, const char* methodName, P1 p1, P2 p2)
     {
-        const CMethodBase* pMethod = Agent::FindMethodBase(methodName);
+        const behaviac::CMethodBase* pMethod = Agent::FindMethodBase(methodName);
 
         if (pMethod)
         {
-            const_cast<CMethodBase*>(pMethod)->vCall(pAgent, &p1, &p2);
+            const_cast<behaviac::CMethodBase*>(pMethod)->vCall(pAgent, &p1, &p2);
             return true;
         }
 
@@ -562,11 +562,11 @@ namespace behaviac
     template <typename P1, typename P2, typename P3>
     BEHAVIAC_FORCEINLINE bool Agent::Invoke(Agent* pAgent, const char* methodName, P1 p1, P2 p2, P3 p3)
     {
-        const CMethodBase* pMethod = Agent::FindMethodBase(methodName);
+        const behaviac::CMethodBase* pMethod = Agent::FindMethodBase(methodName);
 
         if (pMethod)
         {
-            const_cast<CMethodBase*>(pMethod)->vCall(pAgent, &p1, &p2, &p3);
+            const_cast<behaviac::CMethodBase*>(pMethod)->vCall(pAgent, &p1, &p2, &p3);
             return true;
         }
 
@@ -576,11 +576,11 @@ namespace behaviac
     template <typename R>
     bool Agent::GetInvokeReturn(Agent* pAgent, const char* methodName, R& returnValue)
     {
-        const CMethodBase* pMethod = Agent::FindMethodBase(methodName);
+        const behaviac::CMethodBase* pMethod = Agent::FindMethodBase(methodName);
 
         if (pMethod)
         {
-            const_cast<CMethodBase*>(pMethod)->GetReturnValue(pAgent, returnValue);
+            const_cast<behaviac::CMethodBase*>(pMethod)->GetReturnValue(pAgent, returnValue);
             return true;
         }
 
@@ -615,8 +615,8 @@ namespace behaviac
         {
             const char* baseTypeFullName = TAGENT::super::GetClassTypeName();
 
-            //filter out CTagObject
-            if (string_icmp(baseTypeFullName, "CTagObject") == 0)
+            //filter out behaviac::CTagObject
+            if (string_icmp(baseTypeFullName, "behaviac::CTagObject") == 0)
             {
                 baseTypeFullName = 0;
             }
@@ -652,9 +652,13 @@ namespace behaviac
     template<typename TAGENT>
     BEHAVIAC_FORCEINLINE bool Agent::RegisterInstanceName(const char* agentInstanceName, const wchar_t* displayName, const wchar_t* desc)
     {
+		const char* arrStr[] = { " " };
+		BEHAVIAC_ASSERT(StringUtils::FindString(agentInstanceName, arrStr, 1) == -1);
+		BEHAVIAC_UNUSED_VAR(arrStr);
+
         const char* agentInstanceNameAny = agentInstanceName;
 
-        if (!agentInstanceNameAny)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -678,7 +682,7 @@ namespace behaviac
     {
         const char* agentInstanceNameAny = agentInstanceName;
 
-        if (!agentInstanceNameAny)
+		if (StringUtils::IsNullOrEmpty(agentInstanceName))
         {
             agentInstanceNameAny = TAGENT::GetClassTypeName();
         }
@@ -692,7 +696,7 @@ namespace behaviac
     }
 
     template<typename VariableType>
-    BEHAVIAC_FORCEINLINE void Agent::SetVariableRegistry(bool bLocal, const CMemberBase* pMember, const char* variableName, const VariableType& value, const char* staticClassName, uint32_t varableId)
+    BEHAVIAC_FORCEINLINE void Agent::SetVariableRegistry(bool bLocal, const behaviac::CMemberBase* pMember, const char* variableName, const VariableType& value, const char* staticClassName, uint32_t varableId)
     {
         bool bValidName = variableName && variableName[0] != '\0';
 
@@ -714,7 +718,7 @@ namespace behaviac
     }
 
     template <typename VariableType>
-    BEHAVIAC_FORCEINLINE const VariableType* Agent::GetVariableRegistry(const char* staticClassName, const CMemberBase* pMember, uint32_t variableId) const
+    BEHAVIAC_FORCEINLINE const VariableType* Agent::GetVariableRegistry(const char* staticClassName, const behaviac::CMemberBase* pMember, uint32_t variableId) const
     {
         const VariableType* val = NULL;
 
@@ -738,20 +742,23 @@ namespace behaviac
     template<typename VariableType>
     void TVariable<VariableType>::Log(const Agent* pAgent)
     {
+#if !BEHAVIAC_RELEASE
         //BEHAVIAC_ASSERT(this->m_changed);
 
         behaviac::string valueStr = StringUtils::ToString(this->m_value);
-        behaviac::string typeName = ::GetClassTypeName((VariableType*)0);
+        behaviac::string typeName = GetClassTypeName((VariableType*)0);
 
         behaviac::string full_name = this->m_name;
 
         if (this->m_pMember)
         {
-            full_name = FormatString("%s::%s", this->m_pMember->GetClassNameString(), this->m_name.c_str());
+			char temp[1024];
+			string_sprintf(temp, "%s::%s", this->m_pMember->GetClassNameString(), this->m_name.c_str());
+			full_name = temp;
         }
 
         LogManager::GetInstance()->Log(pAgent, typeName.c_str(), full_name.c_str(), valueStr.c_str());
-#if !BEHAVIAC_RELEASE
+
         this->m_changed = false;
 #endif
     }
@@ -763,7 +770,7 @@ namespace behaviac
         //to skip class name
         const char* variableNameOnly = GetNameWithoutClassName(variableName);
 
-        const CMemberBase* pMember = pAgent->FindMember(variableNameOnly);
+        const behaviac::CMemberBase* pMember = pAgent->FindMember(variableNameOnly);
 
         uint32_t varId = MakeVariableId(variableNameOnly);
         Variables_t::iterator it = this->m_variables.find(varId);
@@ -777,7 +784,7 @@ namespace behaviac
     }
 
     template<typename VariableType>
-    void Variables::Set(bool bMemberSet, Agent* pAgent, bool bLocal, const CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t varId)
+    void Variables::Set(bool bMemberSet, Agent* pAgent, bool bLocal, const behaviac::CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t varId)
     {
         BEHAVIAC_UNUSED_VAR(bMemberSet);
         BEHAVIAC_UNUSED_VAR(bLocal);
@@ -832,7 +839,7 @@ namespace behaviac
     }
 
     template<typename VariableType>
-    const VariableType*  Variables::Get(const Agent* pAgent, bool bMemberGet, const CMemberBase* pMember, uint32_t varId) const
+    const VariableType*  Variables::Get(const Agent* pAgent, bool bMemberGet, const behaviac::CMemberBase* pMember, uint32_t varId) const
     {
         typedef TVariable<VariableType> VariableTypeType;
 
@@ -842,7 +849,7 @@ namespace behaviac
             {
                 if (pMember != NULL)
                 {
-                    int typeId = ::GetClassTypeNumberId<VariableType>();
+                    int typeId = GetClassTypeNumberId<VariableType>();
                     //BEHAVIAC_ASSERT(typeId == pMember->GetTypeId());
                     const void* val = pMember->Get(pAgent, typeId);
                     return (const VariableType*)val;
@@ -867,7 +874,7 @@ namespace behaviac
             //if out of scope
             if (pVar->m_instantiated > 0)
             {
-                return &pVar->GetValue(pAgent);
+				return (const VariableType*)pVar->GetAddress(pAgent);
             }
 			else
 			{
@@ -879,7 +886,7 @@ namespace behaviac
     }
 
     template<typename VariableType>
-    void TVariable<VariableType>::SetFromString(Agent* pAgent, const CMemberBase* pMember, const char* valueString)
+    void TVariable<VariableType>::SetFromString(Agent* pAgent, const behaviac::CMemberBase* pMember, const char* valueString)
     {
         if (valueString)
         {
@@ -896,7 +903,7 @@ namespace behaviac
 
                     if (pMember)
                     {
-                        int typeId = ::GetClassTypeNumberId<VariableType>();
+                        int typeId = GetClassTypeNumberId<VariableType>();
 
                         if (pMember && typeId == pMember->GetTypeId())
                         {
@@ -910,7 +917,7 @@ namespace behaviac
 
 
     template<typename VariableType>
-    void AgentState::Set(bool bMemberSet, Agent* pAgent, bool bLocal, const CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t varId)
+    void AgentState::Set(bool bMemberSet, Agent* pAgent, bool bLocal, const behaviac::CMemberBase* pMember, const char* variableName, const VariableType& value, uint32_t varId)
     {
         //if (variableName == "DirtyRooms")
         //{
@@ -926,7 +933,7 @@ namespace behaviac
 
         if (this->state_stack.size() > 0)
         {
-            int stackIndex = 0;
+			size_t stackIndex = 0;
 
             if (bLocal)
             {
@@ -951,11 +958,11 @@ namespace behaviac
     }
 
     template<typename VariableType>
-    const VariableType* AgentState::Get(const Agent* pAgent, bool bMemberGet, const CMemberBase* pMember, uint32_t varId) const
+    const VariableType* AgentState::Get(const Agent* pAgent, bool bMemberGet, const behaviac::CMemberBase* pMember, uint32_t varId) const
     {
         if (this->state_stack.size() > 0)
         {
-            for (int i = this->state_stack.size() - 1; i >= 0; --i)
+			for (int i = (int)this->state_stack.size() - 1; i >= 0; --i)
             {
                 AgentState* t = this->state_stack[i];
                 const VariableType* result = t->Get<VariableType>(pAgent, false, pMember, varId);
@@ -967,7 +974,7 @@ namespace behaviac
             }
         }
 
-        //CTagObject* result1 = Variables::Get(pAgent, bMemberGet, pMember, varId);
+        //behaviac::CTagObject* result1 = Variables::Get(pAgent, bMemberGet, pMember, varId);
 
         const VariableType* result1 = Variables::Get<VariableType>(pAgent, bMemberGet, pMember, varId); //(pAgent, bMemberGet, pMember, varId);
         return result1;
@@ -998,54 +1005,77 @@ namespace behaviac
 		return UserDefinedTypeAssert<T, behaviac::Meta::IsPtr<T>::Result && behaviac::Meta::IsRefType<T>::Result>::IsAKindOf(child, baseClass);
 	}
 
+#if BEHAVIAC_ENABLE_ASSERTS
+	template<typename T>
+	static bool CheckCompatibleType(const behaviac::string& typeName) {
+		behaviac::string t = GetTypeDescString<T>();
+
+		if (typeName == t) {
+			return true;
+		}
+
+		t = GetTypeDescString<T&>();
+
+		if (typeName == t) {
+			return true;
+		}
+
+		return false;
+	}
+#endif
+
     template<typename ParamType>
-    void CNamedEvent::SetParam(Agent* pAgent, ParamType param)
+    void CNamedEvent::SetParam(Agent* pAgent, const ParamType& param)
     {
         BEHAVIAC_ASSERT(this->m_paramTypes.size() == 1);
-		BEHAVIAC_ASSERT(this->m_paramTypes[0] == ::GetClassTypeName((ParamType*)0) || IsChildOf(param, this->m_paramTypes[0].c_str()), "SetParam's Param is not compatible");
+		BEHAVIAC_ASSERT(CheckCompatibleType<ParamType>(this->m_paramTypes[0]) || IsChildOf(param, this->m_paramTypes[0].c_str()), "SetParam's Param is not compatible");
 
         AgentState* currentState = pAgent->m_variables.Push(false);
 
 		BEHAVIAC_UNUSED_VAR(currentState);
 
-        behaviac::string eventName = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
+		char temp[1024];
+		string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
 
-        pAgent->SetVariable(eventName.c_str(), param);
+		pAgent->SetVariable(temp, param);
     }
 
     template<typename ParamType1, typename ParamType2>
-    void CNamedEvent::SetParam(Agent* pAgent, ParamType1 param1, ParamType2 param2)
+	void CNamedEvent::SetParam(Agent* pAgent, const ParamType1& param1, const ParamType2& param2)
     {
         BEHAVIAC_ASSERT(this->m_paramTypes.size() == 2);
-        BEHAVIAC_ASSERT(this->m_paramTypes[0] == ::GetClassTypeName((ParamType1*)0) || IsChildOf(param1, this->m_paramTypes[0].c_str()), "SetParam's Param1 is not compatible");
-        BEHAVIAC_ASSERT(this->m_paramTypes[1] == ::GetClassTypeName((ParamType2*)0) || IsChildOf(param2, this->m_paramTypes[1].c_str()), "SetParam's Param2 is not compatible");
+		BEHAVIAC_ASSERT(CheckCompatibleType<ParamType1>(this->m_paramTypes[0]) || IsChildOf(param1, this->m_paramTypes[0].c_str()), "SetParam's Param1 is not compatible");
+        BEHAVIAC_ASSERT(CheckCompatibleType<ParamType2>(this->m_paramTypes[1]) || IsChildOf(param2, this->m_paramTypes[1].c_str()), "SetParam's Param2 is not compatible");
 
         AgentState* currentState = pAgent->m_variables.Push(false);
 		BEHAVIAC_UNUSED_VAR(currentState);
 
-        behaviac::string eventName1 = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
-        pAgent->SetVariable(eventName1.c_str(), param1);
-        behaviac::string eventName2 = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
-        pAgent->SetVariable(eventName2.c_str(), param2);
+		char temp[1024];
+		string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
+        pAgent->SetVariable(temp, param1);
+        string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
+        pAgent->SetVariable(temp, param2);
     }
 
     template<typename ParamType1, typename ParamType2, typename ParamType3>
-    void CNamedEvent::SetParam(Agent* pAgent, ParamType1 param1, ParamType2 param2, ParamType3 param3)
+	void CNamedEvent::SetParam(Agent* pAgent, const ParamType1& param1, const ParamType2& param2, const ParamType3& param3)
     {
         BEHAVIAC_ASSERT(this->m_paramTypes.size() == 3);
-        BEHAVIAC_ASSERT(this->m_paramTypes[0] == ::GetClassTypeName((ParamType1*)0) || IsChildOf(param1, this->m_paramTypes[0].c_str()), "SetParam's Param1 is not compatible");
-        BEHAVIAC_ASSERT(this->m_paramTypes[1] == ::GetClassTypeName((ParamType2*)0) || IsChildOf(param2, this->m_paramTypes[1].c_str()), "SetParam's Param2 is not compatible");
-        BEHAVIAC_ASSERT(this->m_paramTypes[2] == ::GetClassTypeName((ParamType3*)0) || IsChildOf(param3, this->m_paramTypes[2].c_str()), "SetParam's Param3 is not compatible");
+		BEHAVIAC_ASSERT(CheckCompatibleType<ParamType1>(this->m_paramTypes[0]) || IsChildOf(param1, this->m_paramTypes[0].c_str()), "SetParam's Param1 is not compatible");
+        BEHAVIAC_ASSERT(CheckCompatibleType<ParamType2>(this->m_paramTypes[1]) || IsChildOf(param2, this->m_paramTypes[1].c_str()), "SetParam's Param2 is not compatible");
+        BEHAVIAC_ASSERT(CheckCompatibleType<ParamType3>(this->m_paramTypes[2]) || IsChildOf(param3, this->m_paramTypes[2].c_str()), "SetParam's Param3 is not compatible");
 
         AgentState* currentState = pAgent->m_variables.Push(false);
 		BEHAVIAC_UNUSED_VAR(currentState);
 
-        behaviac::string eventName1 = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
-        pAgent->SetVariable(eventName1.c_str(), param1);
-        behaviac::string eventName2 = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
-        pAgent->SetVariable(eventName2.c_str(), param2);
-        behaviac::string eventName3 = FormatString("%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 2);
-        pAgent->SetVariable(eventName3.c_str(), param3);
+		char temp[1024];
+
+        string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 0);
+        pAgent->SetVariable(temp, param1);
+        string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 1);
+		pAgent->SetVariable(temp, param2);
+        string_sprintf(temp, "%s%d", BEHAVIAC_LOCAL_TASK_PARAM_PRE, 2);
+        pAgent->SetVariable(temp, param3);
     }
 }//namespace behaviac
 

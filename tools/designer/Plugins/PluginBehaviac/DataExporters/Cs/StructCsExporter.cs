@@ -22,12 +22,17 @@ namespace PluginBehaviac.DataExporters
 {
     public class StructCsExporter
     {
-        public static void GenerateCode(object obj, StreamWriter stream, string indent, string var, object parent, string paramName)
+        public static void GenerateCode(object obj, StreamWriter stream, string indent, string var, string typename, object parent, string paramName)
         {
             Debug.Check(obj != null);
 
             Type type = obj.GetType();
             Debug.Check(Plugin.IsCustomClassType(type));
+
+            if (!Plugin.IsRefType(type))
+            {
+                stream.WriteLine("{0}{1} = new {2}();", indent, var, typename);
+            }
 
             MethodDef method = parent as MethodDef;
             IList<DesignerPropertyInfo> properties = DesignerProperty.GetDesignerProperties(type);
@@ -36,26 +41,43 @@ namespace PluginBehaviac.DataExporters
                 if (!property.Attribute.HasFlags(DesignerProperty.DesignerFlags.NoSave))
                 {
                     object member = property.GetValue(obj);
-                    if (property.Attribute is DesignerStruct)
+
+                    Type memberType = member.GetType();
+
+                    if (Plugin.IsArrayType(memberType))
                     {
-                        GenerateCode(member, stream, indent, var + "." + property.Property.Name, parent, paramName);
+                        string memberNativeType = Plugin.GetNativeTypeName(memberType);
+                        string nativeTypeStr = DataCsExporter.GetGeneratedNativeType(memberNativeType);
+                        int startIndex = nativeTypeStr.IndexOf('<');
+                        int endIndex = nativeTypeStr.LastIndexOf('>');
+                        string itemType = nativeTypeStr.Substring(startIndex + 1, endIndex - startIndex - 1);
+
+                        ArrayCsExporter.GenerateCode(member, stream, indent, itemType, var + "." + property.Property.Name);
                     }
                     else
                     {
-                        bool bStructProperty = false;
-                        if (method != null)
+                        if (property.Attribute is DesignerStruct)
                         {
-                            MethodDef.Param param = method.GetParam(paramName, property);
-                            if (param != null)
-                            {
-                                bStructProperty = true;
-                                ParameterCsExporter.GenerateCode(param, stream, indent, string.Empty, var + "." + property.Property.Name, string.Empty);
-                            }
+                            string memberTypeStr = DataCsExporter.GetGeneratedNativeType(member.GetType());
+                            GenerateCode(member, stream, indent, var + "." + property.Property.Name, memberTypeStr, parent, paramName);
                         }
-
-                        if (!bStructProperty)
+                        else
                         {
-                            DataCsExporter.GenerateCode(member, stream, indent, string.Empty, var + "." + property.Property.Name, string.Empty);
+                            bool bStructProperty = false;
+                            if (method != null)
+                            {
+                                MethodDef.Param param = method.GetParam(paramName, property);
+                                if (param != null)
+                                {
+                                    bStructProperty = true;
+                                    ParameterCsExporter.GenerateCode(param, stream, indent, string.Empty, var + "." + property.Property.Name, string.Empty);
+                                }
+                            }
+
+                            if (!bStructProperty)
+                            {
+                                DataCsExporter.GenerateCode(member, stream, indent, string.Empty, var + "." + property.Property.Name, string.Empty);
+                            }
                         }
                     }
                 }

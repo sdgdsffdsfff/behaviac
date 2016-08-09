@@ -84,7 +84,7 @@ namespace PluginBehaviac.NodeExporters
 
             if (compute.Opl != null && compute.Opr1 != null && compute.Opr2 != null)
             {
-                string typeName = Plugin.GetNativeTypeName(compute.Opr1.ValueType);
+                string typeName = DataCppExporter.GetGeneratedNativeType(compute.Opr1.ValueType);
 
                 RightValueCppExporter.GenerateCode(compute.Opr1, stream, indent + "\t\t\t", typeName, "opr1", "opr1");
                 RightValueCppExporter.GenerateCode(compute.Opr2, stream, indent + "\t\t\t", typeName, "opr2", "opr2");
@@ -131,8 +131,9 @@ namespace PluginBehaviac.NodeExporters
                     {
                         string propBasicName = prop.BasicName.Replace("[]", "");
                         uint id = Behaviac.Design.CRC32.CalcCRC(propBasicName);
+                        string agentName = PropertyCppExporter.GetGenerateAgentName(prop, "opl", "compute");
 
-                        stream.WriteLine("{0}\t\t\tpAgent->SetVariable(\"{1}\", {2}, {3}u);", indent, propBasicName, oprStr, id);
+                        stream.WriteLine("{0}\t\t\t{1}->SetVariable(\"{2}\", {3}, {4}u);", indent, agentName, propBasicName, oprStr, id);
                     }
                     else
                     {

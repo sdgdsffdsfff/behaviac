@@ -3,6 +3,7 @@ using System.Threading;
 using NUnit.Framework;
 using UnityEngine;
 
+#if BEHAVIAC_USE_HTN
 namespace BehaviorNodeUnitTest
 {
     [TestFixture]
@@ -30,7 +31,6 @@ namespace BehaviorNodeUnitTest
             Assert.AreEqual(HTNAgentTravel.airport_sz_baoan, testAgent.Path[2].x);
             Assert.AreEqual(HTNAgentTravel.sz_td, testAgent.Path[2].y);
 
-            //
             testAgent.resetProperties();
             testAgent.SetStartFinish(HTNAgentTravel.sh_td, HTNAgentTravel.sh_home);
             testAgent.btexec();
@@ -42,3 +42,4 @@ namespace BehaviorNodeUnitTest
         }
     }
 }
+#endif//BEHAVIAC_USE_HTN

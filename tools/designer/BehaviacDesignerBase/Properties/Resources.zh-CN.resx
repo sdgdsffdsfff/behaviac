@@ -291,10 +291,10 @@
   <data name="ReferencedBehaviorDesc" xml:space="preserve">
     <value>该节点引用一棵行为树</value>
   </data>
-  <data name="ReferencedBehaviorFilename" xml:space="preserve">
+  <data name="ReferencedBehaviorPath" xml:space="preserve">
     <value>引用文件名</value>
   </data>
-  <data name="ReferencedBehaviorFilenameDesc" xml:space="preserve">
+  <data name="ReferencedBehaviorPathDesc" xml:space="preserve">
     <value>作为引用行为树的文件名</value>
   </data>
   <data name="SelectorNoChildrenError" xml:space="preserve">
@@ -614,7 +614,7 @@
     <value>节点</value>
   </data>
   <data name="NoResultFunctor" xml:space="preserve">
-    <value>没有设置结果函数</value>
+    <value>没有设置决定状态的选项或函数：请选中该动作节点后，在其属性窗口中进行设置</value>
   </data>
   <data name="WrongResultFunctor" xml:space="preserve">
     <value>结果函数的返回值不是EBTStatus类型，或者其参数不是动作节点方法的返回值类型</value>
@@ -775,7 +775,7 @@
     <value>遍历</value>
   </data>
   <data name="CustomizedMethodError" xml:space="preserve">
-    <value>自定义的方法不能被导出，需要在游戏端实现该方法并重新导出元信息</value>
+    <value>发现自定义的方法：请先将该方法所在Agent类的导出源码文件整合到自己的游戏项目中，并导出元信息文件，然后回到编辑器中重新加载当前工作区后，再导出行为树。</value>
   </data>
   <data name="TaskMethodChildrenOrOne" xml:space="preserve">
     <value>任务节点只接受方法节点或者只是一个其他类型的节点</value>
@@ -841,12 +841,28 @@
     <value>转换</value>
   </data>
   <data name="CustomizedAgentError" xml:space="preserve">
-    <value>不能导出自定义的Agent类型，请先在运行时端实现该Agent类并导出为元信息到编辑器中。</value>
+    <value>发现自定义的Agent类型：请先将导出的该Agent类的源码文件整合到自己的游戏项目中，并导出元信息文件，然后回到编辑器中重新加载当前工作区后，再导出行为树。</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
   <data name="MethodWithSameDisplayName" xml:space="preserve">
     <value>方法"{0}"和"{1}"具有相同的显示名 "{2}"，请修改它们的显示名，并重新导出为元信息后再使用。</value>
+  </data>
+  <data name="PressF1" xml:space="preserve">
+    <value>点击F1键查看文档</value>
+  </data>
+  <data name="ReferencedTreeOrMethodNeeded" xml:space="preserve">
+    <value>请指定子树或者提供一个方法来返回子树</value>
+  </data>
+  <data name="ReferenceGenerator" xml:space="preserve">
+    <value>可以指定一个方法，其返回值需要是一个字符串，用来指定子树。</value>
+  </data>
+  <data name="ReferenceGeneratorDesc" xml:space="preserve">
+    <value>可以指定一个方法，其返回值需要是一个字符串，用来指定子树。</value>
+  </data>
+  <data name="InvalidMetaInfo" xml:space="preserve">
+    <value>元数据文件有错误 : {0}
+请用最新的运行时重新导出元信息！</value>
   </data>
 </root>

@@ -17,21 +17,14 @@ namespace behaviac
 {
     public class FSM : BehaviorNode
     {
-        public FSM()
-        {
-        }
-
-        ~FSM()
-        {
-        }
-
+#if BEHAVIAC_USE_HTN
         public override bool decompose(BehaviorNode node, PlannerTaskComplex seqTask, int depth, Planner planner)
         {
             Debug.Check(false);
 
             return false;
         }
-
+#endif//
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -46,6 +39,7 @@ namespace behaviac
                 }
             }
         }
+
         public override bool IsValid(Agent pAgent, BehaviorTask pTask)
         {
             if (!(pTask.GetNode() is FSM))
@@ -59,14 +53,8 @@ namespace behaviac
         private int m_initialid = -1;
         public int InitialId
         {
-            get
-            {
-                return this.m_initialid;
-            }
-            set
-            {
-                this.m_initialid = value;
-            }
+            get { return this.m_initialid; }
+            set { this.m_initialid = value; }
         }
 
         protected override BehaviorTask createTask()
@@ -76,14 +64,6 @@ namespace behaviac
 
         public class FSMTask : CompositeTask
         {
-            public FSMTask()
-            {
-            }
-
-            ~FSMTask()
-            {
-            }
-
             public override void copyto(BehaviorTask target)
             {
                 base.copyto(target);
@@ -126,6 +106,11 @@ namespace behaviac
                 Debug.Check(this.m_node != null);
                 Debug.Check(this.m_currentNodeId != -1);
 
+#if !BEHAVIAC_RELEASE
+		        int kMaxCount = 10;
+		        Dictionary<int, int> state_update_count = new Dictionary<int,int>();
+#endif//#if !BEHAVIAC_RELEASE
+
                 EBTStatus status = childStatus;
                 bool bLoop = true;
 
@@ -146,13 +131,31 @@ namespace behaviac
 
                     int nextStateId = currentState.GetNextStateId();
 
-                    if (nextStateId == -1)
+                    if (nextStateId < 0)
                     {
                         //if not transitioned, don't go on next state, to exit
                         bLoop = false;
                     }
                     else
                     {
+#if !BEHAVIAC_RELEASE
+                        if (state_update_count.ContainsKey(this.m_currentNodeId))
+                        {
+                            state_update_count[this.m_currentNodeId]++;
+                        }
+                        else
+                        {
+                            state_update_count.Add(this.m_currentNodeId, 1);
+                        }
+
+                        if (state_update_count[this.m_currentNodeId] > kMaxCount)
+                        {
+                            string treeName = BehaviorTask.GetParentTreeName(pAgent, this.GetNode());
+                            Debug.LogError(string.Format("{0} might be updating an FSM('{1}') endlessly, possibly a dead loop, please redesign it!\n", pAgent.GetName(), treeName));
+                            Debug.Check(false);
+                        }
+#endif
+
                         //if transitioned, go on next state
                         this.m_currentNodeId = nextStateId;
                     }

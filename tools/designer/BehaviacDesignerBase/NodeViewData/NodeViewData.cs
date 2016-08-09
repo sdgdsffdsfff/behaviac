@@ -245,7 +245,7 @@ public partial class NodeViewData : BaseNode
             NodeViewData nvd = this.Parent;
 
             while (nvd != null) {
-                if (nvd.Node is ReferencedBehaviorNode)
+                if (nvd.Node is ReferencedBehavior)
                 { referencedNodeViews.Add(nvd); }
 
                 nvd = nvd.Parent;
@@ -258,9 +258,9 @@ public partial class NodeViewData : BaseNode
     public bool IsBehaviorReferenced(BehaviorNode behavior) {
         if (behavior != null && this.Parent != null) {
             foreach(NodeViewData nvd in ReferencedNodeViews) {
-                Debug.Check(nvd.Node is ReferencedBehaviorNode);
+                Debug.Check(nvd.Node is ReferencedBehavior);
 
-                if (((ReferencedBehaviorNode)nvd.Node).Reference == behavior)
+                if (((ReferencedBehavior)nvd.Node).ReferenceBehaviorNode == behavior)
                 { return true; }
             }
 
@@ -903,11 +903,34 @@ public partial class NodeViewData : BaseNode
         for (int p = 0; p < properties.Count; ++p) {
             DesignerProperty att = properties[p].Attribute;
 
-            if (att.Display == DesignerProperty.DisplayMode.List) {
-                bool bDo = true;
+            if (att.Display == DesignerProperty.DisplayMode.List || att.Display == DesignerProperty.DisplayMode.ListTrue) {
+                object pValue = properties[p].Property.GetValue(node, null);
+                bool bDo = pValue != null;
 
                 if (bDo) {
-                    AddSubItem(new SubItemProperty(node, properties[p].Property, att));
+                    bool bDisplay = true;
+
+                    if (att.Display == DesignerProperty.DisplayMode.ListTrue)
+                    {
+                        if (pValue is bool)
+                        {
+                            bool bValue = (bool)pValue;
+                            
+                            if (bValue)
+                            {
+                                //bDisplay = true;
+                            }
+                            else
+                            {
+                                bDisplay = false;
+                            }
+                        }
+                    }
+
+                    if (bDisplay)
+                    {
+                        AddSubItem(new SubItemProperty(node, properties[p].Property, att));
+                    }
                 }
             }
         }
@@ -1428,13 +1451,13 @@ public partial class NodeViewData : BaseNode
 
             if (profileInfos.ContainsKey(fullId)) {
                 FrameStatePool.NodeProfileInfos.ProfileInfo profileInfo = profileInfos[fullId];
-                string timeStr = string.Format("{0:F3}", Math.Abs(profileInfo.Time));
-                string avgTimeStr = (profileInfo.Count <= 0) ? "0" : string.Format("{0:F3}", profileInfo.TotalTime / profileInfo.Count);
+                string timeStr = string.Format("{0:F3}ms", Math.Abs(profileInfo.Time));
+                string avgTimeStr = (profileInfo.Count <= 0) ? "0" : string.Format("{0:F3}ms", profileInfo.TotalTime / profileInfo.Count);
                 string info = string.Format("{0}  {1}  {2}", timeStr, avgTimeStr, profileInfo.Count);
                 SizeF txtSize = MeasureDisplayStringWidth(graphics, info, _profileFont);
                 float x = boundingBox.Left;
                 float y = boundingBox.Top - txtSize.Height - 2;
-                graphics.DrawString(info, (profileInfo.Time >= 0) ? _profileBoldFont : _profileFont, Brushes.Black, x, y);
+                graphics.DrawString(info, (profileInfo.Time >= 0) ? _profileBoldFont : _profileFont, Brushes.Yellow, x, y);
             }
         }
 

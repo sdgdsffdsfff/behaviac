@@ -11,20 +11,14 @@
 // See the License for the specific language governing permissions and limitations under the License.
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 
 namespace behaviac
 {
     public class ReferencedBehavior : BehaviorNode
     {
-        public ReferencedBehavior()
-        {
-        }
-
-        ~ReferencedBehavior()
-        {
-        }
-
+#if BEHAVIAC_USE_HTN
         public override bool decompose(BehaviorNode node, PlannerTaskComplex seqTask, int depth, Planner planner)
         {
             ReferencedBehavior taskSubTree = (ReferencedBehavior)node;
@@ -33,25 +27,36 @@ namespace behaviac
             int depth2 = planner.GetAgent().Variables.Depth;
             using(AgentState currentState = planner.GetAgent().Variables.Push(false))
             {
-                //planner.agent.Variables.Log(planner.agent, true);
-                taskSubTree.SetTaskParams(planner.GetAgent());
+                Agent pAgent = planner.GetAgent();
 
-                Task task = taskSubTree.RootTaskNode;
+                string szTreePath = taskSubTree.GetReferencedTree(pAgent);
+                BehaviorTreeTask subTreeTask = Workspace.Instance.CreateBehaviorTreeTask(szTreePath);
+
+                taskSubTree.SetTaskParams(pAgent, subTreeTask);
+
+                Task task = taskSubTree.RootTaskNode(planner.GetAgent());
 
                 if (task != null)
                 {
                     planner.LogPlanReferenceTreeEnter(planner.GetAgent(), taskSubTree);
-                    task.Parent.InstantiatePars(planner.GetAgent());
+                    //task.Parent.InstantiatePars(this.LocalVars);
 
+                    BehaviorTreeTask oldCurrentTreeTask = pAgent.ExcutingTreeTask;
+                    pAgent.ExcutingTreeTask = subTreeTask; 
                     PlannerTask childTask = planner.decomposeNode(task, depth);
+                    pAgent.ExcutingTreeTask = oldCurrentTreeTask;
 
                     if (childTask != null)
                     {
+                        //taskSubTree.SetTaskParams(planner.GetAgent(), childTask);
+                        PlannerTaskReference subTreeRef = (PlannerTaskReference)seqTask;
+
+                        subTreeRef.SubTreeTask = subTreeTask;
                         seqTask.AddChild(childTask);
                         bOk = true;
                     }
 
-                    task.Parent.UnInstantiatePars(planner.GetAgent());
+                    //task.Parent.UnInstantiatePars(this.LocalVars);
                     planner.LogPlanReferenceTreeExit(planner.GetAgent(), taskSubTree);
                     Debug.Check(true);
                 }
@@ -60,6 +65,7 @@ namespace behaviac
             Debug.Check(planner.GetAgent().Variables.Depth == depth2);
             return bOk;
         }
+#endif//
 
         protected override void load(int version, string agentType, List<property_t> properties)
         {
@@ -68,29 +74,40 @@ namespace behaviac
             for (int i = 0; i < properties.Count; ++i)
             {
                 property_t p = properties[i];
-                if (p.name == "ReferenceFilename")
+
+                if (p.name == "ReferenceBehavior")
                 {
-                    this.m_referencedBehaviorPath = p.value;
+                    int pParenthesis = p.value.IndexOf('(');
 
-                    BehaviorTree behaviorTree = Workspace.Instance.LoadBehaviorTree(this.m_referencedBehaviorPath);
-                    Debug.Check(behaviorTree != null);
+                    if (pParenthesis == -1)
+                    {
+                        this.m_referencedBehaviorPath = AgentMeta.ParseProperty(p.value);
+                    }
+                    else
+                    {
+                        this.m_referencedBehaviorPath = AgentMeta.ParseMethod(p.value);
+                    }
 
-                    if (behaviorTree != null)
-				    {
-					    this.m_bHasEvents |= behaviorTree.HasEvents();
-				    }
+                    string szTreePath = this.GetReferencedTree(null);
+
+                    //conservatively make it true
+                    bool bHasEvents = true;
+                    if (!string.IsNullOrEmpty(szTreePath))
+                    {
+                        BehaviorTree behaviorTree = Workspace.Instance.LoadBehaviorTree(szTreePath);
+                        Debug.Check(behaviorTree != null);
+
+                        if (behaviorTree != null)
+                        {
+                            bHasEvents = behaviorTree.HasEvents();
+                        }
+
+                        this.m_bHasEvents |= bHasEvents;
+                    }
                 }
                 else if (p.name == "Task")
                 {
-                    Debug.Check(!string.IsNullOrEmpty(p.value));
-                    CMethodBase m = Action.LoadMethod(p.value);
-                    Debug.Check(m is CTaskMethod);
-
-                    this.m_taskMethod = m as CTaskMethod;
-                }
-                else
-                {
-                    //Debug.Check(0, "unrecognised property %s", p.name);
+                    this.m_taskMethod = AgentMeta.ParseMethod(p.value);
                 }
             }
         }
@@ -134,92 +151,74 @@ namespace behaviac
             return pTask;
         }
 
-        public void SetTaskParams(Agent pAgent)
+        public virtual string GetReferencedTree(Agent pAgent)
+        {
+            if (this.m_referencedBehaviorPath != null)
+            {
+                Debug.Check(this.m_referencedBehaviorPath is CInstanceMember<string>);
+                return ((CInstanceMember<string>)this.m_referencedBehaviorPath).GetValue(pAgent);
+            }
+
+            return string.Empty;
+        }
+
+        public void SetTaskParams(Agent agent, BehaviorTreeTask treeTask)
         {
             if (this.m_taskMethod != null)
             {
-                this.m_taskMethod.SetTaskParams(pAgent);
+                this.m_taskMethod.SetTaskParams(agent, treeTask);
             }
         }
 
         protected List<Transition> m_transitions;
-        protected string m_referencedBehaviorPath;
-        protected CTaskMethod m_taskMethod;
+        protected IInstanceMember m_referencedBehaviorPath;
+        protected IMethod m_taskMethod;
 
         private Task m_taskNode;
 
-        public Task RootTaskNode
+        public Task RootTaskNode(Agent pAgent)
         {
-            get
+            if (this.m_taskNode == null)
             {
-                if (this.m_taskNode == null)
+                string szTreePath = this.GetReferencedTree(pAgent);
+                BehaviorTree bt = Workspace.Instance.LoadBehaviorTree(szTreePath);
+
+                if (bt != null && bt.GetChildrenCount() == 1)
                 {
-                    BehaviorTree bt = Workspace.Instance.LoadBehaviorTree(this.m_referencedBehaviorPath);
-
-                    if (bt != null && bt.GetChildrenCount() == 1)
-                    {
-                        BehaviorNode root = bt.GetChild(0);
-                        this.m_taskNode = root as Task;
-                    }
+                    BehaviorNode root = bt.GetChild(0);
+                    this.m_taskNode = root as Task;
                 }
-
-                return this.m_taskNode;
             }
-        }
 
-        public string ReferencedTree
-        {
-            get
-            {
-                return this.m_referencedBehaviorPath;
-            }
+            return this.m_taskNode;
         }
 
         public class ReferencedBehaviorTask : SingeChildTask
         {
+#if BEHAVIAC_USE_HTN
             private AgentState currentState;
-
-            public ReferencedBehaviorTask()
-            {
-            }
-
-            ~ReferencedBehaviorTask()
-            {
-            }
-
-            public override void Init(BehaviorNode node)
-            {
-                base.Init(node);
-            }
-
-            public override void copyto(BehaviorTask target)
-            {
-                base.copyto(target);
-            }
-
-            public override void save(ISerializableNode node)
-            {
-                base.save(node);
-            }
-
-            public override void load(ISerializableNode node)
-            {
-                base.load(node);
-            }
+#endif//
+            //~ReferencedBehaviorTask()
+            //{
+            //    Workspace.Instance.DestroyBehaviorTreeTask(this.m_subTree, null);
+            //    this.m_subTree = null;
+            //}
 
             protected override bool CheckPreconditions(Agent pAgent, bool bIsAlive)
             {
+#if BEHAVIAC_USE_HTN
                 this.currentState = pAgent.Variables.Push(false);
                 Debug.Check(currentState != null);
+#endif//
 
                 bool bOk = base.CheckPreconditions(pAgent, bIsAlive);
-
+#if BEHAVIAC_USE_HTN
                 if (!bOk)
                 {
                     this.currentState.Pop();
                     this.currentState = null;
                 }
-
+#endif//
                 return bOk;
             }
 
@@ -231,12 +230,12 @@ namespace behaviac
 
             BehaviorTreeTask m_subTree = null;
 
-            public override bool onevent(Agent pAgent, string eventName)
+            public override bool onevent(Agent pAgent, string eventName, Dictionary<uint, IInstantiatedVariable> eventPrams)
             {
                 if (this.m_status == EBTStatus.BT_RUNNING && this.m_node.HasEvents())
                 {
                     Debug.Check(this.m_subTree != null);
-                    if (!this.m_subTree.onevent(pAgent, eventName))
+                    if (!this.m_subTree.onevent(pAgent, eventName, eventPrams))
                     {
                         return false;
                     }
@@ -252,18 +251,29 @@ namespace behaviac
 
                 this.m_nextStateId = -1;
 
-                pNode.SetTaskParams(pAgent);
+                //to create the task on demand
+                if (this.m_subTree == null)
+                {
+                    string szTreePath = pNode.GetReferencedTree(pAgent);
+                    this.m_subTree = Workspace.Instance.CreateBehaviorTreeTask(szTreePath);
+                }
+                else
+                {
+                    this.m_subTree.reset(pAgent);
+                }
 
-                this.m_subTree = Workspace.Instance.CreateBehaviorTreeTask(pNode.m_referencedBehaviorPath);
+                pNode.SetTaskParams(pAgent, this.m_subTree);
 
                 return true;
             }
 
             protected override void onexit(Agent pAgent, EBTStatus s)
             {
-                this.m_subTree = null;
+
+#if BEHAVIAC_USE_HTN
                 Debug.Check(this.currentState != null);
                 this.currentState.Pop();
+#endif//
                 base.onexit(pAgent, s);
             }
 
@@ -280,12 +290,19 @@ namespace behaviac
                     Debug.Check(false);
                 }
 #endif
+
                 EBTStatus result = this.m_subTree.exec(pAgent);
 
                 bool bTransitioned = State.UpdateTransitions(pAgent, pNode, pNode.m_transitions, ref this.m_nextStateId, result);
 
                 if (bTransitioned)
                 {
+                    if (result == EBTStatus.BT_RUNNING)
+                    {
+                        //subtree not exited, but it will transition to other states
+                        this.m_subTree.abort(pAgent);
+                    }
+
                     result = EBTStatus.BT_SUCCESS;
                 }
 

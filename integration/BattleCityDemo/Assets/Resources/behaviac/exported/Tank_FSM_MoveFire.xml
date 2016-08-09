@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <!--Source File: Tank_FSM_MoveFire.xml-->
-<behavior name="Tank_FSM_MoveFire" agenttype="Player" fsm="true" version="3">
+<behavior name="Tank_FSM_MoveFire" agenttype="Player" fsm="true" version="5">
   <pars>
     <par name="rotateAngle" type="float" value="0" />
     <par name="parIn_Self" type="Player" value="null" />
@@ -44,23 +44,7 @@
         <property Operator="GreaterEqual" />
         <property Opl="int Self.Player::hp" />
         <property Opr2="const int 0" />
-        <property TargetFSMNodeId="7" />
-      </attachment>
-    </node>
-    <node class="State" id="7">
-      <property IsEndState="false" />
-      <attachment class="Precondition" id="12" flag="precondition">
-        <property BinaryOperator="And" />
-        <property Operator="Assign" />
-        <property Opl="behaviac::EBTStatus Self.Player::Status" />
-        <property Opr2="Self.Player::fire()" />
-        <property Phase="Update" />
-      </attachment>
-      <attachment class="Transition" id="8" flag="transition">
-        <property Operator="Equal" />
-        <property Opl="behaviac::EBTStatus Self.Player::Status" />
-        <property Opr2="const behaviac::EBTStatus BT_SUCCESS" />
-        <property TargetFSMNodeId="1" />
+        <property TargetFSMNodeId="13" />
       </attachment>
     </node>
     <node class="State" id="9">
@@ -71,6 +55,13 @@
         <property Opl="int Self.Player::hp" />
         <property Opr2="const int 0" />
         <property TargetFSMNodeId="1" />
+      </attachment>
+    </node>
+    <node class="ReferencedBehavior" id="13">
+      <property ReferenceBehavior="const string &quot;Tank_Fire&quot;" />
+      <attachment class="AlwaysTransition" id="8" flag="transition">
+        <property TargetFSMNodeId="1" />
+        <property TransitionPhase="ETP_Exit" />
       </attachment>
     </node>
   </node>

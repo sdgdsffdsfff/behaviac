@@ -60,6 +60,17 @@ namespace behaviac
         false;
 #endif//BEHAVIAC_RELEASE
 
+	void Config::LogInfo() {
+		BEHAVIAC_LOGINFO("Config::IsDesktopPlatform %s\n", IsDesktopPlatform() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsProfiling %s\n", IsProfiling() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsLogging %s\n", IsLogging() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsLoggingFlush %s\n", IsLoggingFlush() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsSocketing %s\n", IsSocketing() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsSocketBlocking %s\n", IsSocketBlocking() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::IsHotReload %s\n", IsHotReload() ? "true" : "false");
+		BEHAVIAC_LOGINFO("Config::SocketPort %d\n", GetSocketPort());
+	}
+
     bool Config::IsProfiling()
     {
         return ms_bProfiling;
@@ -182,17 +193,14 @@ namespace behaviac
     Workspace* Workspace::ms_instance = 0;
 
     Workspace::Workspace() : m_bInited(false), m_bExecAgents(true), m_fileFormat(Workspace::EFF_xml),
-        m_pBehaviorNodeLoader(0), m_behaviortreeCreators(0),
-        m_fileBuffer(0), m_fileBufferTop(0),
+		m_pBehaviorNodeLoader(0), m_behaviortreeCreators(0), 
 		m_frame(0), m_timeSinceStartup(-1), m_frameSinceStartup(-1)
     {
 #if BEHAVIAC_ENABLE_HOTRELOAD
         m_allBehaviorTreeTasks = 0;
 #endif//BEHAVIAC_ENABLE_HOTRELOAD
-        memset(this->m_fileBufferOffset, 0, sizeof(m_fileBufferOffset));
         //memset(m_szWorkspaceExportPath, 0, sizeof(m_szWorkspaceExportPath));
         string_cpy(m_szWorkspaceExportPath, "./behaviac/workspace/exported/");
-		this->m_fileBufferLength = 0;
 
         BEHAVIAC_ASSERT(ms_instance == 0);
         ms_instance = this;
@@ -207,9 +215,9 @@ namespace behaviac
     {
         if (ms_instance == NULL)
         {
-			if (version_str && !StringUtils::StrEqual(version_str, BEHAVIAC_VERSION_STR))
+			if (version_str && !StringUtils::StrEqual(version_str, BEHAVIAC_BUILD_CONFIG_STR))
 			{
-				BEHAVIAC_LOGERROR("lib is built with '%s', while the app is built with '%s'! please use the same define for '_DEBUG' in both the lib and app's make.\n", BEHAVIAC_VERSION_STR, version_str);
+				BEHAVIAC_LOGERROR("lib is built with '%s', while the executable is built with '%s'! please use the same define for '_DEBUG' and 'BEHAVIAC_RELEASE' in both the lib and executable's make.\n", BEHAVIAC_BUILD_CONFIG_STR, version_str);
 				BEHAVIAC_ASSERT(false);
 				return 0;
 			}
@@ -225,7 +233,8 @@ namespace behaviac
 
     bool Workspace::LoadWorkspaceSetting(const char* file, behaviac::string& workspaceRootPath)
     {
-        char* pBuffer = Workspace::ReadFileToBuffer(file);
+		uint32_t bufferSize = 0;
+        char* pBuffer = Workspace::ReadFileToBuffer(file, bufferSize);
 
         if (pBuffer)
         {
@@ -246,7 +255,7 @@ namespace behaviac
                 workspaceRootPath = attrName->value();
             }
 
-            Workspace::PopFileFromBuffer(pBuffer);
+			Workspace::PopFileFromBuffer(pBuffer, bufferSize);
 
             return true;
         }
@@ -263,7 +272,7 @@ namespace behaviac
     {
         string_ncpy(this->m_szWorkspaceExportPath, szExportPath, kMaxPath);
 
-		int len = strlen(szExportPath);
+		size_t len = strlen(szExportPath);
 		if (szExportPath[len - 1] == '/' || szExportPath[len - 1] == '\\')
 		{
 		}
@@ -291,6 +300,11 @@ namespace behaviac
             this->m_pBehaviorNodeLoader(nodeType, properties);
         }
     }
+
+	void Workspace::SetBehaviorNodeLoader(BehaviorNodeLoader loaderCallback) {
+		this->m_pBehaviorNodeLoader = loaderCallback;
+	}
+
 
     void Workspace::HandleFileFormat(const behaviac::string& fullPath, behaviac::string& ext, Workspace::EFileFormat& f)
     {
@@ -338,6 +352,9 @@ namespace behaviac
         }
 
         this->m_bInited = true;
+
+		BEHAVIAC_LOGINFO("Version: %s\n", behaviac::GetVersionString());
+		Config::LogInfo();
 
         bool bOk = TryStart();
 
@@ -506,29 +523,27 @@ namespace behaviac
 
     void Workspace::FreeFileBuffer()
     {
-        if (m_fileBuffer)
-        {
-            BEHAVIAC_FREE(m_fileBuffer);
-            m_fileBuffer = 0;
-            m_fileBufferLength = 0;
-        }
+		for (int i = 0; i < kFileBuffers; ++i) {
+			FileBuffer_t& fileBuffer = this->m_fileBuffers[i];
 
-        for (int i = 0; i < kFileBufferDepth; ++i)
-        {
-            m_fileBufferOffset[i] = 0;
-        }
+			if (fileBuffer.start) {
+				BEHAVIAC_FREE(fileBuffer.start);
 
-        m_fileBufferTop = 0;
+				// clear it as it might be freed twice
+				fileBuffer.start = 0;
+				fileBuffer.offset = 0;
+				fileBuffer.length = 0;
+			}
+		}
     }
 
-    char* Workspace::ReadFileToBuffer(const char* file, const char* ext)
-    {
+    char* Workspace::ReadFileToBuffer(const char* file, const char* ext, uint32_t& bufferSize) {
         char path[1024];
         sprintf(path, "%s%s", file, ext);
-        return ReadFileToBuffer(path);
+		return this->ReadFileToBuffer(path, bufferSize);
     }
 
-    char* Workspace::ReadFileToBuffer(const char* file)
+	char* Workspace::ReadFileToBuffer(const char* file, uint32_t& bufferSize)
     {
         IFile* fp = behaviac::CFileManager::GetInstance()->FileOpen(file, CFileSystem::EOpenAccess_Read);
 
@@ -540,29 +555,44 @@ namespace behaviac
         //fp->Seek(0, CFileSystem::ESeekMoveMode_End);
         uint32_t fileSize = (uint32_t)fp->GetSize();
 
-		BEHAVIAC_ASSERT(m_fileBufferTop < kFileBufferDepth - 1, "please increase kFileBufferDepth");
-        uint32_t offset = m_fileBufferOffset[m_fileBufferTop++];
-        uint32_t offsetNew = offset + fileSize + 1;
-        BEHAVIAC_ASSERT(m_fileBufferTop < kFileBufferDepth - 1, "please increase kFileBufferDepth");
-        m_fileBufferOffset[m_fileBufferTop] = offsetNew;
+		bufferSize = fileSize + 1;
 
-        if (m_fileBuffer == 0 || offsetNew > m_fileBufferLength)
-        {
-            //to allocate extra 10k
-            m_fileBufferLength = offsetNew + 10 * 1024;
+		char* pBuffer = 0;
 
-            if (m_fileBufferLength < 50 * 1024)
-            {
-                m_fileBufferLength = 50 * 1024;
-            }
+		for (int i = 0; i < kFileBuffers; ++i) {
+			FileBuffer_t& fileBuffer = this->m_fileBuffers[i];
+			BEHAVIAC_ASSERT(fileBuffer.offset == 0 || fileBuffer.offset < fileBuffer.length);
 
-            m_fileBuffer = (char*)BEHAVIAC_REALLOC(m_fileBuffer, m_fileBufferLength);
-        }
+			if (fileBuffer.start == 0) {
+				//to allocate extra 10k
+				int fileBufferLength = bufferSize + 10 * 1024;
 
-        BEHAVIAC_ASSERT(m_fileBuffer);
-        BEHAVIAC_ASSERT(offsetNew < m_fileBufferLength);
+				const int kBufferLength = 100 * 1024;
 
-        char* pBuffer = m_fileBuffer + offset;
+				if (fileBufferLength < kBufferLength) {
+					fileBufferLength = kBufferLength;
+				}
+
+				fileBuffer.start = (char*)BEHAVIAC_MALLOC(fileBufferLength);
+				fileBuffer.length = fileBufferLength;
+				BEHAVIAC_ASSERT(fileBuffer.offset == 0);
+
+				pBuffer = fileBuffer.start;
+				fileBuffer.offset += bufferSize;
+				BEHAVIAC_ASSERT(fileBuffer.offset < fileBuffer.length);
+
+				break;
+			}
+			else if (bufferSize  < fileBuffer.length - fileBuffer.offset) {
+				pBuffer = fileBuffer.start + fileBuffer.offset;
+				fileBuffer.offset += bufferSize;
+				BEHAVIAC_ASSERT(fileBuffer.offset < fileBuffer.length);
+
+				break;
+			}
+		}
+
+		BEHAVIAC_ASSERT(pBuffer);
 
         fp->Read(pBuffer, sizeof(char) * fileSize);
         pBuffer[fileSize] = 0;
@@ -572,13 +602,30 @@ namespace behaviac
         return pBuffer;
     }
 
-    bool Workspace::PopFileFromBuffer(const char* file, const char* str, char* pBuffer)
-    {
+	void Workspace::PopFileFromBuffer(char* pBuffer, uint32_t bufferSize) {
+		for (int i = 0; i < kFileBuffers; ++i) {
+			FileBuffer_t& fileBuffer = this->m_fileBuffers[i];
+
+			char* end = fileBuffer.start + fileBuffer.length;
+			if (pBuffer >= fileBuffer.start && pBuffer < end) {
+				BEHAVIAC_ASSERT(bufferSize < fileBuffer.length);
+				fileBuffer.offset = pBuffer - fileBuffer.start;
+				BEHAVIAC_ASSERT(fileBuffer.offset >= 0);
+
+				return;
+			}
+		}
+
+		// not found in any buffer?
+		BEHAVIAC_ASSERT(false);
+	}
+
+	bool Workspace::PopFileFromBuffer(const char* file, const char* str, char* pBuffer, uint32_t bufferSize) {
         BEHAVIAC_UNUSED_VAR(file);
         BEHAVIAC_UNUSED_VAR(str);
         BEHAVIAC_UNUSED_VAR(pBuffer);
         //BEHAVIAC_ASSERT(0, "the code in c-sharp not implement.");
-		this->PopFileFromBuffer(pBuffer);
+		this->PopFileFromBuffer(pBuffer, bufferSize);
 
         return false;
     }
@@ -617,19 +664,6 @@ namespace behaviac
     {
         int contextId = -1;
         Context::LogCurrentStates(contextId);
-    }
-
-    void Workspace::PopFileFromBuffer(char* pBuffer)
-    {
-        BEHAVIAC_UNUSED_VAR(pBuffer);
-        BEHAVIAC_ASSERT(m_fileBufferTop < kFileBufferDepth - 1 && m_fileBufferTop > 0);
-        BEHAVIAC_DEBUGCODE(uint32_t offset = pBuffer - m_fileBuffer);
-
-        BEHAVIAC_DEBUGCODE(uint32_t offset_recorded = m_fileBufferOffset[m_fileBufferTop - 1]);
-        BEHAVIAC_DEBUGCODE(BEHAVIAC_ASSERT(offset == offset_recorded));
-
-        m_fileBufferOffset[m_fileBufferTop] = 0;
-        m_fileBufferTop--;
     }
 
     bool IsValidPath(const char* relativePath)
@@ -744,7 +778,8 @@ namespace behaviac
 
         if (f == EFF_xml || f == EFF_bson)
         {
-            char* pBuffer = ReadFileToBuffer(fullPath.c_str());
+			uint32_t bufferSize = 0;
+			char* pBuffer = this->ReadFileToBuffer(fullPath.c_str(), bufferSize);
 
             if (pBuffer)
             {
@@ -764,7 +799,7 @@ namespace behaviac
                     bLoadResult = pBT->load_bson(pBuffer);
                 }
 
-                PopFileFromBuffer(pBuffer);
+				this->PopFileFromBuffer(pBuffer, bufferSize);
             }
             else
             {
@@ -1054,13 +1089,13 @@ namespace behaviac
 
 			behaviac::vector<behaviac::string> modifiedFiles;
 			CFileSystem::GetModifiedFiles(modifiedFiles);
-			uint32_t fileCount = modifiedFiles.size();
+			size_t fileCount = modifiedFiles.size();
 
 			if (fileCount > 0)
 			{
 				Workspace::EFileFormat f = Workspace::GetFileFormat();
 
-				for (uint32_t i = 0; i < fileCount; ++i)
+				for (size_t i = 0; i < fileCount; ++i)
 				{
 					behaviac::string relativePath = modifiedFiles[i];
 
@@ -1083,11 +1118,11 @@ namespace behaviac
 								BTItem_t& btItems = (*m_allBehaviorTreeTasks)[relativePath];
 								BehaviorTree* behaviorTree = m_behaviortrees[relativePath];
 
-								uint32_t taskCount = btItems.bts.size();
+								size_t taskCount = btItems.bts.size();
 
 								if (taskCount > 0)
 								{
-									for (uint32_t j = 0; j < taskCount; ++j)
+									for (size_t j = 0; j < taskCount; ++j)
 									{
 										BehaviorTreeTask* behaviorTreeTask = btItems.bts[j];
 										BEHAVIAC_ASSERT(behaviorTreeTask);
@@ -1267,7 +1302,11 @@ namespace behaviac
 
 	void Workspace::LogFrames()
     {
-		LogManager::GetInstance()->Log("[frame]%d\n", (m_frameSinceStartup >= 0) ? m_frameSinceStartup : (m_frame++));
+#if !BEHAVIAC_RELEASE
+		if (Config::IsLoggingOrSocketing()) {
+			LogManager::GetInstance()->Log("[frame]%d\n", (m_frameSinceStartup >= 0) ? m_frameSinceStartup : (m_frame++));
+		}
+#endif
     }
 
     void Workspace::WaitforContinue()

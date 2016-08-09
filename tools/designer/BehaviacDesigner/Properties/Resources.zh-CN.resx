@@ -407,7 +407,7 @@
     <value>保存</value>
   </data>
   <data name="ErrorList" xml:space="preserve">
-    <value>错误信息</value>
+    <value>信息</value>
   </data>
   <data name="Output" xml:space="preserve">
     <value>输出</value>
@@ -539,7 +539,7 @@
     <value>新建Par</value>
   </data>
   <data name="MetaStore" xml:space="preserve">
-    <value>元信息浏览</value>
+    <value>元信息浏览器</value>
   </data>
   <data name="LayoutResetWarning" xml:space="preserve">
     <value>编辑器的窗口布局将被重置，确定吗？</value>
@@ -695,5 +695,17 @@
   </data>
   <data name="FaultBehaviors" xml:space="preserve">
     <value>有错误的行为树:</value>
+  </data>
+  <data name="InvalidExportedTypePath" xml:space="preserve">
+    <value>还未设置生成类型文件所在的路径，请去元信息浏览器设置该路径！</value>
+  </data>
+  <data name="ExportMessages" xml:space="preserve">
+    <value>导出类型 '{0}'</value>
+  </data>
+  <data name="MessageOutput" xml:space="preserve">
+    <value>输出</value>
+  </data>
+  <data name="MessageBTExport" xml:space="preserve">
+    <value>导出行为树: {0}</value>
   </data>
 </root>

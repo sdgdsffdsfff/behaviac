@@ -47,6 +47,8 @@ using Behaviac.Design.Data;
 using Behaviac.Design.Nodes;
 using Behaviac.Design.Properties;
 
+using System.Configuration;
+
 namespace Behaviac.Design
 {
     /// <summary>
@@ -60,8 +62,10 @@ namespace Behaviac.Design
         }
 
         // The filename used for storing the layout
-        private static string __layoutDesignFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BehaviacDesigner\\config\\layout.xml";
-        private static string __layoutDebugFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BehaviacDesigner\\config\\layout_debug.xml";
+        private static string __ProductPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BehaviacDesigner";
+        private static string __ConfigPath = __ProductPath + "\\config";
+        private static string __layoutDesignFile = __ConfigPath + "\\layout.xml";
+        private static string __layoutDebugFile = __ConfigPath + "\\layout_debug.xml";
         private static string __layoutFile = __layoutDesignFile;
 
         internal WeifenLuo.WinFormsUI.Docking.DockPanel DockPanel {
@@ -94,8 +98,6 @@ namespace Behaviac.Design
             if (regKey != null) {
                 regKey.Close();
             }
-
-            SetDefaultSettings();
 
             // Add the designers resource manager to the list of all available resource managers
             Plugin.AddResourceManager(Resources.ResourceManager);
@@ -209,6 +211,10 @@ namespace Behaviac.Design
             this.deleteSelectedMenuItem.Enabled = enabled;
             this.deleteTreeMenuItem.Enabled = enabled;
 
+            this.showProfilingToolStripMenuItem.Enabled = !enabled;
+            this.showProfilingToolStripMenuItem.Checked = Settings.Default.ShowProfilingInfo;
+            this.showNodeIdToolStripMenuItem.Checked = NodeViewData.ShowNodeId;
+
             switch (editMode) {
                 case EditModes.Design:
                     this.connectMenuItem.Text = Resources.ConnectServer;
@@ -281,7 +287,7 @@ namespace Behaviac.Design
             }
         }
 
-        private void SetDefaultSettings()
+        public static void SetDefaultSettings()
         {
             //TODO: add a setting in base to hold all these settings
             Node.ColorTheme = (Node.ColorThemes)Settings.Default.ColorTheme;
@@ -318,20 +324,66 @@ namespace Behaviac.Design
 
         public void ResetLayout() {
             try {
-                Properties.Settings.Default.Reset();
+                Settings.Default.Reset();
+                DeleteUserConfigs();
+
+                Settings.Default.Save();
+
                 SetDefaultSettings();
 
-                bool layoutFileExisting = System.IO.File.Exists(__layoutFile);
-
-                if (layoutFileExisting) {
-                    System.IO.File.Delete(__layoutFile);
-                }
+                DeleteDbgAndLayout();
 
                 loadLayout(Plugin.EditMode, __layoutFile, true);
 
             } catch {
             }
         }
+
+        private static void DeleteUserConfigs()
+        {
+            try
+            {
+                String p = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Tencent_Games");
+                string[] ss = Directory.GetDirectories(p, "BehaviacDesigner.*");
+                foreach (string s in ss)
+                {
+                    Directory.Delete(s, true);
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+
+        private static void DeleteDbgAndLayout()
+        {
+            try
+            {
+                //Directory.Delete(__ConfigPath, true);
+                var dir = new DirectoryInfo(__ProductPath);
+
+                foreach (var file in dir.GetFiles("behaviac_*.dbg"))
+                {
+                    file.Delete();
+                }
+
+                bool layoutFileExisting = System.IO.File.Exists(__layoutFile);
+
+                if (layoutFileExisting)
+                {
+                    System.IO.File.Delete(__layoutFile);
+                }
+            }
+            catch
+            { }
+        }
+
+        //public void ReloadLayout()
+        //{
+        //    loadLayout(Plugin.EditMode, __layoutFile, true);
+        //}
 
         private void loadLayout(EditModes editMode, string layoutFile, bool bLoadWks) {
             try
@@ -861,24 +913,30 @@ namespace Behaviac.Design
 
         private void AsyncUpdateProperties()
         {
-            this.Invoke((System.Action<NodeViewData>)delegate
+            try
             {
-                if (_clickedNVD == null)
+                this.Invoke((System.Action<NodeViewData>)delegate
                 {
-                    PropertiesDock.InspectObject(null, null);
-                }
-                else
-                {
-                    if (_clickedNVD.SelectedSubItem == null || _clickedNVD.SelectedSubItem.SelectableObject == null)
+                    if (_clickedNVD == null)
                     {
-                        PropertiesDock.InspectObject(_clickedNVD.RootBehavior, _clickedNVD.Node, false);
+                        PropertiesDock.InspectObject(null, null);
                     }
                     else
                     {
-                        PropertiesDock.InspectObject(_clickedNVD.RootBehavior, _clickedNVD.SelectedSubItem.SelectableObject, false);
+                        if (_clickedNVD.SelectedSubItem == null || _clickedNVD.SelectedSubItem.SelectableObject == null)
+                        {
+                            PropertiesDock.InspectObject(_clickedNVD.RootBehavior, _clickedNVD.Node, false);
+                        }
+                        else
+                        {
+                            PropertiesDock.InspectObject(_clickedNVD.RootBehavior, _clickedNVD.SelectedSubItem.SelectableObject, false);
+                        }
                     }
-                }
-            }, _clickedNVD);
+                }, _clickedNVD);
+            }
+            catch
+            {
+            }
         }
 
         private void OnNodeClicked(NodeViewData nvd)
@@ -1784,7 +1842,7 @@ namespace Behaviac.Design
             try
             {
                 //behaviorTreeList.CheckVersionSync();
-                OpenURL("https://github.com/TencentOpen/behaviac/releases");
+                OpenURL("http://www.behaviac.com/language/zh/behaviac%E7%89%88%E6%9C%AC%E4%B8%8B%E8%BD%BD/");
 
                 Utilities.ReportOpenDoc();
             }
@@ -1797,6 +1855,20 @@ namespace Behaviac.Design
             using(AboutBox box = new AboutBox()) {
                 box.ShowDialog();
             }
+        }
+
+        private void showNodeIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NodeViewData.ShowNodeId = !NodeViewData.ShowNodeId;
+            BehaviorTreeViewDock.RefreshAll();
+            UpdateUIState(Plugin.EditMode);
+        }
+
+        private void showProfilingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.ShowProfilingInfo = !Settings.Default.ShowProfilingInfo;
+            BehaviorTreeViewDock.RefreshAll();
+            UpdateUIState(Plugin.EditMode);
         }
     }
 }

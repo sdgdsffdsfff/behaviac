@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <!--Source File: par_test\property_as_left_value.xml-->
-<behavior name="par_test/property_as_left_value" agenttype="EmployeeParTestAgent" version="3">
+<behavior name="par_test/property_as_left_value" agenttype="EmployeeParTestAgent" version="5">
   <pars>
     <par name="par2_double_0" type="double" value="5.7" />
     <par name="par2_single_0" type="float" value="98.2" />
@@ -37,7 +37,7 @@
         <property Opr="Self.EmployeeParTestAgent::Func_AgentIR(behaviac::Agent Self.EmployeeParTestAgent::par2_agent_0)" />
       </node>
       <node class="Assignment" id="15">
-        <property Opl="behaviac::vector&lt;behaviac::Agent&gt; Self.EmployeeParTestAgent::TV_LIST_AGENT_0" />
+        <property Opl="vector&lt;behaviac::Agent&gt; Self.EmployeeParTestAgent::TV_LIST_AGENT_0" />
         <property Opr="Self.EmployeeParTestAgent::Func_AgentListIR(vector&lt;behaviac::Agent&gt; Self.EmployeeParTestAgent::par2_agent_list_0)" />
       </node>
       <node class="Assignment" id="2">
@@ -99,7 +99,7 @@
         <property Opr="Self.ParTestAgent::Func_kEmployeeIR(TNS::ST::PER::WRK::kEmployee Self.EmployeeParTestAgent::par1_kemployee_0)" />
       </node>
       <node class="Assignment" id="19">
-        <property Opl="behaviac::vector&lt;TNS::ST::PER::WRK::kEmployee&gt; Self.ParTestAgent::TV_LIST_KEMPLOYEE_0" />
+        <property Opl="vector&lt;TNS::ST::PER::WRK::kEmployee&gt; Self.ParTestAgent::TV_LIST_KEMPLOYEE_0" />
         <property Opr="Self.ParTestAgent::Func_kEmployeeListIR(vector&lt;TNS::ST::PER::WRK::kEmployee&gt; Self.EmployeeParTestAgent::par1_kemployee_list_0)" />
       </node>
       <node class="Assignment" id="18">

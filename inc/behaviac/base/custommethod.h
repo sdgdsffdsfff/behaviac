@@ -18,16 +18,15 @@
 #include "behaviac/agent/agent.h"
 #include "behaviac/base/object/method.h"
 #include "behaviac/behaviortree/behaviortree.h"
+#include "behaviac/base/object/method.h"
 
 //////////////////////////////////////////////////////////////////
 // CUSTOM METHOD
 //////////////////////////////////////////////////////////////////
 namespace behaviac
 {
-    class BEHAVIAC_API CCustomMethod : public CMethodBase, public CDynamicType
+    class BEHAVIAC_API CCustomMethod : public behaviac::CMethodBase, public CDynamicType
     {
-    private:
-        bool m_bCopy;
     protected:
         const char* m_className;
         behaviac::vector<behaviac::string> m_paramTypes;
@@ -37,7 +36,7 @@ namespace behaviac
         BEHAVIAC_DECLARE_ROOT_DYNAMIC_TYPE(CCustomMethod, CDynamicType);
 
         CCustomMethod(const char* className, const char* eventName)
-            : CMethodBase(eventName, className), m_bCopy(false)
+            : behaviac::CMethodBase(eventName, className)
         {
             m_className = className;
         }
@@ -45,29 +44,29 @@ namespace behaviac
         virtual ~CCustomMethod();
     protected:
         CCustomMethod(const CCustomMethod& copy)
-            : CMethodBase(copy), m_bCopy(true)
+            : behaviac::CMethodBase(copy)
         {
             m_className = copy.m_className;
             m_paramTypes = copy.m_paramTypes;
             m_params = copy.m_params;
         }
 
-        Property* LoadFromXML(CTagObject* parent, const ISerializableNode& xmlNode, const char* typeName, const char* paramName);
+        Property* LoadFromXML(behaviac::CTagObject* parent, const ISerializableNode& xmlNode, const char* typeName, const char* paramName);
 
-        virtual void LoadFromXML(CTagObject* parent, const ISerializableNode& xmlNode);
-        virtual void SaveToXML(const CTagObject* parent, ISerializableNode& xmlNode)
+        virtual void LoadFromXML(behaviac::CTagObject* parent, const ISerializableNode& xmlNode);
+        virtual void SaveToXML(const behaviac::CTagObject* parent, ISerializableNode& xmlNode)
         {
             BEHAVIAC_UNUSED_VAR(parent);
             BEHAVIAC_UNUSED_VAR(xmlNode);
-            BEHAVIAC_ASSERT(0);
+            //BEHAVIAC_ASSERT(0);
         }
 
-        virtual void GetUiInfo(CTagTypeDescriptor::TypesMap_t* types, const CTagObject* parent, const behaviac::XmlNodeRef& xmlNode)
+        virtual void GetUiInfo(CTagTypeDescriptor::TypesMap_t* types, const behaviac::CTagObject* parent, const behaviac::XmlNodeRef& xmlNode)
         {
             BEHAVIAC_UNUSED_VAR(types);
             BEHAVIAC_UNUSED_VAR(parent);
             BEHAVIAC_UNUSED_VAR(xmlNode);
-            BEHAVIAC_ASSERT(0);
+            //BEHAVIAC_ASSERT(0);
         }
 
     public:
@@ -95,12 +94,12 @@ namespace behaviac
 
         bool m_bFired;
     public:
-        virtual CMethodBase* clone() const
+        virtual behaviac::CMethodBase* clone() const
         {
             return BEHAVIAC_NEW CNamedEvent(*this);
         }
 
-        virtual void run(const CTagObject* parent, const CTagObject* parHolder)
+        virtual void run(const behaviac::CTagObject* parent, const behaviac::CTagObject* parHolder)
         {
             BEHAVIAC_UNUSED_VAR(parent);
             BEHAVIAC_UNUSED_VAR(parHolder);
@@ -119,13 +118,13 @@ namespace behaviac
         void SetFired(Agent* pAgent, bool bFired);
 
         template<typename ParamType>
-        void SetParam(Agent* pAgent, ParamType param);
+		void SetParam(Agent* pAgent, const ParamType& param);
 
         template<typename ParamType1, typename ParamType2>
-        void SetParam(Agent* pAgent, ParamType1 param1, ParamType2 param2);
+		void SetParam(Agent* pAgent, const ParamType1& param1, const ParamType2& param2);
 
         template<typename ParamType1, typename ParamType2, typename ParamType3>
-        void SetParam(Agent* pAgent, ParamType1 param1, ParamType2 param2, ParamType3 param3);
+		void SetParam(Agent* pAgent, const ParamType1& param1, const ParamType2& param2, const ParamType3& param3);
     };
 }
 #endif // BEHAVIAC_CUSTOMMETHOED

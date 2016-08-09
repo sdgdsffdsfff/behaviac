@@ -353,7 +353,7 @@ void test_stochastic_distribution_0(behaviac::string tree, behaviac::Workspace::
     {
         int k = counts[i];
         int bias = abs(k - STOCHASTIC_SAMPLE_COUNT / 3);
-        CHECK_LESS(bias, (STOCHASTIC_SAMPLE_COUNT / 30));
+        CHECK_LESS(bias, (STOCHASTIC_SAMPLE_COUNT / 20));
     }
 
 #endif
@@ -497,7 +497,41 @@ LOAD_TEST(btunittest, selector_probability_ut_1)
 
 LOAD_TEST(btunittest, selector_probability_ut_2)
 {
-    const char* tree = "node_test/selector_probability_ut_2";
+	const char* tree = "node_test/selector_probability_ut_2";
+
+	behaviac::Profiler::CreateInstance();
+	behaviac::Config::SetSocketing(false);
+	behaviac::Config::SetLogging(false);
+
+	//behaviac::Agent::Register<AgentNodeTest>();
+	registerAllTypes();
+	AgentNodeTest* myTestAgent = AgentNodeTest::DynamicCast(behaviac::Agent::Create<AgentNodeTest>());
+	behaviac::Agent::SetIdMask(1);
+	myTestAgent->SetIdFlag(1);
+	myTestAgent->btload(tree);
+	myTestAgent->btsetcurrent(tree);
+	myTestAgent->resetProperties();
+
+	int loopCount = 10000;
+
+	while (loopCount > 0)
+	{
+		myTestAgent->btexec();
+		CHECK_EQUAL(-1, myTestAgent->testVar_0);
+		--loopCount;
+	}
+
+	unregisterAllTypes();
+	BEHAVIAC_DELETE(myTestAgent);
+	//behaviac::Agent::UnRegister<AgentNodeTest>();
+
+	behaviac::Profiler::DestroyInstance();
+}
+
+
+LOAD_TEST(btunittest, selector_probability_ut_3)
+{
+    const char* tree = "node_test/selector_probability_ut_3";
 
     behaviac::Profiler::CreateInstance();
     behaviac::Config::SetSocketing(false);
@@ -512,14 +546,29 @@ LOAD_TEST(btunittest, selector_probability_ut_2)
     myTestAgent->btsetcurrent(tree);
     myTestAgent->resetProperties();
 
-    int loopCount = 10000;
+	behaviac::Workspace::GetInstance()->SetFrameSinceStartup(0);
 
-    while (loopCount > 0)
-    {
-        myTestAgent->btexec();
-        CHECK_EQUAL(-1, myTestAgent->testVar_0);
-        --loopCount;
-    }
+	for (int i = 0; i < 2; ++i) {
+		myTestAgent->btexec();
+		if (myTestAgent->testVar_0 != -1) {
+			//CHECK_EQUAL(i, myTestAgent->testVar_0);
+			CHECK_EQUAL(0, myTestAgent->testVar_0);
+			CHECK_EQUAL(-1, myTestAgent->testVar_1);
+		}
+		else {
+			//CHECK_EQUAL(i, myTestAgent->testVar_1);
+			CHECK_EQUAL(0, myTestAgent->testVar_1);
+			CHECK_EQUAL(-1, myTestAgent->testVar_0);
+		}
+
+		behaviac::Workspace::GetInstance()->SetFrameSinceStartup(behaviac::Workspace::GetInstance()->GetFrameSinceStartup() + 1);
+	}
+
+	myTestAgent->btexec();
+
+	CHECK_EQUAL(-1, myTestAgent->testVar_0);
+	CHECK_EQUAL(-1, myTestAgent->testVar_1);
+
 
     unregisterAllTypes();
     BEHAVIAC_DELETE(myTestAgent);
@@ -527,6 +576,56 @@ LOAD_TEST(btunittest, selector_probability_ut_2)
 
     behaviac::Profiler::DestroyInstance();
 }
+
+LOAD_TEST(btunittest, selector_probability_ut_4)
+{
+	const char* tree = "node_test/selector_probability_ut_4";
+
+	behaviac::Profiler::CreateInstance();
+	behaviac::Config::SetSocketing(false);
+	behaviac::Config::SetLogging(false);
+
+	//behaviac::Agent::Register<AgentNodeTest>();
+	registerAllTypes();
+	AgentNodeTest* myTestAgent = AgentNodeTest::DynamicCast(behaviac::Agent::Create<AgentNodeTest>());
+	behaviac::Agent::SetIdMask(1);
+	myTestAgent->SetIdFlag(1);
+	myTestAgent->btload(tree);
+	myTestAgent->btsetcurrent(tree);
+	myTestAgent->resetProperties();
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(0.0);
+
+	for (int i = 0; i < 10; ++i) {
+		myTestAgent->btexec();
+		if (myTestAgent->testVar_0 != -1) {
+			CHECK_EQUAL(0, myTestAgent->testVar_0);
+			CHECK_EQUAL(-1, myTestAgent->testVar_1);
+			CHECK_FLOAT_EQUAL(0.0f, myTestAgent->testVar_2);
+		}
+		else {
+			CHECK_EQUAL(-1, myTestAgent->testVar_0);
+			CHECK_EQUAL(0, myTestAgent->testVar_1);
+			CHECK_FLOAT_EQUAL(-1, myTestAgent->testVar_2);
+		}
+
+		behaviac::Workspace::GetInstance()->SetTimeSinceStartup(behaviac::Workspace::GetInstance()->GetTimeSinceStartup() + 0.1);
+	}
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(behaviac::Workspace::GetInstance()->GetTimeSinceStartup() + 0.1);
+	myTestAgent->btexec();
+
+	CHECK_EQUAL(-1, myTestAgent->testVar_0);
+	CHECK_EQUAL(-1, myTestAgent->testVar_1);
+
+
+	unregisterAllTypes();
+	BEHAVIAC_DELETE(myTestAgent);
+	//behaviac::Agent::UnRegister<AgentNodeTest>();
+
+	behaviac::Profiler::DestroyInstance();
+}
+
 
 //< Condition Nodes Tests
 LOAD_TEST(btunittest, condition_ut_0)
@@ -869,13 +968,35 @@ LOAD_TEST(btunittest, action_noop_ut_0)
 //< Reference Node test
 LOAD_TEST(btunittest, reference_ut_0)
 {
-    //AgentNodeTest* myTestAgent = initTestEnvNode("node_test/reference_ut_0", format);
-    //myTestAgent->resetProperties();
+    AgentNodeTest* myTestAgent = initTestEnvNode("node_test/reference_ut_0", format);
+    myTestAgent->resetProperties();
 
-    //myTestAgent->btexec();
-    //CHECK_EQUAL(1, myTestAgent->testVar_0);
-    //CHECK_EQUAL(1.0, myTestAgent->testVar_2);
-    //finlTestEnvNode(myTestAgent);
+    myTestAgent->btexec();
+    CHECK_EQUAL(1, myTestAgent->testVar_0);
+    CHECK_FLOAT_EQUAL(1.0f, myTestAgent->testVar_2);
+    finlTestEnvNode(myTestAgent);
+}
+
+LOAD_TEST(btunittest, reference_ut_1)
+{
+	AgentNodeTest* myTestAgent = initTestEnvNode("node_test/reference_ut_1", format);
+	myTestAgent->resetProperties();
+
+	myTestAgent->btexec();
+	CHECK_EQUAL(0, myTestAgent->testVar_0);
+	CHECK_FLOAT_EQUAL(0.0f, myTestAgent->testVar_2);
+	finlTestEnvNode(myTestAgent);
+}
+
+LOAD_TEST(btunittest, reference_ut_2)
+{
+	AgentNodeTest* myTestAgent = initTestEnvNode("node_test/reference_ut_2", format);
+	myTestAgent->resetProperties();
+
+	myTestAgent->btexec();
+	CHECK_EQUAL(0, myTestAgent->testVar_0);
+	CHECK_FLOAT_EQUAL(0.0f, myTestAgent->testVar_2);
+	finlTestEnvNode(myTestAgent);
 }
 
 LOAD_TEST(btunittest, par_test_custom_property_reset)
@@ -911,3 +1032,68 @@ LOAD_TEST(btunittest, node_test_selector_ut_5)
 
 	finlTestEnvNode(myTestAgent);
 }
+
+LOAD_TEST(btunittest, wait_ut_0)
+{
+	AgentNodeTest* myTestAgent = initTestEnvNode("node_test/wait_ut_0", format);
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(0);
+	myTestAgent->resetProperties();
+	behaviac::EBTStatus status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_RUNNING, status);
+	CHECK_EQUAL(1, myTestAgent->testVar_0);
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(1.001f);
+	status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_SUCCESS, status);
+	CHECK_EQUAL(2, myTestAgent->testVar_0);
+
+	finlTestEnvNode(myTestAgent);
+}
+
+LOAD_TEST(btunittest, wait_ut_1)
+{
+	AgentNodeTest* myTestAgent = initTestEnvNode("node_test/wait_ut_1", format);
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(0);
+	myTestAgent->resetProperties();
+	behaviac::EBTStatus status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_RUNNING, status);
+	CHECK_EQUAL(1, myTestAgent->testVar_0);
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(1.001f);
+	status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_SUCCESS, status);
+	CHECK_EQUAL(2, myTestAgent->testVar_0);
+
+	finlTestEnvNode(myTestAgent);
+}
+
+LOAD_TEST(btunittest, wait_ut_2)
+{
+	AgentNodeTest* myTestAgent = initTestEnvNode("node_test/wait_ut_2", format);
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(0);
+	myTestAgent->resetProperties();
+	behaviac::EBTStatus status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_RUNNING, status);
+	CHECK_EQUAL(1, myTestAgent->testVar_0);
+
+	for (int i = 0; i < 10; ++i) {
+		double time = (i + 1) / 1000.0f;
+		behaviac::Workspace::GetInstance()->SetTimeSinceStartup(time);
+		status = myTestAgent->btexec();
+		CHECK_EQUAL(behaviac::BT_RUNNING, status);
+	}
+	
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(1.001f);
+	status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_RUNNING, status);
+
+	behaviac::Workspace::GetInstance()->SetTimeSinceStartup(1.100f);
+	status = myTestAgent->btexec();
+	CHECK_EQUAL(behaviac::BT_FAILURE, status);
+
+	finlTestEnvNode(myTestAgent);
+}
+
+

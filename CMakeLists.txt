@@ -1,28 +1,42 @@
+#
+# If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their definition
+# and dump it in the cache along with proper documentation, 
+# otherwise set CMAKE_BUILD_TYPE to Release prior to calling PROJECT()
+#
 
-if(MSVC)
-	cmake_minimum_required (VERSION 3.3)
+	
+if( DEFINED CMAKE_BUILD_TYPE )
+	set( CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Set to either \"Release\" or \"Debug\"" )
 else()
-	cmake_minimum_required (VERSION 2.8)
+	set( CMAKE_BUILD_TYPE Release CACHE STRING "Set to either \"Release\" or \"Debug\"" )
 endif()
+
+# message( STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
 
 mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
 project (behaviac)
 
+message( STATUS "MSVC=${MSVC}" )
+
+# if (MSVC)
+	# cmake_minimum_required (VERSION 3.3)
+# else()
+	# cmake_minimum_required (VERSION 2.8)
+# endif()
+
+cmake_minimum_required (VERSION 2.8)
+
 # set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Profile" CACHE STRING "" FORCE) 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE) 
 
-# if(NOT CMAKE_BUILD_TYPE)
-#   set(CMAKE_BUILD_TYPE Debug CACHE STRING
-#       "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-#       FORCE)
-# endif(NOT CMAKE_BUILD_TYPE)
+set (BEHAVIAC_PACKAGE_VERSION 3.5.9)
 
-# The version number.
-set (BEHAVIAC_VERSION_MAJOR 	3)
-set (BEHAVIAC_VERSION_MINOR 	2)
-set (BEHAVIAC_VERSION_REVISION 	22)
+#option( BUILD_SHARED_LIBS "set to OFF to build static libraries" ON )
+SET(BUILD_SHARED_LIBS ON CACHE BOOL "set to OFF to build static libraries")
 
-set (BEHAVIAC_VERSION 	${BEHAVIAC_VERSION_MAJOR}.${BEHAVIAC_VERSION_MINOR}.${BEHAVIAC_VERSION_REVISION})
+#option( BUILD_ENABLE_LUA "set to OFF to disable lua" ON )
+SET(BUILD_ENABLE_LUA OFF CACHE BOOL "set to OFF to disable lua")
+set (BEHAVIAC_ENABLE_LUA 0)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -31,44 +45,79 @@ set (BEHAVIAC_VERSION 	${BEHAVIAC_VERSION_MAJOR}.${BEHAVIAC_VERSION_MINOR}.${BEH
 file(GLOB_RECURSE BEHAVIAC_INC  "${PROJECT_SOURCE_DIR}/inc/*.*")
 file(GLOB_RECURSE BEHAVIAC_SRC  "${PROJECT_SOURCE_DIR}/src/*.*")
 
+# exclude_dir = "/exclude_dir/"
+macro (ExcludeDir src_files exclude_dir)
+	foreach (TMP_PATH ${src_files})
+		string (FIND ${TMP_PATH} ${exclude_dir} EXCLUDE_DIR_FOUND)
+		if (NOT ${EXCLUDE_DIR_FOUND} EQUAL -1)
+			list (REMOVE_ITEM ${src_files} ${TMP_PATH})
+		endif ()
+	endforeach(TMP_PATH)
+endmacro()
+
+if (BUILD_ENABLE_LUA)
+	set (BEHAVIAC_ENABLE_LUA 1)
+	#message( STATUS "Enable Lua" )
+else()
+	set (BEHAVIAC_ENABLE_LUA 0)
+	#message( STATUS "Disable Lua, Excluding Lua ... " )
+
+	#ExcludeDir(BEHAVIAC_INC "/lua/")
+	#ExcludeDir(BEHAVIAC_SRC "/lua/")
+endif()
+
+
+# usage: GroupSources("${PROJECT_SOURCE_DIR}/inc/", "inc")
+macro(GroupSources dir prefix)
+    # file(GLOB_RECURSE elements RELATIVE ${dir} *.h *.hpp *.c *.cpp *.cc)
+    file(GLOB_RECURSE elements RELATIVE ${dir} *.*)
+
+    foreach(element ${elements})
+      # Extract filename and directory
+      get_filename_component(element_name ${element} NAME)
+      get_filename_component(element_dir ${element} DIRECTORY)
+
+      if (NOT ${element_dir} STREQUAL "")
+        # If the file is in a subdirectory use it as source group.
+          # Use the full hierarchical structure to build source_groups.
+          string(REPLACE "/" "\\" group_name ${element_dir})
+          source_group("${prefix}\\${group_name}" FILES ${dir}/${element})
+      else()
+        # If the file is in the root directory, place it in the root source_group.
+        source_group("${prefix}\\" FILES ${dir}/${element})
+      endif()
+    endforeach()
+endmacro()
+
+if (MSVC)
+	GroupSources("${PROJECT_SOURCE_DIR}/inc/" "inc")
+	GroupSources("${PROJECT_SOURCE_DIR}/src/" "src")
+endif()
+
+
+# source_group(inc FILES ${BEHAVIAC_INC})
+# source_group(src FILES ${BEHAVIAC_SRC})
+
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
 include_directories ("${PROJECT_SOURCE_DIR}/inc")
 
-# # Some macro definitions
-# if(WINDOWS)
-# elseif(MACOSX OR APPLE)
-# elseif(LINUX)
-# elseif(ANDROID)
-# else()
-# endif()
-
-
-# # Compiler options
-# if(MSVC)
-# #   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS
-# #                   -wd4251 -wd4244 -wd4334 -wd4005 -wd4820 -wd4710
-# #                   -wd4514 -wd4056 -wd4996 -wd4099)
-# # 
-# else()
-  
-# endif(MSVC)
-
-#CMAKE_INSTALL_PREFIX
-#add_subdirectory
-#ADD_DEPENDENCIES
-
-option( BUILD_SHARED_LIBS "set to OFF to build static libraries" ON )
-
-set(BEHAVIAC_VERSION_MODE "Default" CACHE STRING "version mode, force to use dev/release version or default(dev version on Debug config and release version on Release config)")
-SET_PROPERTY(CACHE BEHAVIAC_VERSION_MODE PROPERTY STRINGS Default ForceUseDev ForeUseRelease) 
-if(NOT(DEFINED BEHAVIAC_VERSION_MODE_LAST))
-     set(BEHAVIAC_VERSION_MODE_LAST "NotAnOption" CACHE STRING "last version mode")
-     MARK_AS_ADVANCED (FORCE BEHAVIAC_VERSION_MODE_LAST)
+if( DEFINED BEHAVIAC_VERSION_MODE )
+	set(BEHAVIAC_VERSION_MODE ${BEHAVIAC_VERSION_MODE} CACHE STRING "version mode, force to use dev/release version or default(dev version on Debug config and release version on Release config)")
+else()
+	set(BEHAVIAC_VERSION_MODE "Default" CACHE STRING "version mode, force to use dev/release version or default(dev version on Debug config and release version on Release config)")
 endif()
 
+SET_PROPERTY(CACHE BEHAVIAC_VERSION_MODE PROPERTY STRINGS Default ForceUseDev ForeUseRelease) 
+if(NOT(DEFINED BEHAVIAC_VERSION_MODE_LAST))
+	 set(BEHAVIAC_VERSION_MODE_LAST "NotAnOption" CACHE STRING "last version mode")
+	 MARK_AS_ADVANCED (FORCE BEHAVIAC_VERSION_MODE_LAST)
+endif()
+
+
+# set(BEHAVIAC_VERSION_MODE "ForeUseRelease" CACHE STRING "version mode)" FORCE)
+
 if(NOT (${BEHAVIAC_VERSION_MODE} MATCHES ${BEHAVIAC_VERSION_MODE_LAST}))
-     UNSET(LIBRARY_INCLUDES CACHE)
      set(BEHAVIAC_VERSION_MODE_LAST ${BEHAVIAC_VERSION_MODE} CACHE STRING "Updating version mode option" FORCE)
 endif()
 
@@ -84,29 +133,135 @@ if(${BEHAVIAC_VERSION_MODE} MATCHES "ForeUseRelease")
 	set (BEHAVIAC_RELEASE_ON 1)
 endif()
 
-# mark_as_advanced(CMAKE_BUILD_TYPE)
-if( NOT CMAKE_BUILD_TYPE )
-	# set( CMAKE_BUILD_TYPE "Debug" )
-	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Debug or Release")
-	SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release) 
-endif()
+# set (LINKER_SCRIPT "")
 
-if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-	#add_definitions( "-DDEBUG" )
-	add_definitions( "-D_DEBUG" )
+if (CMAKE_GENERATOR MATCHES "Xcode")
+	message( STATUS "XCODE = ${XCODE}" )
+endif()
+ 
+# if(MSVC OR (CMAKE_GENERATOR MATCHES "Xcode"))
+if(MSVC OR XCODE)
+	set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
+		$<$<CONFIG:Debug>:_DEBUG>
+		$<$<CONFIG:Release>:NDEBUG>
+	)
+	
+	if (XCODE)
+		set(XCODE_ATTRIBUTE_GCC_PREPROCESSOR_DEFINITIONS[variant=Debug] "_DEBUG")
+		set(XCODE_ATTRIBUTE_GCC_PREPROCESSOR_DEFINITIONS[variant=Release] "NDEBUG")
+	endif()
 else()
-	add_definitions( "-DNDEBUG" )
+	if( CMAKE_BUILD_TYPE MATCHES Debug )
+		#add_definitions( "-DDEBUG" )
+		add_definitions( "-D_DEBUG" )
+	else()
+		add_definitions( "-DNDEBUG" )
+	endif()
 endif()
 
-message( STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}" )
-message( STATUS "CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}" )
+
+if(BEHAVIAC_RELEASE_ON)
+
+	if (MSVC)
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Gy /GL")
+		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /OPT:ICF /OPT:REF /LTCG")
+		set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS} /OPT:ICF /OPT:REF /LTCG")
+	else()
+		include( CheckCXXCompilerFlag )
+		check_cxx_compiler_flag( -flto GXX_HAS_LTO_FLAG )
+
+		message( STATUS "GXX_HAS_LTO_FLAG = ${GXX_HAS_LTO_FLAG}" )
+
+		if( CMAKE_BUILD_TYPE MATCHES Release AND GXX_HAS_LTO_FLAG )
+			find_program(CMAKE_GCC_AR NAMES ${_CMAKE_TOOLCHAIN_PREFIX}gcc-ar${_CMAKE_TOOLCHAIN_SUFFIX} HINTS ${_CMAKE_TOOLCHAIN_LOCATION})
+			find_program(CMAKE_GCC_NM NAMES ${_CMAKE_TOOLCHAIN_PREFIX}gcc-nm HINTS ${_CMAKE_TOOLCHAIN_LOCATION})
+			find_program(CMAKE_GCC_RANLIB NAMES ${_CMAKE_TOOLCHAIN_PREFIX}gcc-ranlib HINTS ${_CMAKE_TOOLCHAIN_LOCATION})
+
+			if( CMAKE_GCC_AR AND CMAKE_GCC_NM AND CMAKE_GCC_RANLIB )
+				message( STATUS "SET LTO Flags" )
+
+				# set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -fno-fat-lto-objects -O3 -ffunction-sections -fdata-sections -fvisibility=hidden -fvisibility-inlines-hidden" )
+				set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -O3" )
+				
+				check_cxx_compiler_flag( -fno-fat-lto-objects GXX_HAS_NO_FAT_LTO_FLAG )
+				
+				message( STATUS "GXX_HAS_NO_FAT_LTO_FLAG = ${GXX_HAS_NO_FAT_LTO_FLAG}" )
+				
+				if (GXX_HAS_NO_FAT_LTO_FLAG)
+					set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-fat-lto-objects" )
+				endif()
+				
+				set( CMAKE_AR "${CMAKE_GCC_AR}" )
+				set( CMAKE_NM "${CMAKE_GCC_NM}" )
+				set( CMAKE_RANLIB "${CMAKE_GCC_RANLIB}" )
+				
+				# set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--gc-sections")
+				# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
+			else()
+				message( WARNING "GCC indicates LTO support, but binutils wrappers could not be found. Disabling LTO." )
+			endif()
+		endif()
+		
+		# -fipa-icf
+		# -finline-limit=64 
+		# -fno-exceptions -fno-rtti
+		# -fwhole-program
+		# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffunction-sections -fdata-sections -fvisibility=hidden -O3 -flto")
+		# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -flto -fno-fat-lto-objects")
+		# set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--gc-sections -flto")
+		# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections -flto")
+		# set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} -flto")
+		
+		# find_package(Gold)
+		 
+		# if (GOLD_FOUND)
+			# SET(LINKER_SCRIPT -fuse-ld=gold -Wl,--icf=safe)
+		# endif()	
+	endif()
+endif()
+
+if (BEHAVIAC_ENABLE_LUA)
+	add_definitions( "-DBEHAVIAC_ENABLE_LUA=1" )
+endif()
+
+SET(BUILD_USE_64BITS OFF CACHE BOOL "set to ON to use 64 bits")	
 
 if (MSVC)
-	message( STATUS "MSVC" )
+	if (CMAKE_GENERATOR MATCHES "64")
+		SET(BUILD_USE_64BITS ON CACHE BOOL "CMAKE_GENERATOR is for 64 bit, set to ON accordingly" FORCE)	
+	endif()
+else()
+	# SET(BUILD_USE_64BITS ON CACHE BOOL "CMAKE_GENERATOR is for 64 bit, set to ON accordingly" FORCE)	
+endif()
+
+if (BUILD_USE_64BITS)
+	if (MSVC)
+		if (NOT CMAKE_GENERATOR MATCHES "64")
+			#
+			message( SEND_ERROR "You need to specify '${CMAKE_GENERATOR} Win64' to generate project file for 64 bit" )
+		endif()
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64")
+		# set (CMAKE_OSX_ARCHITECTURES x86_64)
+	endif()
+endif()
+
+message( STATUS "CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}" )
+message( STATUS "BUILD_USE_64BITS = ${BUILD_USE_64BITS}" )
+
+message( STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}" )
+
+if (MSVC)
+	# message( STATUS "MSVC" )
+	
+	if (BUILD_USE_64BITS)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+	endif()
 endif()
 
 if (VC_MDD_ANDROID)
 	message( STATUS "VC_MDD_ANDROID" )
+	cmake_minimum_required (VERSION 3.4)
 endif()
 
 set (BEHAVIAC_ANDROID_ON 0)
@@ -128,7 +283,7 @@ if(MSVC OR BEHAVIAC_ANDROID_ON)
 	else()
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 	endif()
-
+	
 	#warning treated as error
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 	#multiple processor compilation
@@ -140,13 +295,13 @@ if(MSVC OR BEHAVIAC_ANDROID_ON)
 
 	if (BEHAVIAC_ANDROID_ON)
 		message(STATUS "set msvc flags for android")
-		set (BUILD_SHARED_LIBS OFF)
+		set (BUILD_SHARED_LIBS OFF CACHE BOOL "set to OFF to build static libraries")
 		mark_as_advanced(BUILD_SHARED_LIBS)
 		set (COMPILE_POSTFIX "msvc_android")
 	endif()
 else()
 	# Update if necessary
-	set (BUILD_SHARED_LIBS OFF)
+	set (BUILD_SHARED_LIBS OFF CACHE BOOL "set to OFF to build static libraries" FORCE)
 	mark_as_advanced(BUILD_SHARED_LIBS)
 	mark_as_advanced(CMAKE_GNUtoMS)
 	
@@ -155,7 +310,7 @@ else()
 		find_package(Threads REQUIRED)
 
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Woverloaded-virtual -Wnon-virtual-dtor -Wfloat-equal -finput-charset=UTF-8")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Woverloaded-virtual -Wnon-virtual-dtor -Wfloat-equal -Wno-unused-local-typedefs -finput-charset=UTF-8")
 	endif()
 	
 	# if(CMAKE_GENERATOR STREQUAL Xcode)
@@ -165,12 +320,16 @@ else()
 	set (COMPILE_POSTFIX "gcc")
 endif()
 
-
 message( STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}" )
+message( STATUS "BUILD_ENABLE_LUA = ${BUILD_ENABLE_LUA}" )
 message( STATUS "BEHAVIAC_VERSION_MODE = ${BEHAVIAC_VERSION_MODE}" )
 message( STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 # message( STATUS "BEHAVIAC_VERSION = ${BEHAVIAC_VERSION}" )
-message( STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
+if(MSVC OR BEHAVIAC_ANDROID_ON)
+	message( STATUS "Config = Debug|Release" )
+else()
+	message( STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
+endif()
 # MESSAGE( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
 
 configure_file (
@@ -196,7 +355,7 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${LIB_OUTPUT_PATH} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
-add_library(libbehaviac ${BEHAVIAC_INC} ${BEHAVIAC_SRC})
+add_library(libbehaviac ${BEHAVIAC_INC} ${BEHAVIAC_SRC} ${LINKER_SCRIPT})
 
 set_target_properties(libbehaviac PROPERTIES PREFIX "")
 # set_target_properties(libbehaviac PROPERTIES OUTPUT_NAME_DEBUG libbehaviac${${CMAKE_DEBUG_POSTFIX}}
@@ -228,6 +387,11 @@ function (add_target_definitions target)
   endforeach ()
   set_target_properties(${target} PROPERTIES COMPILE_DEFINITIONS "${deflist}")
 endfunction ()
+
+# if (XCODE)
+	# set_target_properties(libbehaviac PROPERTIES  XCODE_ATTRIBUTE_GCC_PREPROCESSOR_DEFINITIONS[variant=Debug] "_DEBUG")
+	# set_target_properties(libbehaviac PROPERTIES  XCODE_ATTRIBUTE_GCC_PREPROCESSOR_DEFINITIONS[variant=Release] "NDEBUG")
+# endif()
 
 if( BUILD_SHARED_LIBS )
 	# SET_TARGET_PROPERTIES(libbehaviac PROPERTIES

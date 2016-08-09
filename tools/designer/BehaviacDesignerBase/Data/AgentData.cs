@@ -47,12 +47,13 @@ namespace Behaviac.Design.Data
 
             if (!instances.Contains(agentName)) {
                 instances.Add(agentName);
-            }
 
-            if (string.IsNullOrEmpty(Plugin.DebugAgentInstance) && AddInstanceHandler != null) {
-                AddInstanceHandler(agentType, agentName); 
+                if (AddInstanceHandler != null)
+                {
+                    AddInstanceHandler(agentType, agentName);
 
-                return true;
+                    return true;
+                }
             }
 
             return false;
@@ -252,12 +253,22 @@ namespace Behaviac.Design.Data
                 AgentData agentData = _agentDatabase[agentFullname];
 
                 // Properties
-                if (agentType != null) {
-                    foreach(PropertyDef p in agentType.GetProperties()) {
-                        ValueMark value = agentData.GetValidValue(p.BasicName, frame);
+                if (agentType != null)
+                {
+                    //foreach (PropertyDef p in agentType.GetProperties())
+                    //{
+                    //    ValueMark value = agentData.GetValidValue(p.BasicName, frame);
+
+                    //    if (value != null)
+                    //        valueSet.Add(value);
+                    //}
+
+                    foreach (string valueName in agentData.ValueSet.Keys)
+                    {
+                        ValueMark value = agentData.GetValidValue(valueName, frame);
 
                         if (value != null)
-                        { valueSet.Add(value); }
+                            valueSet.Add(value);
                     }
                 }
             }

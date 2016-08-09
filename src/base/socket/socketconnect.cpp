@@ -33,7 +33,7 @@ namespace behaviac
 {
     uint32_t Packet::CalcPacketSize() const
     {
-        uint32_t packetSize(0);
+		size_t packetSize(0);
 
         if (command == CommandId::CMDID_TEXT)
         {
@@ -47,7 +47,7 @@ namespace behaviac
         }
 
         packetSize += sizeof(command);
-        return packetSize;
+        return (uint32_t)packetSize;
     }
 }
 
@@ -161,6 +161,7 @@ namespace behaviac
             this->SendExistingPackets();
         }
 
+        //Log("[connected]precached message done\n");
         behaviac::Socket::SendText("[connected]precached message done");
 
         //when '[connected]' is handled in the designer, it will send back all the breakpoints if any and '[breakcpp]' and '[start]'
@@ -182,7 +183,6 @@ namespace behaviac
             if (bFound)
             {
                 bLoop = false;
-
             }
             else
             {
@@ -303,14 +303,15 @@ namespace behaviac
 					const char* platform = "Unknown Platform";
 #endif
 
-					behaviac::string msg = FormatString("[platform] %s\n", platform);
-					LogManager::GetInstance()->LogWorkspace(true, msg.c_str());
+					char msg[1024];
+					string_sprintf(msg, "[platform] %s\n", platform);
+					LogManager::GetInstance()->LogWorkspace(true, msg);
 
 					Workspace::EFileFormat format = Workspace::GetInstance()->GetFileFormat();
 					const char* formatString = (format == Workspace::EFF_xml ? "xml" : "bson");
 
-					msg = FormatString("[workspace] %s \"%s\"\n", formatString, "");
-					LogManager::GetInstance()->LogWorkspace(true, msg.c_str());
+					string_sprintf(msg, "[workspace] %s \"%s\"\n", formatString, "");
+					LogManager::GetInstance()->LogWorkspace(true, msg);
 
 					s_tracer.SetWorkspaceSent(true);
 				}

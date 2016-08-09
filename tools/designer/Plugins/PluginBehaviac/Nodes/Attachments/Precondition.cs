@@ -36,7 +36,7 @@ namespace PluginBehaviac.Events
 
         public override string DocLink
         {
-            get { return "http://www.behaviac.com/docs/zh/references/attachment/#section"; }
+            get { return "http://www.behaviac.com/language/zh/attachment/#section"; }
         }
 
         public override bool IsPrecondition
@@ -73,6 +73,13 @@ namespace PluginBehaviac.Events
         {
             get { return _phase; }
             set { _phase = value; }
+        }
+
+        [DesignerRightValueEnum("OperandLeft", "OperandLeftDesc", "Operation", DesignerProperty.DisplayMode.Parameter, 2, DesignerProperty.DesignerFlags.NoFlags, DesignerPropertyEnum.AllowStyles.AttributesMethod, MethodType.Method, "", "Opr2", ValueTypes.All)]
+        public override RightValueDef Opl
+        {
+            get { return _opl; }
+            set { this._opl = value; }
         }
 
         protected override void CloneProperties(Behaviac.Design.Attachments.Attachment newattach)

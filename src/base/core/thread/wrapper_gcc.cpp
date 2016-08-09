@@ -13,6 +13,7 @@
 
 #include "behaviac/base/core/thread/wrapper.h"
 #include "behaviac/base/core/thread/mutex.h"
+#include "behaviac/base/core/thread/thread.h"
 
 #if !BEHAVIAC_COMPILER_MSVC
 #include <unistd.h>
@@ -63,13 +64,13 @@ namespace behaviac
         m_inited = false;
     }
 
-    //void ThreadInt::set(long v)
-    //{
-    //	{
-    //		behaviac::ScopedLock lock(m_csMemory);
-    //		m_value = v;
-    //	}
-    //}
+    void ThreadInt::set(long v)
+    {
+    	{
+    		behaviac::ScopedLock lock(m_csMemory);
+    		m_value = v;
+    	}
+    }
 
     long ThreadInt::value() const
     {

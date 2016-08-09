@@ -35,16 +35,22 @@ namespace behaviac
 
     Property* AgentProperties::GetProperty(uint32_t variableId)
     {
-        if (this->m_properties.size() > 0 && this->m_properties.find(variableId) != this->m_properties.end())
+        if (this->m_properties.size() > 0)
         {
-            BEHAVIAC_ASSERT(this->m_properties[variableId]);
-            return this->m_properties[variableId];
+			behaviac::map<uint32_t, Property*>::const_iterator it = this->m_properties.find(variableId);
+			if (it != this->m_properties.end()) {
+				Property* p = it->second;
+				return p;
+			}
         }
 
-        if (this->m_locals.size() > 0 && this->m_locals.find(variableId) != this->m_locals.end())
+        if (this->m_locals.size() > 0)
         {
-            BEHAVIAC_ASSERT(this->m_locals[variableId]);
-            return this->m_locals[variableId];
+			behaviac::map<uint32_t, Property*>::const_iterator it = this->m_locals.find(variableId);
+			if (it != this->m_locals.end()) {
+				Property* p = it->second;
+				return p;
+			}
         }
 
         return NULL;
@@ -56,6 +62,11 @@ namespace behaviac
         Property* p = this->GetProperty(variableId);
         return p;
     }
+
+	void AgentProperties::AddPropertyInstance(Property* pPropertyInstance)
+	{
+		this->m_properties_instance.push_back(pPropertyInstance);
+	}
 
     Property* AgentProperties::AddLocal(const char* typeName, const char* variableName, const char* valueStr)
     {
@@ -86,6 +97,13 @@ namespace behaviac
         {
             BEHAVIAC_DELETE it->second;
         }
+
+		for (behaviac::vector<Property*>::iterator it = this->m_properties_instance.begin(); it != this->m_properties_instance.end(); ++it)
+		{
+			BEHAVIAC_DELETE *it;
+		}
+
+		this->m_properties_instance.clear();
 
         this->m_properties.clear();
 
@@ -118,14 +136,18 @@ namespace behaviac
     }
     Property* AgentProperties::GetLocal(const char* variableName)
     {
-        uint32_t variableid = MakeVariableId(variableName);
+		if (this->m_locals.size() > 0) {
+			uint32_t variableid = MakeVariableId(variableName);
 
-        if (this->m_locals[variableid] != NULL)
-        {
-            return this->m_locals[variableid];
-        }
+			behaviac::map<uint32_t, Property*>::const_iterator it = this->m_locals.find(variableid);
+			if (it != this->m_locals.end())
+			{
+				Property* p = it->second;
+				return p;
+			}
+		}
 
-        return NULL;
+        return 0;
     }
 
     Property* AgentProperties::AddLocal(const char* agentType, const char* typeName, const char* variableName, const char* valueStr)
@@ -190,6 +212,21 @@ namespace behaviac
 
         return NULL;
     }
+
+	void AgentProperties::AddPropertyInstance(const char* agentType, Property* pPropertyInstance)
+	{
+		AgentProperties* bb = AgentProperties::Get(agentType);
+
+		if (bb)
+		{
+			bb->AddPropertyInstance(pPropertyInstance);
+		}
+		else
+		{
+			//cpp, there is no corresponding AgentProperties
+			//BEHAVIAC_LOGWARNING("behaviac.bb is not loaded? Is SetVariable/GetVariable invoked too early?\n");
+		}
+	}
 
     void AgentProperties::UnloadLocals()
     {
@@ -582,13 +619,14 @@ namespace behaviac
 
             case Workspace::EFF_xml:
             {
-                char* pBuffer = Workspace::GetInstance()->ReadFileToBuffer(fullPath.c_str(), ext.c_str());
+				uint32_t bufferSize = 0;
+				char* pBuffer = Workspace::GetInstance()->ReadFileToBuffer(fullPath.c_str(), ext.c_str(), bufferSize);
 
                 if (pBuffer != NULL)
                 {
                     bLoadResult = load_xml(pBuffer);
 
-                    Workspace::GetInstance()->PopFileFromBuffer(fullPath.c_str(), ext.c_str(), pBuffer);
+					Workspace::GetInstance()->PopFileFromBuffer(fullPath.c_str(), ext.c_str(), pBuffer, bufferSize);
                 }
                 else
                 {
@@ -600,13 +638,14 @@ namespace behaviac
 
             case Workspace::EFF_bson:
             {
-                char* pBuffer = Workspace::GetInstance()->ReadFileToBuffer(fullPath.c_str(), ext.c_str());
+				uint32_t bufferSize = 0;
+				char* pBuffer = Workspace::GetInstance()->ReadFileToBuffer(fullPath.c_str(), ext.c_str(), bufferSize);
 
                 if (pBuffer != NULL)
                 {
                     bLoadResult = load_bson(pBuffer);
 
-                    Workspace::GetInstance()->PopFileFromBuffer(fullPath.c_str(), ext.c_str(), pBuffer);
+					Workspace::GetInstance()->PopFileFromBuffer(fullPath.c_str(), ext.c_str(), pBuffer, bufferSize);
                 }
                 else
                 {

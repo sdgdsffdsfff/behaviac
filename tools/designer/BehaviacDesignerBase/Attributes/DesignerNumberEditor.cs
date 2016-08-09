@@ -131,7 +131,15 @@ namespace Behaviac.Design.Attributes
             DesignerInteger intAtt = property.Attribute as DesignerInteger;
 
             if (intAtt != null) {
-                int val = (int)property.Property.GetValue(obj, null);
+                int val = 0;
+
+                try
+                {
+                    val = Convert.ToInt32(property.Property.GetValue(obj, null));
+                }
+                catch
+                {
+                }
 
                 value = (decimal)val;
             }
@@ -445,14 +453,43 @@ namespace Behaviac.Design.Attributes
                     { Debug.Check(false); }
 
                 } else if (this._param != null) {
-                    if (this._param.Attribute is DesignerFloat)
-                    { this._param.Value = (float)numericUpDown.Value; }
+                    bool bFloat = false;
+                    if (this._param.ListParam != null)
+                    {
+                        Type itemType = MethodDef.Param.GetListParamItemType(this._param);
 
+                        if (Plugin.IsFloatType(itemType))
+                        {
+                            bFloat = true;
+                        }
+                    }
+
+                    if (this._param.Attribute is DesignerFloat || bFloat)
+                    { 
+                        float value =  (float)numericUpDown.Value;
+                        
+                        if (this._param.Value is float )
+                        {
+                            this._param.Value = (float)value; 
+                        }
+                        else if (this._param.Value is double)
+                        {
+                            double d = (double)value;
+                            this._param.Value = d; 
+                        }
+                        else
+                        {
+                            this._param.Value = value; 
+                        }
+                    }
                     else if (this._param.Attribute is DesignerInteger)
-                    { this._param.Value = (int)numericUpDown.Value; }
-
+                    { 
+                        this._param.Value = (int)numericUpDown.Value; 
+                    }
                     else
-                    { Debug.Check(false); }
+                    { 
+                        Debug.Check(false); 
+                    }
 
                 } else if (this._variable != null) {
                     if (this._variable.Value.GetType() == typeof(float))

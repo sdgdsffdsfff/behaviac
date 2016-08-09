@@ -30,7 +30,7 @@ namespace PluginBehaviac.Nodes
 
         public override string DocLink
         {
-            get { return "http://www.behaviac.com/docs/zh/references/decorator/#loop"; }
+            get { return "http://www.behaviac.com/language/zh/decorator/#loop"; }
         }
 
         public override string ExportClass
@@ -38,9 +38,36 @@ namespace PluginBehaviac.Nodes
             get { return "DecoratorLoop"; }
         }
 
+        protected bool _bDoneWithinFrame = false;
+        [DesignerBoolean("DoneWithinFrame", "DoneWithinFrameDesc", "CategoryBasic", DesignerProperty.DisplayMode.ListTrue, 0, DesignerProperty.DesignerFlags.NoFlags)]
+        public bool DoneWithinFrame
+        {
+            get { return _bDoneWithinFrame; }
+            set { _bDoneWithinFrame = value; }
+        }
+
+        protected override void CloneProperties(Node newnode)
+        {
+            base.CloneProperties(newnode);
+
+            DecoratorLoop dec = (DecoratorLoop)newnode;
+            dec._bDoneWithinFrame = this._bDoneWithinFrame;
+        }
+
+
         public override void CheckForErrors(BehaviorNode rootBehavior, List<ErrorCheck> result)
         {
             base.CheckForErrors(rootBehavior, result);
+
+            if (this._bDoneWithinFrame)
+            {
+                long count = this.GetCount();
+
+                if (count == -1)
+                {
+                    result.Add(new Node.ErrorCheck(this, ErrorCheckLevel.Error, "when 'DoneWithinFrame' is selected, Count should not be -1 as an endless loop!"));
+                }
+            }
         }
 	}
 }

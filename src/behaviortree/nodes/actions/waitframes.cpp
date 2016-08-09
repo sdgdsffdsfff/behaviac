@@ -29,7 +29,7 @@ namespace behaviac
     }
 
     //Property* LoadRight(const char* value, const behaviac::string& propertyName, behaviac::string& typeName);
-    //CMethodBase* LoadMethod(const char* value);
+    //behaviac::CMethodBase* LoadMethod(const char* value);
 
     void WaitFrames::load(int version, const char* agentType, const properties_t& properties)
     {
@@ -175,7 +175,9 @@ namespace behaviac
         BEHAVIAC_UNUSED_VAR(pAgent);
         BEHAVIAC_UNUSED_VAR(childStatus);
 
-		if (Workspace::GetInstance()->GetFrameSinceStartup() - this->m_start + 1 >= this->m_frames)
+		int frames = Workspace::GetInstance()->GetFrameSinceStartup();
+
+		if (frames - this->m_start + 1 >= this->m_frames)
 		{
 			return BT_SUCCESS;
 		}

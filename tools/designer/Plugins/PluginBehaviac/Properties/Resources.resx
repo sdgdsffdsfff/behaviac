@@ -499,7 +499,7 @@
     <value>Duration</value>
   </data>
   <data name="DurationDesc" xml:space="preserve">
-    <value>The time(milliseconds) it will wait.</value>
+    <value>Duration (milliseconds in float)</value>
   </data>
   <data name="IfElseCondition" xml:space="preserve">
     <value>Condition</value>
@@ -532,7 +532,7 @@
     <value>RandomGenerator</value>
   </data>
   <data name="RandomGeneratorDesc" xml:space="preserve">
-    <value>You can specify a method to return a 'int' as the random number.</value>
+    <value>You can specify a method to return a float value between 0.0 and 1.0 as the random number.</value>
   </data>
   <data name="DecoratorFrames" xml:space="preserve">
     <value>Frames</value>
@@ -644,7 +644,7 @@
     <value>PreAction</value>
   </data>
   <data name="PreconditionDesc" xml:space="preserve">
-    <value>PreAction is an action or precondition whichi is executed/evaluated before 'entering' a node. </value>
+    <value>PreAction is an action or precondition which is executed/evaluated before 'entering' a node. </value>
   </data>
   <data name="TaskNoChildrenError" xml:space="preserve">
     <value>task has no children.</value>
@@ -749,7 +749,7 @@
     <value>when to evalute the precondition</value>
   </data>
   <data name="CustomizedMethodError" xml:space="preserve">
-    <value>The customized method can not be exported!</value>
+    <value>Found the customized method : Please firstly integrate the generated source files of the customized method of the agent into your game project. Then export it as meta info into the editor, reload the current workspace. At last, export the behaviors.</value>
   </data>
   <data name="DecoratorIterator" xml:space="preserve">
     <value>Try</value>
@@ -853,5 +853,23 @@ it only returns success or failure and never returns running.
   </data>
   <data name="WaitTransitionDesc" xml:space="preserve">
     <value>WaitTransition can only be appended to WaitState or WaitFramesState</value>
+  </data>
+  <data name="DoneWithinFrame" xml:space="preserve">
+    <value>DoneWithinFrame</value>
+  </data>
+  <data name="DoneWithinFrameDesc" xml:space="preserve">
+    <value>if true, the whole Loop will be blocked until the loop is done within a frame</value>
+  </data>
+  <data name="StatusTransition" xml:space="preserve">
+    <value>StatusTransition</value>
+  </data>
+  <data name="StatusTransitionDesc" xml:space="preserve">
+    <value>for a subtree state, to transition or not based on its returnning status </value>
+  </data>
+  <data name="TransitionPhase" xml:space="preserve">
+    <value>TransitionPhase</value>
+  </data>
+  <data name="TransitionPhaseDesc" xml:space="preserve">
+    <value>in which case to transition</value>
   </data>
 </root>

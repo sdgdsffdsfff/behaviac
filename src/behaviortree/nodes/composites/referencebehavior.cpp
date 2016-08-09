@@ -22,14 +22,17 @@
 #include "behaviac/htn/task.h"
 #include "behaviac/fsm/state.h"
 #include "behaviac/fsm/transitioncondition.h"
+#include "behaviac/behaviortree/nodes/conditions/condition.h"
 
 namespace behaviac
 {
-	ReferencedBehavior::ReferencedBehavior() : m_taskNode(0), m_taskMethod(0), m_transitions(0)
+	ReferencedBehavior::ReferencedBehavior() : m_taskNode(0), m_referencedBehaviorPath_var(0), m_referencedBehaviorPath_m(0), m_taskMethod(0), m_transitions(0)
     {}
 
     ReferencedBehavior::~ReferencedBehavior()
     {
+		BEHAVIAC_DELETE(m_referencedBehaviorPath_m);
+		BEHAVIAC_DELETE(m_taskMethod);
 		BEHAVIAC_DELETE this->m_transitions;
     }
 
@@ -41,22 +44,44 @@ namespace behaviac
         {
             const property_t& p = (*it);
 
-            if (strcmp(p.name, "ReferenceFilename") == 0)
-            {
-                this->m_referencedBehaviorPath = p.value;
-
-				BehaviorTree* behaviorTree = Workspace::GetInstance()->LoadBehaviorTree(this->m_referencedBehaviorPath.c_str());
-                BEHAVIAC_ASSERT(behaviorTree);
-
-				if (behaviorTree)
+			if (StringUtils::StrEqual(p.name, "ReferenceBehavior"))
+			{
+				if (StringUtils::IsValidString(p.value))
 				{
-					this->m_bHasEvents |= behaviorTree->HasEvents();
+					const char* pParenthesis = strchr(p.value, '(');
+
+					if (pParenthesis == 0)
+					{
+						behaviac::string typeName;
+						this->m_referencedBehaviorPath_var = Condition::LoadRight(p.value, typeName);
+					}
+					else
+					{
+						this->m_referencedBehaviorPath_m = Action::LoadMethod(p.value);
+					}
+
+					const char* szTreePath = this->GetReferencedTree(0);
+
+					//conservatively make it true
+					bool bHasEvents = true;
+
+					if (!StringUtils::IsNullOrEmpty(szTreePath))
+					{
+						//it has a const tree path, so as to load the tree and check if that tree has events
+						BehaviorTree* behaviorTree = Workspace::GetInstance()->LoadBehaviorTree(szTreePath);
+
+						if (behaviorTree) {
+							bHasEvents = behaviorTree->HasEvents();
+						}
+					}
+
+					this->m_bHasEvents |= bHasEvents;
 				}
-            }
+			}
             else if (strcmp(p.name, "Task") == 0)
             {
                 BEHAVIAC_ASSERT(!StringUtils::IsNullOrEmpty(p.value));
-                CMethodBase* m = Action::LoadMethod(p.value);
+                behaviac::CMethodBase* m = Action::LoadMethod(p.value);
                 //BEHAVIAC_ASSERT(m is CTaskMethod);
 
                 this->m_taskMethod = (CTaskMethod*)m;
@@ -80,7 +105,7 @@ namespace behaviac
             //planner.agent.Variables.Log(planner.agent, true);
             taskSubTree->SetTaskParams(planner->GetAgent());
 
-            Task* task = taskSubTree->RootTaskNode();
+			Task* task = taskSubTree->RootTaskNode(planner->GetAgent());
 
             if (task != 0)
             {
@@ -155,11 +180,11 @@ namespace behaviac
         }
     }
 
-    Task* ReferencedBehavior::RootTaskNode()
+	Task* ReferencedBehavior::RootTaskNode(Agent* pAgent)
     {
         if (this->m_taskNode == 0)
         {
-            BehaviorTree* bt = Workspace::GetInstance()->LoadBehaviorTree(this->m_referencedBehaviorPath.c_str());
+			BehaviorTree* bt = Workspace::GetInstance()->LoadBehaviorTree(this->GetReferencedTree(pAgent));
 
             if (bt != 0 && bt->GetChildrenCount() == 1)
             {
@@ -171,9 +196,25 @@ namespace behaviac
         return this->m_taskNode;
     }
 
-    const char* ReferencedBehavior::GetReferencedTree() const
+	const char* ReferencedBehavior::GetReferencedTree(const Agent* pAgent) const
     {
-        return this->m_referencedBehaviorPath.c_str();
+		if (this->m_referencedBehaviorPath_var)
+		{
+			TProperty<behaviac::string>* pTProperty = (TProperty<behaviac::string>*)this->m_referencedBehaviorPath_var;
+			const behaviac::string& str = pTProperty->GetValue(pAgent);
+			return str.c_str();
+		}
+		else
+		{
+			BEHAVIAC_ASSERT(this->m_referencedBehaviorPath_m);
+			if (this->m_referencedBehaviorPath_m)
+			{
+				this->m_referencedBehaviorPath_m->Invoke(pAgent);
+				return this->m_referencedBehaviorPath_m->GetReturnString(pAgent);
+			}
+		}
+
+		return 0;
     }
 
 	ReferencedBehaviorTask::ReferencedBehaviorTask() : SingeChildTask(), m_nextStateId(-1), m_subTree(0)
@@ -182,6 +223,8 @@ namespace behaviac
 
     ReferencedBehaviorTask::~ReferencedBehaviorTask()
     {
+		behaviac::Workspace::GetInstance()->DestroyBehaviorTreeTask(this->m_subTree, 0);
+		this->m_subTree = 0;
     }
 
     void ReferencedBehaviorTask::copyto(BehaviorTask* target) const
@@ -231,18 +274,18 @@ namespace behaviac
 
 		this->m_nextStateId = -1;
 
-		pNode->SetTaskParams(pAgent);
-
-		this->m_subTree = Workspace::GetInstance()->CreateBehaviorTreeTask(pNode->m_referencedBehaviorPath.c_str());
-
+		//to create it on demand
+		if (this->m_subTree == NULL)
 		{
-			const char* pThisTree = pAgent->btgetcurrent()->GetName().c_str();
-			const char* pReferencedTree = pNode->m_referencedBehaviorPath.c_str();
-
-			behaviac::string msg = FormatString("%s[%d] %s", pThisTree, pNode->GetId(), pReferencedTree);
-
-			LogManager::GetInstance()->Log(pAgent, msg.c_str(), EAR_none, ELM_jump);
+			const char* szTreePath = pNode->GetReferencedTree(pAgent);
+			this->m_subTree = Workspace::GetInstance()->CreateBehaviorTreeTask(szTreePath);
 		}
+		else
+		{
+			this->m_subTree->reset(pAgent);
+		}
+
+		pNode->SetTaskParams(pAgent);
 
         return true;
     }
@@ -276,10 +319,16 @@ namespace behaviac
 
 		EBTStatus result = this->m_subTree->exec(pAgent);
 
-		bool bTransitioned = State::UpdateTransitions(pAgent, pNode, pNode->m_transitions, this->m_nextStateId);
+		bool bTransitioned = State::UpdateTransitions(pAgent, pNode, pNode->m_transitions, this->m_nextStateId, result);
 
 		if (bTransitioned)
 		{
+			if (result == BT_RUNNING)
+			{
+				//subtree not exited, but it will transition to other states
+				this->m_subTree->abort(pAgent);
+			}
+
 			result = BT_SUCCESS;
 		}
 
